@@ -18,7 +18,7 @@
       <header class="header">
         <div class="logo-container">
           <img
-            src="assets/saga04-cropped.png"
+            src="assets/Web-Logo.png"
             alt="The logo of the application"
             class="logo"
           />
@@ -81,7 +81,32 @@
         </button>
       </nav>
 
-      <main></main>
+      <main class="main-login">
+
+        <form class="login-form" action="index.html" method="post">
+          <h2>Log in to your account</h2>
+          <div class="input-wrapper">
+            <div class="form-flex-item">
+                <label style="display:block" for="email">Email</label>
+                <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required id="email" placeholder="Enter your email..." />
+            </div>
+            <div class="form-flex-item">
+              <label style="display:block" for="password">Password</label>
+              <input type="password" id="password" minlength="8" placeholder="Enter your password..." required>
+            </div>
+
+            <div class="form-flex-item">
+              <input type="checkbox" id="remember-me">
+              <label for="remember-me">Remember Me</label>
+            </div>
+          </div>
+          <div class="form-button-wrapper">
+            <button class="form-submit-button" type="submit">Login</button>
+            <p>Don't have an account? <a href="register.html">Sign Up here!</a></p>
+          </div>
+        </form>
+
+      </main>
 
       <footer>
         <p>Proiect realizat pentru cursul Tehnologii Web - UAIC 2025</p>

@@ -3,7 +3,13 @@ body {
   padding: 0px;
   box-sizing: border-box;
   font-family: "Goldman", sans-serif;
-  overflow: scroll;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 .page-wrapper {
@@ -12,16 +18,39 @@ body {
   min-height: 100vh;
 }
 
+.main-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  background-color: #d3d3d3;
+  width: auto;
+  height: auto;
+  padding: 50px;
+  font-size: 25px;
+  box-shadow: 0px 0px 20px 10px #d3d3d3;
+  border-radius: 20px;
+  transition: all 0.5s ease;
+}
+
+.login-form:hover {
+  box-shadow: 0px 0px 0px 0px #a9a9a9;
+  transform: scale(1.1);
+}
+
 main {
   flex: 1;
 }
 
 .header {
   display: flex;
-
   box-sizing: border-box;
   height: 13vh;
-  width: 100vw;
+  width: 100%;
   align-content: center;
   justify-content: space-between;
 }
@@ -30,11 +59,11 @@ main {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 100vw;
+  align-items: stretch;
+  width: 100%;
   height: 8vh;
   background-color: #d3d3d3;
-  padding: 20px;
+  padding: 0px 20px;
 }
 
 .button-list {
@@ -54,16 +83,16 @@ main {
   font-family: inherit;
   font-size: 25px;
   width: auto;
-  height: 245%;
   background-color: #d3d3d3;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 0px 10px;
   margin-right: 20px;
-  transition: width 5s ease, background-color 500ms ease-out,
-    transform 500ms ease, visibility 0.5s;
+  transition: background-color 500ms ease-out, transform 500ms ease,
+    visibility 0.5s;
   text-align: left;
   align-items: center;
+  max-height: 100%;
 }
 
 .navbar-button:hover {
@@ -121,7 +150,7 @@ main {
 .dropdown-wrapper {
   display: inline;
   position: relative;
-  height: 245%;
+  height: 100%;
   width: auto;
 }
 
@@ -190,7 +219,7 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   min-height: 6vh;
   height: auto;
   background-color: #d3d3d3;
@@ -212,3 +241,100 @@ footer > p:nth-child(2) {
 footer span {
   align-self: flex-end;
 }
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-button-wrapper {
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  min-width: 80%;
+  max-width: auto;
+  height: auto;
+  align-self: center;
+}
+
+.login-form h2 {
+  font-weight: normal;
+  font-size: 28px;
+  text-align: center;
+}
+
+.form-button-wrapper > p,
+a {
+  font-size: 15px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.form-submit-button {
+  align-self: center;
+  text-align: center;
+  height: 40px;
+  width: auto;
+  aspect-ratio: 8/1;
+  font-family: inherit;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  background-color: #ff3c3c;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.form-submit-button:hover {
+  background-color: #d32f2f;
+  color: white;
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 0px 20px 10px #d32f2f;
+  text-decoration: underline white;
+}
+
+.form-flex-item {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-flex-item:nth-child(n + 1):nth-child(-n + 2) > input {
+  width: 100%;
+  border: 1px solid black;
+  height: auto;
+  font-size: 20px;
+  background-color: #d3d3d3;
+  padding: 5px;
+  font-family: inherit;
+}
+
+.form-flex-item:nth-child(n + 1):nth-child(-n + 2) > input:focus {
+  border: 1px solid #a9a9a9;
+  outline: none;
+}
+
+.input-wrapper label:nth-child(2) {
+  font-size: 20px;
+}
+
+.form-flex-item:nth-child(3) {
+  flex-direction: row;
+}
+
+/* .form-flex-item:nth-child(1) {
+  background-color: red;
+}
+
+.form-flex-item:nth-child(2) {
+  background-color: blue;
+}
+
+.form-flex-item:nth-child(3) {
+  background-color: green;
+} */
