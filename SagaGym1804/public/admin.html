@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard – SagaGym1804</title>
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Menu</h2>
+        <button onclick="afiseazaSectiune('utilizatori')">Utilizatori</button>
+        <button onclick="afiseazaSectiune('exercitii')">Exerciții</button>
+        <button onclick="afiseazaSectiune('antrenamente')">Antrenamente</button>
+        <button onclick="afiseazaSectiune('grupe')">Grupe Musculare</button>
+    </div>
+
+    <div class="main-content">
+        <div id="sectiune-utilizatori" class="section active">
+            <h2>👤 Utilizatori</h2>
+            <button id="add-utilizator-btn" onclick="showAddForm()">➕ Adaugă Utilizator</button>
+            
+            <div id="form-utilizator" class="form-wrapper hidden">
+                <h3 id="form-titlu">Adaugă Utilizator</h3>
+                <input type="hidden" id="utilizator-id">
+                <label>Nume</label>
+                <input type="text" id="nume">
+                <label>Email</label>
+                <input type="email" id="email">
+                <label>Parolă</label>
+                <input type="password" id="parola">
+                <label>Gen</label>
+                <input type="text" id="gen">
+                <button onclick="salveazaUtilizator()">💾 Salvează</button>
+                <button onclick="anuleaza()">❌ Anulează</button>
+            </div>
+
+            <table id="tabel-utilizatori">
+                <thead>
+                    <tr>
+                        <th>Nume</th>
+                        <th>Email</th>
+                        <th>Gen</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+           
+        </div>
+
+        <div id="sectiune-exercitii" class="section">
+            <h2>🏋️ Exerciții</h2>
+            <button id="add-exercitii-btn" onclick="showExercitiuForm()">➕ Adaugă Exercițiu</button>
+            
+            <div id="form-exercitiu" class="form-wrapper hidden">
+                <h3 id="form-exercitiu-titlu">Adaugă Exercițiu</h3>
+                <input type="hidden" id="exercitiu-id">
+                <label>Nume</label>
+                <input type="text" id="ex-nume">
+                <label>Tip</label>
+                <input type="text" id="ex-tip">
+                <label>Grupe Musculare (separate prin virgulă)</label>
+                <input type="text" id="ex-grupe">
+                <button onclick="salveazaExercitiu()">💾 Salvează</button>
+                <button onclick="anuleazaExercitiu()">❌ Anulează</button>
+            </div>
+
+            <table id="tabel-exercitii">
+                <thead>
+                    <tr>
+                        <th>Nume</th>
+                        <th>Tip</th>
+                        <th>Grupe Musculare</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        
+            
+        </div>
+          
+        <div id="sectiune-antrenamente" class="section">
+            <h2>📅 Antrenamente</h2>
+            <button id="add-antrenamente-btn" onclick="showAntrenamentForm()">➕ Adaugă Antrenament</button>
+            
+            <div id="form-antrenament" class="form-wrapper hidden">
+                <h3 id="form-antrenament-titlu">Adaugă Antrenament</h3>
+                <input type="hidden" id="antrenament-id">
+                <label>Nume</label>
+                <input type="text" id="an-nume">
+                <label>Tip</label>
+                <input type="text" id="an-tip">
+                <button onclick="salveazaAntrenament()">💾 Salvează</button>
+                <button onclick="anuleazaAntrenament()">❌ Anulează</button>
+            </div>
+
+            <table id="tabel-antrenamente">
+                <thead>
+                    <tr>
+                        <th>Nume</th>
+                        <th>Tip</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        
+        </div>
+
+        <div id="sectiune-grupe" class="section">
+            <h2>💪 Grupe Musculare</h2>
+            <button id="add-grupa-btn" onclick="showGrupaForm()">➕ Adaugă Grupă</button>
+            
+            <div id="form-grupa" class="form-wrapper hidden">
+                <h3 id="form-grupa-titlu">Adaugă Grupă</h3>
+                <input type="hidden" id="grupa-id">
+                <label>Nume</label>
+                <input type="text" id="gr-nume">
+                <label>Imagine (URL)</label>
+                <input type="text" id="gr-img">
+                <label>Descriere</label>
+                <input type="text" id="gr-desc">
+                <button onclick="salveazaGrupa()">💾 Salvează</button>
+                <button onclick="anuleazaGrupa()">❌ Anulează</button>
+            </div>
+
+            <table id="tabel-grupe">
+                <thead>
+                    <tr>
+                        <th>Nume</th>
+                        <th>Imagine</th>
+                        <th>Descriere</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        
+          
+        </div>
+    </div>
+    <script src="scripts/admin.js"></script>
+</body>
+
+</html>

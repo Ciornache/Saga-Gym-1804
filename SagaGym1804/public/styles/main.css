@@ -22,19 +22,24 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 50px 0px;
 }
 
 .login-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   background-color: #d3d3d3;
-  width: auto;
+  width: 600px;
   height: auto;
+  max-height: inherit;
   padding: 50px;
   font-size: 25px;
   box-shadow: 0px 0px 20px 10px #d3d3d3;
   border-radius: 20px;
   transition: all 0.5s ease;
+  flex-wrap: wrap;
 }
 
 .login-form:hover {
@@ -338,3 +343,328 @@ a {
 .form-flex-item:nth-child(3) {
   background-color: green;
 } */
+
+.step2-text-div > p::after {
+  display: block;
+  content: "This will help us determine the right approach for your body";
+  color: gray;
+  font-size: 15px;
+}
+
+.sign-up-step2::before {
+  content: "";
+  background-image: url("../assets/back-arrow.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.sign-up-step2 {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: auto;
+}
+
+.step2-img-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: auto;
+}
+
+.step2-img-container > input {
+  display: none;
+}
+
+.step2-radio-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 150px;
+}
+
+.step2-radio-button-container > input {
+  display: none;
+}
+
+.body-type-img {
+  width: 80px;
+  height: auto;
+  cursor: pointer;
+}
+
+.step2-radio-button-container input[type="radio"]:checked + label {
+  transform: scale(1.12);
+  transition: all 0.3s ease-in-out;
+  outline: 2px solid black;
+  border-radius: 10px;
+  background-color: #bcbcbc;
+}
+
+.step2-radio-button-container p {
+  font-size: 20px;
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  cursor: pointer;
+}
+
+.sign-up-step1 .form-button-wrapper .form-submit-button:hover::after,
+.sign-up-step3 .form-button-wrapper .form-submit-button:hover::after,
+.sign-up-step2 .form-button-wrapper .form-submit-button:hover::after {
+  content: "";
+  display: inline-block;
+  background-image: url("../assets/back-arrow.png");
+  background-size: contain;
+  position: absolute;
+  transform: rotate(180deg);
+  background-repeat: no-repeat;
+  width: 120px;
+  height: 40px;
+  right: 0px;
+  bottom: 0px;
+  top: -3px;
+  margin: 0px;
+}
+
+.sign-up-step2 .form-button-wrapper .form-submit-button {
+  width: 50%;
+}
+
+.sign-up-step2 .form-button-wrapper {
+  margin-top: 50px;
+}
+
+.img-p-flex {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.sign-up-step1 .form-flex-item {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sign-up-step1 input {
+  width: 100%;
+  border: 1px solid black;
+  height: auto;
+  font-size: 20px;
+  background-color: #d3d3d3;
+  padding: 5px;
+  font-family: inherit;
+}
+
+.sign-up-step1 input:focus {
+  border: 1px solid #a9a9a9;
+  outline: none;
+}
+
+.toggle-password {
+  display: inline-block;
+  background-image: url("../assets/show-icon-off.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  align-self: center;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.toggle-password:active {
+  background-image: url("../assets/show-icon-on.svg");
+}
+
+.password-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: auto;
+}
+
+.step3-text-div > p::after {
+  content: "We've helped thousands of people achieve their fitness goals. Join us today! Metabolism tends to slow down as we age, so it's important to start early. But there's ways around that!";
+  color: gray;
+  display: block;
+  font-size: 15px;
+}
+
+.step3-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.step3-radio-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: 100%;
+  padding: 10px;
+  border: 2px solid black;
+}
+
+.step3-radio-button-container > input[type="radio"] {
+  display: none;
+}
+
+.sign-up-step3::before,
+.sign-up-step4::before {
+  content: "";
+  background-image: url("../assets/back-arrow.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.step4-article {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.step4-flex-element {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.step4-flex-button-container input[type="number"] {
+  flex-shrink: 1;
+}
+
+.step4-flex-radio-button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 50%;
+  height: auto;
+  align-items: center;
+  margin-left: 30px;
+  border-radius: 10px;
+  border: 2px solid black;
+  text-align: center;
+  cursor: pointer;
+}
+
+.step4-flex-radio-button-container:hover {
+  background-color: #a9a9a9;
+  transition: all 0.3s ease-in-out;
+}
+
+.step4-flex-radio-button-container label {
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  height: auto;
+  height: auto;
+}
+
+.step4-flex-radio-button-container input[type="radio"]:checked + label {
+  border-radius: 10px;
+  background-color: #bcbcbc;
+}
+
+.step4-flex-radio-button-container input[type="radio"] {
+  display: none;
+}
+
+.step4-flex-element-radio-button-container {
+  text-align: center;
+  height: auto;
+  width: 50%;
+}
+
+.step4-flex-button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: auto;
+}
+
+.step4-flex-button-container input[type="number"] {
+  max-width: 80px;
+  flex-shrink: 1;
+}
+
+.step4-article {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+}
+
+.step4-lb-container input {
+  margin: 0px;
+  display: inline-block;
+}
+
+.step4-lb-container {
+  display: flex;
+  align-items: center;
+  width: auto;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  height: auto;
+  background-color: red;
+}
+
+.step4-lb-container label {
+  position: absolute;
+  left: 5px;
+  font-size: 20px;
+}
+
+.step4-lb-container label::after {
+  content: "|";
+  display: inline-block;
+  margin-left: 5px;
+  color: gray;
+  height: 100%;
+  width: auto;
+  position: absolute;
+  bottom: 1px;
+}
+
+.step4-lb-container input {
+  padding-left: 50px;
+  font-size: 20px;
+}
