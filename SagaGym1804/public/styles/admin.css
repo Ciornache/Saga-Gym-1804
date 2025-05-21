@@ -43,7 +43,8 @@ body {
 }
 
 .sidebar button:hover {
-  color: #00ffd5;
+  background-color: #00ffd5;
+  color: black;
   text-shadow: 0 0 2px #00ffd5;
 }
 
