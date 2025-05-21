@@ -269,13 +269,12 @@ function validateStep4Form(event) {
     user.height = heightValue;
     user.weight = parseFloat(weightValue);
     user.gender = genderChecked.value;
-
     fetch("/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(user),
     });
     alert("Form valid. Submitting!");
   }

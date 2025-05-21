@@ -2,6 +2,12 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+const User = require("./models/User");
+
+function hashPassword(password) {
+  return crypto.createHash("sha256").update(password).digest("hex");
+}
 
 // Modele
 const models = {
@@ -9,7 +15,7 @@ const models = {
   exercitii: require("./models/Exercitiu"),
   antrenamente: require("./models/Antrenament"),
   grupe: require("./models/Grupa"),
-  corespondente: require("./models/Corespondenta")
+  corespondente: require("./models/Corespondenta"),
 };
 
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
@@ -18,6 +24,34 @@ mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
 });
 
 const server = http.createServer(async (req, res) => {
+
+  if (req.method === "POST" && req.url === "/api/register") {
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on("end", async () => {
+      try {
+        const data = JSON.parse(body);
+        data.password = hashPassword(data.password);
+
+        const user = new User(data);
+        await user.save();
+
+        res.writeHead(201, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Utilizator salvat cu succes" }));
+      } catch (err) {
+        console.error("Eroare la salvare:", err);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Eroare la salvarea utilizatorului" }));
+      }
+    });
+
+    return;
+  }
+
   const match = req.url.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
   if (match) {
     const [, entity, id] = match;
@@ -40,7 +74,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
@@ -61,17 +95,22 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Servire fișiere statice
-  const filePath = path.join(__dirname, "../public", req.url === "/" ? "admin.html" : req.url);
+  const filePath = path.join(
+    __dirname,
+    "../public",
+    req.url === "/" ? "admin.html" : req.url
+  );
   const ext = path.extname(filePath);
-  const contentType = {
-    ".html": "text/html",
-    ".css": "text/css",
-    ".js": "application/javascript",
-    ".json": "application/json",
-    ".jpg": "image/jpeg",
-    ".jpeg": "image/jpeg",
-    ".png": "image/png",
-  }[ext] || "text/plain";
+  const contentType =
+    {
+      ".html": "text/html",
+      ".css": "text/css",
+      ".js": "application/javascript",
+      ".json": "application/json",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+    }[ext] || "text/plain";
 
   if (fs.existsSync(filePath)) {
     res.writeHead(200, { "Content-Type": contentType });
