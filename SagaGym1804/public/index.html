@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -61,57 +62,84 @@
         
         <section class="sign-up-step1 hidden">
           
-        <div class="step2-text-div">
-          <h1>Create your Gym Account </h1>
-        </div>
+          <div class="step2-text-div">
+            <h1>Create your Gym Account </h1>
+          </div>
 
-        <div class="input-wrapper">
           <div class="form-flex-item">
             <label style="display:block" for="email">Email</label>
-            <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required id="email"
-              placeholder="Enter your email..." />
+            <div class="step1-input-wrapper">
+              <input type="email" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required id="email"
+                placeholder="Enter your email..." />
+              <section class="step1-input-icon-wrapper">
+                <i class="fa-regular fa-circle-check fa-correct"></i>
+                <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+              </section>
+            </div>
+            <span></span>
           </div>
 
           <div class="form-flex-item">
             <label style="display:block" for="username">Username</label>
-            <input type="text" required id="username"
-              placeholder="Enter your username..." />
+            <div class="step1-input-wrapper">
+              <input type="text" required id="username" placeholder="Enter your username..." />
+              <section class="step1-input-icon-wrapper">
+                  <i class="fa-regular fa-circle-check fa-correct"></i>
+                  <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+              </section>
+            </div>
+            <span></span>
           </div>
 
+            
           <div class="form-flex-item">
-            <label style="display:block; width:auto;" for="phone-number">Phone Number</label>
-            <input type="text" required id="phone-number" placeholder="Enter your phone number..." />
+              <label style="display:block; width:auto;" for="phone-number">Phone Number</label>
+              <div class="step1-input-wrapper">
+                <input type="text" required id="phone-number" placeholder="Enter your phone number..." />
+                <section class="step1-input-icon-wrapper">
+                  <i class="fa-regular fa-circle-check fa-correct"></i>
+                  <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+                </section>
+              </div>
+              <span></span>
           </div>
-          
           
           <div class="form-flex-item">
             <label style="display:block" for="password">Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="confirm-password" minlength="8" placeholder="Enter your password..." required>
-              <span class="toggle-password"></span>
+            <div class="password-input-wrapper step1-input-wrapper">
+              <input type="password" id="password" minlength="8" placeholder="Enter your password..." required>
+              <section class="step1-input-icon-wrapper">
+                <i class="fa-regular fa-circle-check fa-correct"></i>
+                <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+              </section>
+              <span class="toggle-password" onclick="togglePasswordVisibility('password')"></span>
             </div>
+            <span></span>
           </div>
 
-          <div class="form-flex-item">
-            <label style="display:block" for="confirm-password">Confirm Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="confirm-password" minlength="8" placeholder="Enter your password..." required>
-              <span class="toggle-password"></span>
+            <div class="form-flex-item">
+              <label style="display:block" for="confirm-password">Confirm Password</label>
+              <div class="password-input-wrapper step1-input-wrapper">
+                <input type="password" id="confirm-password" minlength="8" placeholder="Enter your password..." required>
+                <section class="step1-input-icon-wrapper">
+                  <i class="fa-regular fa-circle-check fa-correct"></i>
+                  <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+                </section>
+                <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password')"></span>
+              </div>
+              <span></span>
             </div>
-           
-          </div>
-      
-        </div>
-            
+
+                  
           <div class="form-button-wrapper">
             <p>Already have an account? <a href="login.html">Login Here!</a></p>
-            <button class="form-submit-button" type="submit">Next</button>
+            <button type="button" class="form-submit-button" onclick="showCurrentStep(1)">Next</button>
           </div>
         </section>
 
 
         <section class="sign-up-step2 hidden">
-        
+          <div class="step-back-arrow" onclick="showCurrentStep(-1)"></div>
           <div class="step2-text-div"> 
             <h1>Create your Gym Account </h1> 
             <p>How would you describe your body type?</p>
@@ -128,47 +156,47 @@
                 </label>
               </div>
              
-          <div class="step2-radio-button-container">
-            <input type="radio" id="mesomorph" name="body-type" value="mesomorph" />
-            <label for="mesomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Mesomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Mesomorph</p>
-              </div>
-            </label>
-          </div>
+            <div class="step2-radio-button-container">
+              <input type="radio" id="mesomorph" name="body-type" value="mesomorph" />
+              <label for="mesomorph" class="step2-radio-button-container">
+                <img src="assets/ectomorph.png" alt="Mesomorph" class="body-type-img" />
+                <div class="img-p-flex">
+                  <p>Mesomorph</p>
+                </div>
+              </label>
+            </div>
           
-          <div class="step2-radio-button-container">
-            <input type="radio" id="endomorph" name="body-type" value="endomorph" />
-            <label for="endomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Endomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Endomorph</p>
-              </div>
-            </label>
-          </div>
+            <div class="step2-radio-button-container">
+              <input type="radio" id="endomorph" name="body-type" value="endomorph" />
+              <label for="endomorph" class="step2-radio-button-container">
+                <img src="assets/ectomorph.png" alt="Endomorph" class="body-type-img" />
+                <div class="img-p-flex">
+                  <p>Endomorph</p>
+                </div>
+              </label>
+            </div>
           
-          <div class="step2-radio-button-container">
-            <input type="radio" id="ecto-mesomorph" name="body-type" value="ecto-mesomorph" />
-            <label for="ecto-mesomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Ecto-Mesomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Ecto</p>
-                <p>Mesomorph</p>
-              </div>
-            </label>
-          </div>
+            <div class="step2-radio-button-container">
+              <input type="radio" id="ecto-mesomorph" name="body-type" value="ecto-mesomorph" />
+              <label for="ecto-mesomorph" class="step2-radio-button-container">
+                <img src="assets/ectomorph.png" alt="Ecto-Mesomorph" class="body-type-img" />
+                <div class="img-p-flex">
+                  <p>Ecto</p>
+                  <p>Mesomorph</p>
+                </div>
+              </label>
+            </div>
           
-          <div class="step2-radio-button-container">
-            <input type="radio" id="meso-endomorph" name="body-type" value="meso-endomorph" />
-            <label for="meso-endomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Meso-Endomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Meso</p>
-                <p>Endomorph</p>
-              </div>
-            </label>
-          </div>
+            <div class="step2-radio-button-container">
+              <input type="radio" id="meso-endomorph" name="body-type" value="meso-endomorph" />
+              <label for="meso-endomorph" class="step2-radio-button-container">
+                <img src="assets/ectomorph.png" alt="Meso-Endomorph" class="body-type-img" />
+                <div class="img-p-flex">
+                  <p>Meso</p>
+                  <p>Endomorph</p>
+                </div>
+              </label>
+            </div>
           
           <div class="step2-radio-button-container">
             <input type="radio" id="endo-mesomorph" name="body-type" value="endo-mesomorph" />
@@ -180,25 +208,28 @@
               </div>
             </label>
           </div>
-          </div>
+          
+        </div>
 
-            <div class="form-button-wrapper">
-              <p>Already have an account? <a href="login.html">Login Here!</a></p>
-              <button class="form-submit-button" type="submit">Next</button>
-            </div>
+        <span class="step-error hidden">Error Message</span>
+          <div class="form-button-wrapper">
+            <p>Already have an account? <a href="login.html">Login Here!</a></p>
+            <button type="button" class="form-submit-button" onclick="showCurrentStep(1)">Next</button>
+          </div>
 
         </section>
 
         <section class="sign-up-step3 hidden">
-            <div class="step3-text-div">
+          <div class="step-back-arrow" onclick="showCurrentStep(-1)"></div>
+          <div class="step3-text-div">
                 <h1>Create your Gym Account </h1>
                 <p>What is your age?</p>
             </div>
             
             <div class="step3-button-wrapper">
               <div class="step3-radio-button-container">
-                <input type="radio" id="age-18-25" name="age" value="18-25" />
-                <label for="age-18-25">< 18</label>
+                <input type="radio" id="agelt18" name="age" value="18-25" />
+                <label for="agelt18">< 18</label>
               </div>
               <div class="step3-radio-button-container">
                 <input type="radio" id="age-18-25" name="age" value="18-25" />
@@ -225,14 +256,17 @@
              </div>
             </div>
 
+            <span class="step-error hidden">Error Message</span>
+
             <div class="form-button-wrapper">
               <p>Already have an account? <a href="login.html">Login Here!</a></p>
-              <button class="form-submit-button" type="submit">Next</button>
+              <button type="button" class="form-submit-button" onclick="showCurrentStep(1)">Next</button>
             </div>
 
         </section>
 
         <section class="sign-up-step4">
+          <div class="step-back-arrow" onclick="showCurrentStep(-1)"></div>
             <div class="step3-text-div">
               <h1>Create your Gym Account </h1>
             </div>
@@ -240,59 +274,78 @@
                 <div class="step4-flex-element">
                     <h4>What is your height?</h4>
                         <div class="step4-flex-button-container">
-                          <label for="ft">ft</label>
-                          <input type="number" id="ft" required />
-                        
-                          <label for="in">in</label>
-                          <input type="number" id="in" required />
-                        
+                          <div class="step4-flex-input-container">
+                            <div id="ft-container" class="unit-container">
+                              <label for="ft" rd-btn="ft">ft</label>
+                              <input type="number" id="ft" name="height-ft" />
+                            
+                              <label for="in" rd-btn="ft">in</label>
+                              <input type="number" id="in" name="height-in" />
+                            </div>
+                            
+                            <div id="cm-container" class="hidden unit-container">
+                              <label for="cm" rd-btn="cm">cm</label>
+                              <input type="number" id="cm" name="height-cm" />
+                            </div>
+                          </div>
                           <div class="step4-flex-radio-button-container">
                             <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="ft-radio" name="unit" value="ft" />
+                              <input type="radio" id="ft-radio" name="height-unit" value="ft" onclick="toggleCheckAttribute('height-unit', 'ft')" checked/>
                               <label for="ft-radio">ft</label>
                             </div>
                             <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="cm-radio" name="unit" value="cm" />
+                              <input type="radio" id="cm-radio" name="height-unit" value="cm" onclick="toggleCheckAttribute('height-unit', 'cm')"/>
                               <label for="cm-radio">cm</label>
                             </div>
                           </div>
                         </div>
+                        <span class="validation-error hidden" id="height-error">Please provide a valid height.</span>
+
                     </div>
                 
                  <div class="step4-flex-element">
                     <h4>What is your weight?</h4>
                         <div class="step4-flex-button-container">
-                          <div class="step4-lb-container">
+                          <div class="step4-flex-input-containe">
+                            <div id="lb-container" class="weight-unit-container">
                                 <label for="lb">lbs</label>
-                                <input type="text" id="lb" required />
+                                <input type="text" id="lb" />
+                            </div>
+                            <div id="kg-container" class="weight-unit-container hidden">
+                              <label for="kg">kg</label>
+                              <input type="text" id="kg" />
+                            </div>
                           </div>
-                       
-            
+                      
                           <div class="step4-flex-radio-button-container">
                             <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="lb-radio" name="unit" value="ft" />
+                              <input type="radio" id="lb-radio" name="weight-unit" value="lb" onclick="toggleCheckAttribute('weight-unit', 'lb')" checked />
                               <label for="lb-radio">lb</label>
                             </div>
                             <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="kg-radio" name="unit" value="cm" />
+                              <input type="radio" id="kg-radio" name="weight-unit" value="kg" onclick="toggleCheckAttribute('weight-unit', 'kg')" />
                               <label for="kg-radio">kg</label>
                             </div>
                           </div>
                         </div>
+                        <span class="validation-error hidden" id="weight-error">Please provide a valid weight.</span>
+
                     </div>
 
                     <div class="step4-flex-element">
                       <h4>What is your gender?</h4>
                       <div class="step4-flex-button-container">
                         <div class="step4-flex-radio-button-container">
-                          <input type="radio" id="male" name="male" value="46-59" />
-                          <label for="age-46-55">Male</label>
+                          <input type="radio" id="male" name="gender" value="46-59" />
+                          <label for="male">Male</label>
                         </div>
                         <div class="step4-flex-radio-button-container">
-                          <input type="radio" id="female" name="femlae" value="46-59" />
-                          <label for="age-46-55">Female</label>
+                          <input type="radio" id="female" name="gender" value="46-59" />
+                          <label for="female">Female</label>
                         </div>
                       </div>
+                      <span class="validation-error hidden" id="gender-error">Please select a gender.</span>
+
                     </div>
               
 
@@ -300,7 +353,7 @@
 
               <div class="form-button-wrapper">
                 <p>Already have an account? <a href="login.html">Login Here!</a></p>
-                <button class="form-submit-button" type="submit">SubmitA</button>
+                <button  class="form-submit-button" type="submit" onclick="validateStep4Form(event)">Submit</button>
               </div>
 
         </section>
@@ -319,6 +372,9 @@
       </p>
     </footer>
   </div>
+
+  <script src="scripts/signup.js"></script>
+
 </body>
 
 </html>

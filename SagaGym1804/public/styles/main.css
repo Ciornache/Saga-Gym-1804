@@ -262,8 +262,13 @@ footer span {
   margin-top: 20px;
   min-width: 80%;
   max-width: auto;
+  width: auto;
   height: auto;
   align-self: center;
+}
+
+.sign-up-step2 .form-button-wrapper {
+  margin-top: 0px;
 }
 
 .login-form h2 {
@@ -351,14 +356,20 @@ a {
   font-size: 15px;
 }
 
-.sign-up-step2::before {
+.step-back-arrow {
+  display: block;
+  position: relative;
+  bottom: 20px;
+  right: 15px;
+}
+
+.step-back-arrow::before {
   content: "";
   background-image: url("../assets/back-arrow.png");
   background-repeat: no-repeat;
   background-size: contain;
   position: absolute;
-  top: 10px;
-  left: 20px;
+
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -369,6 +380,7 @@ a {
   flex-direction: column;
   flex-wrap: wrap;
   width: auto;
+  justify-content: center;
 }
 
 .step2-img-container {
@@ -453,7 +465,7 @@ a {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .sign-up-step1 .form-flex-item {
@@ -485,17 +497,22 @@ a {
   background-size: contain;
   width: 30px;
   height: 30px;
-  position: relative;
+  position: absolute;
   align-self: center;
-  margin-left: 5px;
   cursor: pointer;
+  left: 100%;
 }
 
-.toggle-password:active {
+.toggle-password:hover {
+  background-image: url("../assets/show-icon-on.svg");
+}
+
+.toggle-password-visible {
   background-image: url("../assets/show-icon-on.svg");
 }
 
 .password-input-wrapper {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -526,26 +543,32 @@ a {
   justify-content: center;
   height: auto;
   width: 100%;
-  padding: 10px;
   border: 2px solid black;
+  cursor: pointer;
 }
 
 .step3-radio-button-container > input[type="radio"] {
   display: none;
 }
 
-.sign-up-step3::before,
-.sign-up-step4::before {
-  content: "";
-  background-image: url("../assets/back-arrow.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  width: 50px;
-  height: 50px;
+.step3-radio-button-container label {
   cursor: pointer;
+  width: 100%;
+  text-align: center;
+  height: 100%;
+  padding: 10px 0px;
+}
+
+.step3-radio-button-container:hover {
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
+  outline: 2px solid black;
+  background-color: #e0e0e0;
+}
+
+.step3-radio-button-container input[type="radio"]:checked + label {
+  outline: 2px solid black;
+  background-color: #e0e0e0;
 }
 
 .step4-article {
@@ -561,10 +584,6 @@ a {
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-}
-
-.step4-flex-button-container input[type="number"] {
-  flex-shrink: 1;
 }
 
 .step4-flex-radio-button-container {
@@ -631,12 +650,12 @@ a {
   height: auto;
 }
 
-.step4-lb-container input {
+.weight-unit-container input {
   margin: 0px;
   display: inline-block;
 }
 
-.step4-lb-container {
+.weight-unit-container {
   display: flex;
   align-items: center;
   width: auto;
@@ -644,16 +663,15 @@ a {
   padding: 0px;
   margin: 0px;
   height: auto;
-  background-color: red;
 }
 
-.step4-lb-container label {
+.weight-unit-container label {
   position: absolute;
   left: 5px;
   font-size: 20px;
 }
 
-.step4-lb-container label::after {
+.weight-unit-container label::after {
   content: "|";
   display: inline-block;
   margin-left: 5px;
@@ -664,7 +682,135 @@ a {
   bottom: 1px;
 }
 
-.step4-lb-container input {
+.weight-unit-container input {
   padding-left: 50px;
   font-size: 20px;
+}
+
+.step4-flex-input-container {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  flex-shrink: 1;
+  justify-content: space-evenly;
+  width: 50%;
+  max-width: 50%;
+}
+
+.unit-container {
+  flex: 1;
+}
+
+.step4-flex-radio-button-container button[type="radio"]:checked + label {
+  background-color: #bcbcbc;
+  border-radius: 10px;
+}
+
+.step1-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.step1-input-icon-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: auto;
+  height: inherit;
+  align-items: center;
+  left: 94%;
+  top: 50%;
+}
+
+.step1-input-icon-wrapper i {
+  display: inline-block;
+  position: absolute;
+}
+
+i.fa-correct {
+  color: #16a34a;
+  visibility: hidden;
+}
+
+i.fa-wrong {
+  color: #ff3c3c;
+  visibility: hidden;
+}
+
+.input-correct input {
+  border: 2px solid #16a34a;
+}
+
+.input-correct i.fa-correct {
+  visibility: visible;
+}
+
+.input-correct span {
+  color: #16a34a;
+  font-size: 0.8rem;
+  margin-left: 5px;
+}
+
+.input-error input {
+  border: 2px solid #ff3c3c;
+}
+
+.input-error i.fa-wrong {
+  visibility: visible;
+}
+
+.input-error span {
+  color: #ff3c3c;
+  font-size: 0.8rem;
+  margin-left: 5px;
+}
+
+.sign-up-step3 {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-error {
+  color: #ff3c3c;
+  font-size: 0.8rem;
+  margin-left: 5px;
+  display: inline-block;
+  position: relative;
+  width: fit-content;
+  align-self: center;
+  margin-top: 20px;
+}
+
+.step4-flex-element h4 {
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.step4-flex-input-container label,
+.step4-flex-radio-button-container label {
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.sign-up-step4 input[type="number"],
+.sign-up-step4 input[type="text"] {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 4px 0;
+  font-size: 1rem;
+}
+
+.validation-error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: block;
+}
+
+.hidden {
+  display: none;
 }
