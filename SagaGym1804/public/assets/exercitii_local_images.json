@@ -1,0 +1,275 @@
+[
+  {
+    "id": 1,
+    "name": "Bench Press",
+    "type": "forță",
+    "muscle_groups": [
+      "piept",
+      "tricepși"
+    ],
+    "rating": 4.8,
+    "cover_image": "/img/exercitii/bench_press.jpg",
+    "images": [
+      "/img/exercitii/bench_press.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Deadlift",
+    "type": "forță",
+    "muscle_groups": [
+      "spate",
+      "picioare",
+      "fesieri"
+    ],
+    "rating": 4.9,
+    "cover_image": "/img/exercitii/deadlift.jpg",
+    "images": [
+      "/img/exercitii/deadlift.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Squats",
+    "type": "forță",
+    "muscle_groups": [
+      "cvadricepși",
+      "fesieri"
+    ],
+    "rating": 4.7,
+    "cover_image": "/img/exercitii/squats.jpg",
+    "images": [
+      "/img/exercitii/squats.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Overhead Press",
+    "type": "forță",
+    "muscle_groups": [
+      "umeri",
+      "tricepși"
+    ],
+    "rating": 4.5,
+    "cover_image": "/img/exercitii/overhead_press.jpg",
+    "images": [
+      "/img/exercitii/overhead_press.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Pull-ups",
+    "type": "forță",
+    "muscle_groups": [
+      "spate",
+      "bicepși"
+    ],
+    "rating": 4.6,
+    "cover_image": "/img/exercitii/pull_ups.jpg",
+    "images": [
+      "/img/exercitii/pull_ups.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Lateral Raises",
+    "type": "forță",
+    "muscle_groups": [
+      "umeri"
+    ],
+    "rating": 4.4,
+    "cover_image": "/img/exercitii/lateral_raises.jpg",
+    "images": [
+      "/img/exercitii/lateral_raises.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Hip Thrusts",
+    "type": "forță",
+    "muscle_groups": [
+      "fesieri",
+      "coapse"
+    ],
+    "rating": 4.5,
+    "cover_image": "/img/exercitii/hip_thrusts.jpg",
+    "images": [
+      "/img/exercitii/hip_thrusts.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Dumbbell Rows",
+    "type": "forță",
+    "muscle_groups": [
+      "spate"
+    ],
+    "rating": 4.3,
+    "cover_image": "/img/exercitii/dumbbell_rows.jpg",
+    "images": [
+      "/img/exercitii/dumbbell_rows.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Leg Curls",
+    "type": "forță",
+    "muscle_groups": [
+      "bicepși femurali"
+    ],
+    "rating": 4.2,
+    "cover_image": "/img/exercitii/leg_curls.jpg",
+    "images": [
+      "/img/exercitii/leg_curls.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Plank",
+    "type": "forță",
+    "muscle_groups": [
+      "abdomen",
+      "spate"
+    ],
+    "rating": 4.8,
+    "cover_image": "/img/exercitii/plank.jpg",
+    "images": [
+      "/img/exercitii/plank.jpg"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Wall Slides",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "umeri",
+      "spate"
+    ],
+    "rating": 4.3,
+    "cover_image": "/img/exercitii/wall_slides.jpg",
+    "images": [
+      "/img/exercitii/wall_slides.jpg"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Ankle Circles",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "glezne"
+    ],
+    "rating": 4.0,
+    "cover_image": "/img/exercitii/ankle_circles.jpg",
+    "images": [
+      "/img/exercitii/ankle_circles.jpg"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Heel Slides",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "coapse",
+      "genunchi"
+    ],
+    "rating": 4.2,
+    "cover_image": "/img/exercitii/heel_slides.jpg",
+    "images": [
+      "/img/exercitii/heel_slides.jpg"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Shoulder Pendulum",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "umeri"
+    ],
+    "rating": 4.1,
+    "cover_image": "/img/exercitii/shoulder_pendulum.jpg",
+    "images": [
+      "/img/exercitii/shoulder_pendulum.jpg"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Bridge Exercise",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "abdomen",
+      "fesieri"
+    ],
+    "rating": 4.3,
+    "cover_image": "/img/exercitii/bridge.jpg",
+    "images": [
+      "/img/exercitii/bridge.jpg"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Arm Circles",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "umeri",
+      "brațe"
+    ],
+    "rating": 4.0,
+    "cover_image": "/img/exercitii/arm_circles.jpg",
+    "images": [
+      "/img/exercitii/arm_circles.jpg"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Bird Dog",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "spate",
+      "core"
+    ],
+    "rating": 4.4,
+    "cover_image": "/img/exercitii/bird_dog.jpg",
+    "images": [
+      "/img/exercitii/bird_dog.jpg"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Side Lying Leg Lifts",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "coapse"
+    ],
+    "rating": 4.2,
+    "cover_image": "/img/exercitii/side_lying_leg_lifts.jpg",
+    "images": [
+      "/img/exercitii/side_lying_leg_lifts.jpg"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Toe Raises",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "gambe"
+    ],
+    "rating": 4.1,
+    "cover_image": "/img/exercitii/toe_raises.jpg",
+    "images": [
+      "/img/exercitii/toe_raises.jpg"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Cat-Cow Stretch",
+    "type": "kinetoterapie",
+    "muscle_groups": [
+      "spate"
+    ],
+    "rating": 4.5,
+    "cover_image": "/img/exercitii/cat_cow.jpg",
+    "images": [
+      "/img/exercitii/cat_cow.jpg"
+    ]
+  }
+]

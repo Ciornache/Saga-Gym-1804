@@ -1,7 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const username = prompt("🔐 Nume utilizator:");
+  const password = prompt("🔑 Parolă:");
+
+  if (username !== "admin" || password !== "1234") {
+    alert("Acces interzis. Reîncarcă pagina.");
+    document.body.innerHTML = "<h1 style='color:red;text-align:center'>❌ Acces refuzat</h1>";
+    return;
+  }
+
   afiseazaSectiune("utilizatori");
 });
-
 function afiseazaSectiune(nume) {
   document.querySelectorAll(".section").forEach((section) => {
     section.classList.remove("active");
@@ -25,6 +33,10 @@ function afiseazaSectiune(nume) {
 
     case "grupe":
       incarcaGrupe();
+      break;
+
+    case "corespondente":
+      incarcaCorespondente();
       break;
   }
 }
@@ -54,30 +66,7 @@ async function incarcaUtilizatori() {
 }
 
 window.showAddForm = function () {
-  const formular = document.getElementById("form-utilizator");
-  const btn = document.getElementById("add-util-btn");
-
-  console.log("Formular:", formular);
-  console.log("Buton:", btn);
-  if (!formular || !btn) {
-    console.error("Formularul sau butonul nu a fost găsit în DOM!");
-    return;
-  }
-
-  const esteAscuns = formular.classList.contains("hidden");
-
-  console.log("Este ascuns:", esteAscuns);
-  if (esteAscuns) {
-    formular.classList.remove("hidden");
-    formular.classList.add("active");
-    btn.textContent = "❌ Închide formular";
-    resetFormularUtilizator();
-  } else {
-    formular.classList.remove("active");
-    formular.classList.add("hidden");
-    btn.textContent = "➕ Adaugă Utilizator";
-    resetFormularUtilizator();
-  }
+  toggle("corespondenta", resetFormularCorespondenta);
 };
 
 function resetFormularUtilizator() {
@@ -90,7 +79,7 @@ function resetFormularUtilizator() {
 }
 
 function anuleaza() {
-  document.getElementById("form-utilizator").classList.add("hidden");
+  inchide("utilizator");
 }
 
 async function salveazaUtilizator() {
@@ -112,7 +101,7 @@ async function salveazaUtilizator() {
   });
 
   if (res.ok) {
-    anuleaza();
+inchide("utilizator");
     incarcaUtilizatori();
   } else {
     alert("Eroare la salvare.");
@@ -120,11 +109,12 @@ async function salveazaUtilizator() {
 }
 
 async function editeazaUtilizator(id) {
+  console.log("Apăsat pe ✏️ cu id:", id)
   const res = await fetch(`/admin/users/${id}`);
   const user = await res.json();
 
   document.getElementById("form-titlu").innerText = "Editează Utilizator";
-  document.getElementById("form-utilizator").classList.remove("hidden");
+  deschideFormular("utilizator");
 
   document.getElementById("utilizator-id").value = user._id;
   document.getElementById("nume").value = user.name;
@@ -196,25 +186,7 @@ window.showAddForm = function () {
 };
 
 window.showExercitiuForm = function () {
-  const formular = document.getElementById("form-exercitiu");
-  const btn = document.getElementById("add-exercitii-btn"); // <-- asigură-te că butonul are acest ID
-
-  if (!formular || !btn) {
-    console.error("Formularul sau butonul (exercitiu) lipsesc");
-    return;
-  }
-
-  const esteAscuns = formular.classList.contains("hidden");
-
-  if (esteAscuns) {
-    formular.classList.remove("hidden");
-    btn.textContent = "❌ Închide formular";
-    resetFormularExercitiu();
-  } else {
-    formular.classList.add("hidden");
-    btn.textContent = "➕ Adaugă Exercițiu";
-    resetFormularExercitiu();
-  }
+    toggle("exercitiu", resetFormularExercitiu);
 };
 
 function resetFormularExercitiu() {
@@ -229,16 +201,23 @@ function resetFormularExercitiu() {
 window.showExercitiuForm = showExercitiuForm;
 
 function anuleazaExercitiu() {
-  document.getElementById("form-exercitiu").classList.add("hidden");
+  inchide("exercitiu");
 }
 
 async function salveazaExercitiu() {
   const id = document.getElementById("exercitiu-id").value;
   const exercitiu = {
+    id_exercitiu: parseInt(document.getElementById("ex-id").value),
     name: document.getElementById("ex-nume").value,
     type: document.getElementById("ex-tip").value,
+    cover_image: document.getElementById("ex-cover").value,
+    rating: parseFloat(document.getElementById("ex-rating").value),
     muscle_groups: document
       .getElementById("ex-grupe")
+      .value.split(",")
+      .map((s) => s.trim()),
+    images: document
+      .getElementById("ex-images")
       .value.split(",")
       .map((s) => s.trim()),
   };
@@ -253,7 +232,7 @@ async function salveazaExercitiu() {
   });
 
   if (res.ok) {
-    anuleazaExercitiu();
+    inchide("exercitiu");
     incarcaExercitii();
   } else {
     alert("Eroare la salvare exercițiu.");
@@ -261,17 +240,24 @@ async function salveazaExercitiu() {
 }
 
 async function editeazaExercitiu(id) {
-  const res = await fetch(`/admin/exercitii/${id}`);
-  const ex = await res.json();
+  try {
+    const res = await fetch(`/admin/exercitii/${id}`);
+    const ex = await res.json();
+    document.getElementById("ex-id").value = ex.id_exercitiu || "";
 
-  document.getElementById("form-exercitiu-titlu").innerText =
-    "Editează Exercițiu";
-  document.getElementById("form-exercitiu").classList.remove("hidden");
-
-  document.getElementById("exercitiu-id").value = ex._id;
-  document.getElementById("ex-nume").value = ex.name;
-  document.getElementById("ex-tip").value = ex.type;
-  document.getElementById("ex-grupe").value = ex.muscle_groups.join(", ");
+    document.getElementById("form-exercitiu-titlu").innerText = "Editează Exercițiu";
+    deschideFormular("exercitiu");
+    document.getElementById("exercitiu-id").value = ex._id;
+    document.getElementById("ex-nume").value = ex.name;
+    document.getElementById("ex-tip").value = ex.type;
+    document.getElementById("ex-cover").value = ex.cover_image || "";
+    document.getElementById("ex-rating").value = ex.rating || "";
+    document.getElementById("ex-grupe").value = (ex.muscle_groups || []).join(", ");
+    document.getElementById("ex-images").value = (ex.images || []).join(", ");
+  } catch (err) {
+    console.error("Eroare la încărcare exercițiu:", err);
+    alert("Eroare la încărcarea exercițiului.");
+  }
 }
 
 async function stergeExercitiu(id) {
@@ -295,37 +281,22 @@ async function incarcaAntrenamente() {
   antrenamente.forEach((an) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-        <td>${an.name}</td>
-        <td>${an.type}</td>
-        <td>
-          <button onclick="editeazaAntrenament('${an._id}')">✏️</button>
-          <button onclick="stergeAntrenament('${an._id}')">🗑️</button>
-        </td>
-      `;
+      <td>${an.id_antrenament || ""}</td>
+      <td>${an.name}</td>
+      <td>${an.type}</td>
+      <td>${an.user_email || ""}</td>
+      <td>${an.created_at ? new Date(an.created_at).toLocaleString() : ""}</td>
+      <td>
+        <button onclick="editeazaAntrenament('${an._id}')">✏️</button>
+        <button onclick="stergeAntrenament('${an._id}')">🗑️</button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
 }
 
 window.showAntrenamentForm = function () {
-  const formular = document.getElementById("form-antrenament");
-  const btn = document.getElementById("add-antrenamente-btn");
-
-  if (!formular || !btn) {
-    console.error("Formularul sau butonul (antrenament) lipsesc");
-    return;
-  }
-
-  const esteAscuns = formular.classList.contains("hidden");
-
-  if (esteAscuns) {
-    formular.classList.remove("hidden");
-    btn.textContent = "❌ Închide formular";
-    resetFormularAntrenament();
-  } else {
-    formular.classList.add("hidden");
-    btn.textContent = "➕ Adaugă Antrenament";
-    resetFormularAntrenament();
-  }
+  toggle("antrenament", resetFormularAntrenament);
 };
 
 function resetFormularAntrenament() {
@@ -339,14 +310,18 @@ function resetFormularAntrenament() {
 window.showAntrenamentForm = showAntrenamentForm;
 
 function anuleazaAntrenament() {
-  document.getElementById("form-antrenament").classList.add("hidden");
+  inchide("antrenament");
 }
 
 async function salveazaAntrenament() {
   const id = document.getElementById("antrenament-id").value;
+
   const antrenament = {
+    id_antrenament: parseInt(document.getElementById("antrenament-custom-id").value),
     name: document.getElementById("an-nume").value,
     type: document.getElementById("an-tip").value,
+    user_email: document.getElementById("an-user-email").value,
+    created_at: new Date(document.getElementById("an-created-at").value),
   };
 
   const url = id ? `/admin/antrenamente/${id}` : "/admin/antrenamente";
@@ -359,7 +334,7 @@ async function salveazaAntrenament() {
   });
 
   if (res.ok) {
-    anuleazaAntrenament();
+    inchide("antrenament");
     incarcaAntrenamente();
   } else {
     alert("Eroare la salvare antrenament.");
@@ -370,13 +345,18 @@ async function editeazaAntrenament(id) {
   const res = await fetch(`/admin/antrenamente/${id}`);
   const an = await res.json();
 
-  document.getElementById("form-antrenament-titlu").innerText =
-    "Editează Antrenament";
-  document.getElementById("form-antrenament").classList.remove("hidden");
+  document.getElementById("form-antrenament-titlu").innerText = "Editează Antrenament";
+  deschideFormular("antrenament");
+
 
   document.getElementById("antrenament-id").value = an._id;
-  document.getElementById("an-nume").value = an.name;
-  document.getElementById("an-tip").value = an.type;
+  document.getElementById("antrenament-custom-id").value = an.id_antrenament || "";
+  document.getElementById("an-nume").value = an.name || "";
+  document.getElementById("an-tip").value = an.type || "";
+  document.getElementById("an-user-email").value = an.user_email || "";
+  document.getElementById("an-created-at").value = an.created_at
+    ? new Date(an.created_at).toISOString().slice(0, 16)
+    : "";
 }
 
 async function stergeAntrenament(id) {
@@ -414,25 +394,7 @@ async function incarcaGrupe() {
 }
 
 window.showGrupaForm = function () {
-  const formular = document.getElementById("form-grupa");
-  const btn = document.getElementById("add-grupa-btn");
-
-  if (!formular || !btn) {
-    console.error("Formularul sau butonul (grupă) lipsesc");
-    return;
-  }
-
-  const esteAscuns = formular.classList.contains("hidden");
-
-  if (esteAscuns) {
-    formular.classList.remove("hidden");
-    btn.textContent = "❌ Închide formular";
-    resetFormularGrupa();
-  } else {
-    formular.classList.add("hidden");
-    btn.textContent = "➕ Adaugă Grupă";
-    resetFormularGrupa();
-  }
+  toggle("grupa", resetFormularGrupa);
 };
 
 function resetFormularGrupa() {
@@ -446,11 +408,12 @@ function resetFormularGrupa() {
 window.showGrupaForm = showGrupaForm;
 
 function anuleazaGrupa() {
-  document.getElementById("form-grupa").classList.add("hidden");
+  inchide("grupa");
 }
 
 async function salveazaGrupa() {
   const id = document.getElementById("grupa-id").value;
+
   const grupa = {
     name: document.getElementById("gr-nume").value,
     image: document.getElementById("gr-img").value,
@@ -467,19 +430,20 @@ async function salveazaGrupa() {
   });
 
   if (res.ok) {
-    anuleazaGrupa();
+    inchide("grupa");
     incarcaGrupe();
   } else {
     alert("Eroare la salvare grupă musculară.");
   }
 }
 
+
 async function editeazaGrupa(id) {
   const res = await fetch(`/admin/grupe/${id}`);
   const gr = await res.json();
 
   document.getElementById("form-grupa-titlu").innerText = "Editează Grupă";
-  document.getElementById("form-grupa").classList.remove("hidden");
+  deschideFormular("grupa");
 
   document.getElementById("grupa-id").value = gr._id;
   document.getElementById("gr-nume").value = gr.name;
@@ -493,4 +457,268 @@ async function stergeGrupa(id) {
     if (res.ok) incarcaGrupe();
     else alert("Eroare la ștergere.");
   }
+}
+function showCorespondentaForm() {
+  toggle("corespondenta", resetFormularCorespondenta);
+}
+function resetFormularCorespondenta() {
+  document.getElementById("corespondenta-id").value = "";
+  document.getElementById("core-antrenament").value = "";
+  document.getElementById("core-exercitiu").value = "";
+  document.getElementById("core-ordine").value = "";
+  document.getElementById("core-repetari").value = "";
+  document.getElementById("core-pauza").value = "";
+  document.getElementById("form-corespondenta-titlu").innerText = "Adaugă Corespondență";
+}
+function anuleazaCorespondenta() {
+  inchide("corespondenta");
+}
+async function salveazaCorespondenta() {
+  const id = document.getElementById("corespondenta-id").value;
+
+  const data = {
+    id_antrenament: parseInt(document.getElementById("core-antrenament").value),
+    id_exercitiu: parseInt(document.getElementById("core-exercitiu").value),
+    ordine: parseInt(document.getElementById("core-ordine").value),
+    repetari: parseInt(document.getElementById("core-repetari").value),
+    pauza_secunde: parseInt(document.getElementById("core-pauza").value),
+  };
+
+  const url = id ? `/admin/corespondente/${id}` : "/admin/corespondente";
+  const method = id ? "PUT" : "POST";
+
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (res.ok) {
+    inchide("corespondenta");
+    incarcaCorespondente();
+  } else {
+    alert("Eroare la salvare.");
+  }
+}
+async function editeazaCorespondenta(id) {
+  const res = await fetch(`/admin/corespondente/${id}`);
+  const row = await res.json();
+
+  document.getElementById("form-corespondenta-titlu").innerText = "Editează Corespondență";
+  deschideFormular("corespondenta");
+
+  document.getElementById("corespondenta-id").value = row._id;
+  document.getElementById("core-antrenament").value = row.id_antrenament;
+  document.getElementById("core-exercitiu").value = row.id_exercitiu;
+  document.getElementById("core-ordine").value = row.ordine;
+  document.getElementById("core-repetari").value = row.repetari;
+  document.getElementById("core-pauza").value = row.pauza_secunde;
+}
+async function stergeCorespondenta(id) {
+  if (confirm("Ștergi această corespondență?")) {
+    const res = await fetch(`/admin/corespondente/${id}`, { method: "DELETE" });
+
+    if (res.ok) {
+      incarcaCorespondente();
+    } else {
+      alert("Eroare la ștergere corespondență.");
+    }
+  }
+}
+
+async function incarcaCorespondente() {
+  const res = await fetch("/admin/corespondente");
+  const rows = await res.json();
+
+  const tbody = document.querySelector("#tabel-corespondente tbody");
+  tbody.innerHTML = "";
+
+  rows.forEach((row) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.id_antrenament}</td>
+      <td>${row.id_exercitiu}</td>
+      <td>${row.ordine}</td>
+      <td>${row.repetari}</td>
+      <td>${row.pauza_secunde}</td>
+      <td>
+        <button onclick="editeazaCorespondenta('${row._id}')">✏️</button>
+        <button onclick="stergeCorespondenta('${row._id}')">🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function inchideFormular(formId, buttonId, textImplicit) {
+  const form = document.getElementById(formId);
+  const btn = document.getElementById(buttonId);
+
+  if (form) form.classList.add("hidden");
+  if (btn) btn.textContent = textImplicit;
+}
+
+function toggleFormular(formId, buttonId, textAdauga, resetCallback) {
+  const form = document.getElementById(formId);
+  const btn = document.getElementById(buttonId);
+
+  if (!form || !btn) return;
+
+  const esteAscuns = form.classList.contains("hidden");
+
+  if (esteAscuns) {
+    form.classList.remove("hidden");
+    btn.textContent = "❌ Închide formular";
+    if (resetCallback) resetCallback();
+  } else {
+    form.classList.add("hidden");
+    btn.textContent = textAdauga;
+    if (resetCallback) resetCallback();
+  }
+}
+const formMap = {
+  utilizator: {
+    formId: "form-utilizator",
+    buttonId: "add-utilizator-btn",
+    text: "➕ Adaugă Utilizator",
+  },
+  exercitiu: {
+    formId: "form-exercitiu",
+    buttonId: "add-exercitii-btn",
+    text: "➕ Adaugă Exercițiu",
+  },
+  antrenament: {
+    formId: "form-antrenament",
+    buttonId: "add-antrenamente-btn",
+    text: "➕ Adaugă Antrenament",
+  },
+  grupa: {
+    formId: "form-grupa",
+    buttonId: "add-grupa-btn",
+    text: "➕ Adaugă Grupă",
+  },
+  corespondenta: {
+    formId: "form-corespondenta",
+    buttonId: "add-corespondenta-btn",
+    text: "➕ Adaugă Corespondență",
+  },
+};
+function inchide(nume) {
+  const map = formMap[nume];
+  if (map) {
+    inchideFormular(map.formId, map.buttonId, map.text);
+  }
+}
+
+function toggle(nume, resetCallback) {
+  const map = formMap[nume];
+  if (map) {
+    toggleFormular(map.formId, map.buttonId, map.text, resetCallback);
+  }
+}
+function deschideFormular(nume) {
+  const map = formMap[nume];
+  if (!map) return;
+
+  const form = document.getElementById(map.formId);
+  const btn = document.getElementById(map.buttonId);
+
+  if (form) form.classList.remove("hidden");
+  if (btn) btn.textContent = "❌ Închide formular";
+}
+
+const entityConfig = {
+  statistica: {
+    url: "/admin/statistici",
+    tableId: "tabel-statistica",
+    formId: "form-statistica",
+    buttonId: "add-statistica-btn",
+    fields: ["user_email", "data", "durata", "numar_exercitii", "calorii_arse"],
+    resetFunc: resetFormularStatistica,
+    titleId: "form-statistica-titlu",
+  },
+  clasament: {
+    url: "/admin/clasamente",
+    tableId: "tabel-clasament",
+    formId: "form-clasament",
+    buttonId: "add-clasament-btn",
+    fields: ["user_email", "perioada", "punctaj", "categorie_varsta"],
+    resetFunc: resetFormularClasament,
+    titleId: "form-clasament-titlu",
+  },
+};
+async function incarcaEntitate(nume) {
+  const config = entityConfig[nume];
+  const res = await fetch(config.url);
+  const items = await res.json();
+
+  const tbody = document.querySelector(`#${config.tableId} tbody`);
+  tbody.innerHTML = "";
+
+  items.forEach((item) => {
+    const tr = document.createElement("tr");
+
+    const cells = config.fields.map((f) => `<td>${item[f] || ""}</td>`).join("");
+
+    tr.innerHTML = `
+      ${cells}
+      <td>
+        <button onclick="editeazaEntitate('${nume}', '${item._id}')">✏️</button>
+        <button onclick="stergeEntitate('${nume}', '${item._id}')">🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+async function salveazaEntitate(nume) {
+  const config = entityConfig[nume];
+  const id = document.getElementById(`${nume}-id`).value;
+
+  const item = {};
+  config.fields.forEach((f) => {
+    item[f] = document.getElementById(`${nume}-${f}`).value;
+  });
+
+  const url = id ? `${config.url}/${id}` : config.url;
+  const method = id ? "PUT" : "POST";
+
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(item),
+  });
+
+  if (res.ok) {
+    inchide(nume);
+    incarcaEntitate(nume);
+  } else {
+    alert("Eroare la salvare.");
+  }
+}
+async function editeazaEntitate(nume, id) {
+  const config = entityConfig[nume];
+  const res = await fetch(`${config.url}/${id}`);
+  const item = await res.json();
+
+  document.getElementById(config.titleId).innerText = `Editează ${capitalize(nume)}`;
+  deschideFormular(nume);
+  document.getElementById(`${nume}-id`).value = item._id;
+
+  config.fields.forEach((f) => {
+    document.getElementById(`${nume}-${f}`).value = item[f] || "";
+  });
+}
+async function stergeEntitate(nume, id) {
+  const config = entityConfig[nume];
+  if (confirm("Ștergi această înregistrare?")) {
+    const res = await fetch(`${config.url}/${id}`, { method: "DELETE" });
+
+    if (res.ok) {
+      incarcaEntitate(nume);
+    } else {
+      alert("Eroare la ștergere.");
+    }
+  }
+}
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

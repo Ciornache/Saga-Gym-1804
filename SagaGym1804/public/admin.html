@@ -15,6 +15,7 @@
         <button onclick="afiseazaSectiune('exercitii')">Exerciții</button>
         <button onclick="afiseazaSectiune('antrenamente')">Antrenamente</button>
         <button onclick="afiseazaSectiune('grupe')">Grupe Musculare</button>
+        <button onclick="afiseazaSectiune('corespondente')">Corespondențe</button>
     </div>
 
     <div class="main-content">
@@ -25,18 +26,41 @@
             <div id="form-utilizator" class="form-wrapper hidden">
                 <h3 id="form-titlu">Adaugă Utilizator</h3>
                 <input type="hidden" id="utilizator-id">
+              
                 <label>Nume</label>
                 <input type="text" id="nume">
+              
                 <label>Email</label>
                 <input type="email" id="email">
+              
                 <label>Parolă</label>
                 <input type="password" id="parola">
+              
                 <label>Gen</label>
                 <input type="text" id="gen">
+              
+                <label>Vârstă</label>
+                <input type="number" id="age">
+              
+                <label>Număr de telefon</label>
+                <input type="text" id="phone_number">
+              
+                <label>Greutate (kg)</label>
+                <input type="number" id="weight">
+              
+                <label>Înălțime (cm)</label>
+                <input type="number" id="height">
+              
+                <label>Tip de corp</label>
+                <input type="text" id="body_type">
+              
+                <label>Nivel fitness</label>
+                <input type="text" id="nivel_fitness">
+              
                 <button onclick="salveazaUtilizator()">💾 Salvează</button>
                 <button onclick="anuleaza()">❌ Anulează</button>
-            </div>
-
+              </div>
+              
             <table id="tabel-utilizatori">
                 <thead>
                     <tr>
@@ -59,15 +83,31 @@
             <div id="form-exercitiu" class="form-wrapper hidden">
                 <h3 id="form-exercitiu-titlu">Adaugă Exercițiu</h3>
                 <input type="hidden" id="exercitiu-id">
+                
+                <label>ID Exercițiu (număr)</label>
+                <input type="number" id="ex-id">
+
                 <label>Nume</label>
                 <input type="text" id="ex-nume">
+              
                 <label>Tip</label>
                 <input type="text" id="ex-tip">
+              
+                <label>Cover Image (path complet sau URL)</label>
+                <input type="text" id="ex-cover">
+              
+                <label>Rating (0.0 – 5.0)</label>
+                <input type="number" step="0.1" min="0" max="5" id="ex-rating">
+              
                 <label>Grupe Musculare (separate prin virgulă)</label>
                 <input type="text" id="ex-grupe">
+              
+                <label>Imagini (path-uri separate prin virgulă)</label>
+                <input type="text" id="ex-images">
+              
                 <button onclick="salveazaExercitiu()">💾 Salvează</button>
                 <button onclick="anuleazaExercitiu()">❌ Anulează</button>
-            </div>
+              </div>              
 
             <table id="tabel-exercitii">
                 <thead>
@@ -90,26 +130,42 @@
             
             <div id="form-antrenament" class="form-wrapper hidden">
                 <h3 id="form-antrenament-titlu">Adaugă Antrenament</h3>
+              
                 <input type="hidden" id="antrenament-id">
+              
+                <label>ID Antrenament</label>
+                <input type="number" id="antrenament-custom-id">
+              
                 <label>Nume</label>
                 <input type="text" id="an-nume">
+              
                 <label>Tip</label>
                 <input type="text" id="an-tip">
+              
+                <label>Email utilizator</label>
+                <input type="email" id="an-user-email">
+              
+                <label>Data creării</label>
+                <input type="datetime-local" id="an-created-at">
+              
                 <button onclick="salveazaAntrenament()">💾 Salvează</button>
                 <button onclick="anuleazaAntrenament()">❌ Anulează</button>
-            </div>
+              </div>
+              
 
-            <table id="tabel-antrenamente">
+              <table id="tabel-antrenamente">
                 <thead>
-                    <tr>
-                        <th>Nume</th>
-                        <th>Tip</th>
-                        <th>Acțiuni</th>
-                    </tr>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nume</th>
+                    <th>Tip</th>
+                    <th>Email utilizator</th>
+                    <th>Creat la</th>
+                    <th>Acțiuni</th>
+                  </tr>
                 </thead>
                 <tbody></tbody>
-            </table>
-        
+              </table>              
         </div>
 
         <div id="sectiune-grupe" class="section">
@@ -143,6 +199,48 @@
         
           
         </div>
+        <div id="sectiune-corespondente" class="section">
+            <h2>🔗 Corespondență Exerciții – Antrenamente</h2>
+            <button id="add-corespondenta-btn" onclick="showCorespondentaForm()">➕ Adaugă Corespondență</button>
+          
+            <div id="form-corespondenta" class="form-wrapper hidden">
+              <h3 id="form-corespondenta-titlu">Adaugă Corespondență</h3>
+          
+              <input type="hidden" id="corespondenta-id">
+          
+              <label>ID Antrenament</label>
+              <input type="number" id="core-antrenament">
+          
+              <label>ID Exercițiu</label>
+              <input type="number" id="core-exercitiu">
+          
+              <label>Ordine</label>
+              <input type="number" id="core-ordine">
+          
+              <label>Repetări</label>
+              <input type="number" id="core-repetari">
+          
+              <label>Pauză (secunde)</label>
+              <input type="number" id="core-pauza">
+          
+              <button onclick="salveazaCorespondenta()">💾 Salvează</button>
+              <button onclick="anuleazaCorespondenta()">❌ Anulează</button>
+            </div>
+          
+            <table id="tabel-corespondente">
+              <thead>
+                <tr>
+                  <th>ID Antrenament</th>
+                  <th>ID Exercițiu</th>
+                  <th>Ordine</th>
+                  <th>Repetări</th>
+                  <th>Pauză (sec)</th>
+                  <th>Acțiuni</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>          
     </div>
     <script src="scripts/admin.js"></script>
 </body>
