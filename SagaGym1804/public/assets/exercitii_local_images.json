@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+    "id_exercitiu": 1,
     "name": "Bench Press",
     "type": "forță",
     "muscle_groups": [
@@ -14,7 +14,7 @@
     ]
   },
   {
-    "id": 2,
+    "id_exercitiu": 2,
     "name": "Deadlift",
     "type": "forță",
     "muscle_groups": [
@@ -29,7 +29,7 @@
     ]
   },
   {
-    "id": 3,
+    "id_exercitiu": 3,
     "name": "Squats",
     "type": "forță",
     "muscle_groups": [
@@ -43,7 +43,7 @@
     ]
   },
   {
-    "id": 4,
+    "id_exercitiu": 4,
     "name": "Overhead Press",
     "type": "forță",
     "muscle_groups": [
@@ -57,7 +57,7 @@
     ]
   },
   {
-    "id": 5,
+    "id_exercitiu": 5,
     "name": "Pull-ups",
     "type": "forță",
     "muscle_groups": [
@@ -71,7 +71,7 @@
     ]
   },
   {
-    "id": 6,
+    "id_exercitiu": 6,
     "name": "Lateral Raises",
     "type": "forță",
     "muscle_groups": [
@@ -84,7 +84,7 @@
     ]
   },
   {
-    "id": 7,
+    "id_exercitiu": 7,
     "name": "Hip Thrusts",
     "type": "forță",
     "muscle_groups": [
@@ -98,7 +98,7 @@
     ]
   },
   {
-    "id": 8,
+    "id_exercitiu": 8,
     "name": "Dumbbell Rows",
     "type": "forță",
     "muscle_groups": [
@@ -111,7 +111,7 @@
     ]
   },
   {
-    "id": 9,
+    "id_exercitiu": 9,
     "name": "Leg Curls",
     "type": "forță",
     "muscle_groups": [
@@ -124,7 +124,7 @@
     ]
   },
   {
-    "id": 10,
+    "id_exercitiu": 10,
     "name": "Plank",
     "type": "forță",
     "muscle_groups": [
@@ -138,21 +138,21 @@
     ]
   },
   {
-    "id": 11,
-    "name": "Wall Slides",
+    "id_exercitiu": 11,
+    "name": "Wall Slid_exercitiues",
     "type": "kinetoterapie",
     "muscle_groups": [
       "umeri",
       "spate"
     ],
     "rating": 4.3,
-    "cover_image": "/img/exercitii/wall_slides.jpg",
+    "cover_image": "/img/exercitii/wall_slid_exercitiues.jpg",
     "images": [
-      "/img/exercitii/wall_slides.jpg"
+      "/img/exercitii/wall_slid_exercitiues.jpg"
     ]
   },
   {
-    "id": 12,
+    "id_exercitiu": 12,
     "name": "Ankle Circles",
     "type": "kinetoterapie",
     "muscle_groups": [
@@ -165,21 +165,21 @@
     ]
   },
   {
-    "id": 13,
-    "name": "Heel Slides",
+    "id_exercitiu": 13,
+    "name": "Heel Slid_exercitiues",
     "type": "kinetoterapie",
     "muscle_groups": [
       "coapse",
       "genunchi"
     ],
     "rating": 4.2,
-    "cover_image": "/img/exercitii/heel_slides.jpg",
+    "cover_image": "/img/exercitii/heel_slid_exercitiues.jpg",
     "images": [
-      "/img/exercitii/heel_slides.jpg"
+      "/img/exercitii/heel_slid_exercitiues.jpg"
     ]
   },
   {
-    "id": 14,
+    "id_exercitiu": 14,
     "name": "Shoulder Pendulum",
     "type": "kinetoterapie",
     "muscle_groups": [
@@ -192,21 +192,21 @@
     ]
   },
   {
-    "id": 15,
-    "name": "Bridge Exercise",
+    "id_exercitiu": 15,
+    "name": "Brid_exercitiuge Exercise",
     "type": "kinetoterapie",
     "muscle_groups": [
       "abdomen",
       "fesieri"
     ],
     "rating": 4.3,
-    "cover_image": "/img/exercitii/bridge.jpg",
+    "cover_image": "/img/exercitii/brid_exercitiuge.jpg",
     "images": [
-      "/img/exercitii/bridge.jpg"
+      "/img/exercitii/brid_exercitiuge.jpg"
     ]
   },
   {
-    "id": 16,
+    "id_exercitiu": 16,
     "name": "Arm Circles",
     "type": "kinetoterapie",
     "muscle_groups": [
@@ -220,7 +220,7 @@
     ]
   },
   {
-    "id": 17,
+    "id_exercitiu": 17,
     "name": "Bird Dog",
     "type": "kinetoterapie",
     "muscle_groups": [
@@ -234,20 +234,20 @@
     ]
   },
   {
-    "id": 18,
-    "name": "Side Lying Leg Lifts",
+    "id_exercitiu": 18,
+    "name": "Sid_exercitiue Lying Leg Lifts",
     "type": "kinetoterapie",
     "muscle_groups": [
       "coapse"
     ],
     "rating": 4.2,
-    "cover_image": "/img/exercitii/side_lying_leg_lifts.jpg",
+    "cover_image": "/img/exercitii/sid_exercitiue_lying_leg_lifts.jpg",
     "images": [
-      "/img/exercitii/side_lying_leg_lifts.jpg"
+      "/img/exercitii/sid_exercitiue_lying_leg_lifts.jpg"
     ]
   },
   {
-    "id": 19,
+    "id_exercitiu": 19,
     "name": "Toe Raises",
     "type": "kinetoterapie",
     "muscle_groups": [
@@ -260,7 +260,7 @@
     ]
   },
   {
-    "id": 20,
+    "id_exercitiu": 20,
     "name": "Cat-Cow Stretch",
     "type": "kinetoterapie",
     "muscle_groups": [
