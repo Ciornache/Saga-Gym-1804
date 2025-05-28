@@ -41,15 +41,42 @@ let user = {
   email: "",
   password: "",
   phone_number: "",
-  username: "",
+  name: "",
   body_type: "",
-  age_range: "",
+  interval_varsta: "",
   height: 0,
   weight: 0,
   gender: "",
 };
 
-function validateStep1Form() {
+async function checkUserExists(email, username, phone_number, error_count) {
+  let count = 0;
+  let node_elements = [
+    { text: "Email", value: email, error_value: "email" },
+    { text: "Name", value: username, error_value: "username" },
+    { text: "PhoneNumber", value: phone_number, error_value: "phone number" },
+  ];
+  for (node_element of node_elements) {
+    const response = await fetch(`/validation/getUserBy${node_element.text}`, {
+      method: "GET",
+      headers: {
+        [node_element.text]: node_element.value.value,
+      },
+    });
+    if (response.status === 200) {
+      showErrorMessage(
+        node_element.value,
+        `User with this ${node_element.error_value} already exists`,
+        error_count
+      );
+      count = count + 1;
+    }
+  }
+
+  return count;
+}
+
+async function validateStep1Form() {
   let error_count = { value: 0 };
   console.log("Validating first step");
   const emailInput = document.getElementById("email");
@@ -124,16 +151,26 @@ function validateStep1Form() {
   }
 
   if (!error_count.value) {
+    error_count.value = await checkUserExists(
+      emailInput,
+      usernameInput,
+      phoneInput,
+      error_count
+    );
+  }
+
+  if (!error_count.value) {
     user.email = emailInput.value;
     user.password = passwordInput.value;
     user.phone_number = phoneInput.value;
-    user.username = usernameInput.value;
+    user.name = usernameInput.value;
   }
 
   return error_count.value === 0;
 }
 
 function validateStep2Form() {
+  console.log(user);
   let isChecked = false;
   let checked_radio_button = null;
   const radio_buttons = document.querySelectorAll(".step2-img-container input");
@@ -186,7 +223,7 @@ function validateStep3Form() {
   }
 
   if (isChecked) {
-    user.age_range = checked_radio_button.value;
+    user.interval_varsta = checked_radio_button.value;
   } else {
     const step3_section = document.querySelector(".sign-up-step3");
     const errorMessage = step3_section.querySelector(".step-error");
@@ -216,6 +253,7 @@ function toggleCheckAttribute(group, value) {
 }
 
 function validateStep4Form(event) {
+  console.log(user);
   console.log("Validating fourth step");
 
   event.preventDefault(); // stop real submission for now
@@ -316,10 +354,11 @@ function isPhoneNumberValid(phone) {
   return /^\+?[0-9\s\-().]{7,}$/.test(phone);
 }
 
-function validateCurrentStep() {
+async function validateCurrentStep() {
   switch (currentStep) {
     case 1:
-      return validateStep1Form();
+      const isValid = await validateStep1Form();
+      return isValid;
     case 2:
       return validateStep2Form();
     case 3:
@@ -329,16 +368,33 @@ function validateCurrentStep() {
   }
 }
 
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 window.showCurrentStep = function (value) {
   if (value === 1) {
-    let isValid = validateCurrentStep();
+    let isValid = validateCurrentStep().then((isValid) => {
+      console.log("isValid", isValid);
+      if (isValid) {
+        sleep(500).then(() => {
+          continueToNextStep(value);
+        });
+      } else {
+        console.error("Validation failed");
+      }
+    });
     console.log("isValid", isValid);
     if (!isValid) {
       console.error("Validation failed");
       return;
     }
+  } else {
+    continueToNextStep(value);
   }
+};
 
+function continueToNextStep(value) {
   currentStep += value;
   let allPageSections = document.querySelectorAll(
     'section[class^="sign-up-step"]'
@@ -357,7 +413,7 @@ window.showCurrentStep = function (value) {
     return;
   }
   nextStep.classList.remove("hidden");
-};
+}
 
 function togglePasswordVisibility(element_id) {
   const passwordInput = document.getElementById(element_id);

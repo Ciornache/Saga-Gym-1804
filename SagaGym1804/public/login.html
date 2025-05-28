@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -37,15 +38,15 @@
                     <span>My Account</span>
                 </button>
                 <div class="dropdown-menu">
-                    <button class="dropdown-item">
+                    <a class="dropdown-item" href="login.html">
                         <span>Login</span>
                         <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
-                    </button>
-
-                    <button class="dropdown-item">
-                        <span>Register</span>
-                        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
-                    </button>
+                    </a>
+                    
+                    <a class="dropdown-item" href="signup.html">
+                        <span>Sign&nbsp;Up</span>
+                        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />        
+                    </a>
                 </div>
             </div>
 
@@ -56,30 +57,45 @@
         </nav>
 
         <main class="main-login">
-
-            <form class="login-form" action="index.html" method="post">
+            <form class="login-form" method="post">
                 <h2>Log in to your account</h2>
+                <section class="sign-up-step1">
                 <div class="input-wrapper">
                     <div class="form-flex-item">
                         <label style="display:block" for="email">Email</label>
-                        <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required id="email"
-                            placeholder="Enter your email..." />
+                        <div class="step1-input-wrapper">
+                            <input type="email" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" required id="email"
+                                placeholder="Enter your email..." />
+                            <section class="step1-input-icon-wrapper">
+                                <i class="fa-regular fa-circle-check fa-correct"></i>
+                                <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+                            </section>
+                        </div>
+                        <span></span>
                     </div>
                     <div class="form-flex-item">
                         <label style="display:block" for="password">Password</label>
-                        <input type="password" id="password" minlength="8" placeholder="Enter your password..."
-                            required>
+                        <div class="password-input-wrapper step1-input-wrapper">
+                            <input type="password" id="password" minlength="8" placeholder="Enter your password..." required>
+                            <section class="step1-input-icon-wrapper">
+                                <i class="fa-regular fa-circle-check fa-correct"></i>
+                                <i class="fa-regular fa-circle-xmark fa-wrong"></i>
+                            </section>
+                            <span class="toggle-password" onclick="togglePasswordVisibility('password')"></span>
+                        </div>
+                        <span></span>
                     </div>
 
-                    <div class="form-flex-item">
+                    <div class="remember-me-container">
+                        <label for="remember-me">Remember&nbsp;Me</label>
                         <input type="checkbox" id="remember-me">
-                        <label for="remember-me">Remember Me</label>
                     </div>
                 </div>
                 <div class="form-button-wrapper">
                     <button class="form-submit-button" type="submit">Login</button>
-                    <p>Don't have an account? <a href="register.html">Sign Up here!</a></p>
+                    <p>Don't have an account? <a href="signup.html">Sign Up here!</a></p>
                 </div>
+                </section>
             </form>
 
         </main>
@@ -93,6 +109,8 @@
             </p>
         </footer>
     </div>
+
+    <script src="scripts/login.js"></script>
 </body>
 
 </html>

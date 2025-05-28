@@ -199,6 +199,7 @@ main {
     transform 500ms ease, visibility 0.5s;
   text-align: left;
   align-items: center;
+  z-index: 2;
 }
 
 .dropdown-item:hover {
@@ -813,4 +814,19 @@ i.fa-wrong {
 
 .hidden {
   display: none;
+}
+
+.remember-me-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: fit-content;
+  padding: 5px;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: black;
 }

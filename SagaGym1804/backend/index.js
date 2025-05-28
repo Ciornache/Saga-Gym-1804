@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
-const User = require("./models/User");
+const fsp = require("fs/promises");
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -24,6 +24,45 @@ mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
 });
 
 const server = http.createServer(async (req, res) => {
+  if (req.method === "GET" && req.url === "/validation/getUserByEmail") {
+    const user = await models.users.findOne({ email: req.headers.email });
+    if (!user) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
+    } else {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(user));
+      console.log(user);
+    }
+    return;
+  }
+
+  if (req.method === "GET" && req.url === "/validation/getUserByName") {
+    const user = await models.users.findOne({ name: req.headers.name });
+    if (!user) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
+    } else {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(user));
+    }
+    return;
+  }
+
+  if (req.method === "GET" && req.url === "/validation/getUserByPhoneNumber") {
+    const user = await models.users.findOne({
+      phone_number: req.headers.phonenumber,
+    });
+    console.log(req.headers.phonenumber);
+    if (!user) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
+    } else {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(user));
+    }
+    return;
+  }
 
   if (req.method === "POST" && req.url === "/api/register") {
     let body = "";
@@ -35,10 +74,11 @@ const server = http.createServer(async (req, res) => {
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
+        console.log("Received data:", data);
         data.password = hashPassword(data.password);
 
-        const user = new User(data);
-        await user.save();
+        const model = models["users"];
+        const user = model.create(data);
 
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Utilizator salvat cu succes" }));
@@ -94,11 +134,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Servire fișiere statice
   const filePath = path.join(
     __dirname,
     "../public",
-    req.url === "/" ? "admin.html" : req.url
+    req.url === "/" ? "index.html" : req.url
   );
   const ext = path.extname(filePath);
   const contentType =
@@ -110,6 +149,7 @@ const server = http.createServer(async (req, res) => {
       ".jpg": "image/jpeg",
       ".jpeg": "image/jpeg",
       ".png": "image/png",
+      ".svg": "image/svg+xml",
     }[ext] || "text/plain";
 
   if (fs.existsSync(filePath)) {
@@ -125,6 +165,28 @@ const send = (res, code, payload) => {
   res.end(typeof payload === "string" ? payload : JSON.stringify(payload));
 };
 
+async function insertExercisesIntoDB(json_path) {
+  const data = await fsp.readFile(json_path, "utf-8");
+  const json = JSON.parse(data);
+  console.log(json);
+  for (exercise of json) {
+    try {
+      console.log(exercise);
+      const response = await fetch("/http://localhost:3000/admin/exercitii", {
+        method: "Post",
+        header: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(exercise),
+      });
+      console.log(response.status);
+    } catch (err) {
+      console.error("Failed to insert");
+    }
+  }
+}
+
 server.listen(3000, () => {
+  insertExercisesIntoDB("public/assets/translated_exercises.json");
   console.log("✅ Serverul rulează pe http://localhost:3000");
 });
