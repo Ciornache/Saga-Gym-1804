@@ -1,266 +1,307 @@
 <!DOCTYPE html>
 <html lang="ro">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Admin Dashboard – SagaGym1804</title>
-    <link rel="stylesheet" href="styles/admin.css">
-</head>
+    <link rel="stylesheet" href="styles/admin.css" />
+  </head>
 
-<body>
-
+  <body>
     <div class="sidebar">
-        <h2>Admin Menu</h2>
-        <button onclick="afiseazaSectiune('utilizatori')">Utilizatori</button>
-        <button onclick="afiseazaSectiune('exercitii')">Exerciții</button>
-        <button onclick="afiseazaSectiune('antrenamente')">Antrenamente</button>
-        <button onclick="afiseazaSectiune('grupe')">Grupe Musculare</button>
-        <button onclick="afiseazaSectiune('corespondente')">Corespondențe</button>
+      <h2>Admin Menu</h2>
+      <button onclick="afiseazaSectiune('utilizatori')">Utilizatori</button>
+      <button onclick="afiseazaSectiune('exercitii')">Exerciții</button>
+      <button onclick="afiseazaSectiune('antrenamente')">Antrenamente</button>
+      <button onclick="afiseazaSectiune('grupe')">Grupe Musculare</button>
+      <button onclick="afiseazaSectiune('corespondente')">Corespondențe</button>
+      <button onclick="afiseazaSectiune('tip')">Tip</button>
     </div>
 
     <div class="main-content">
-        <div id="sectiune-utilizatori" class="section active">
-            <h2>👤 Utilizatori</h2>
-            <button id="add-utilizator-btn" onclick="toggleFormular('utilizatori')">➕ Adaugă Utilizator</button>
-            
-            <div id="form-utilizator" class="form-wrapper hidden">
-  <h3 id="form-titlu">Adaugă Utilizator</h3>
-  <input type="hidden" id="utilizatori-id">
+      <div id="sectiune-utilizatori" class="section active">
+        <h2>👤 Utilizatori</h2>
+        <button id="add-utilizator-btn" onclick="toggleFormular('utilizatori')">
+          ➕ Adaugă Utilizator
+        </button>
 
-  <label>Nume</label>
-  <input type="text" id="utilizatori-name">
+        <div id="form-utilizator" class="form-wrapper hidden">
+          <h3 id="form-titlu">Adaugă Utilizator</h3>
+          <input type="hidden" id="utilizatori-id" />
 
-  <label>Email</label>
-  <input type="email" id="utilizatori-email">
+          <label>Nume</label>
+          <input type="text" id="utilizatori-name" />
 
-  <label>Parolă</label>
-  <input type="password" id="utilizatori-password">
+          <label>Email</label>
+          <input type="email" id="utilizatori-email" />
 
-  <label>Gen</label>
-  <input type="text" id="utilizatori-gender">
+          <label>Parolă</label>
+          <input type="password" id="utilizatori-password" />
 
-  <label>Interval vârstă</label>
-  <input type="text" id="utilizatori-interval_varsta">
+          <label>Gen</label>
+          <input type="text" id="utilizatori-gender" />
 
-  <label>Tip corp</label>
-  <input type="text" id="utilizatori-body_type">
+          <label>Interval vârstă</label>
+          <input type="text" id="utilizatori-interval_varsta" />
 
-  <label>Telefon</label>
-  <input type="text" id="utilizatori-phone_number">
+          <label>Tip corp</label>
+          <input type="text" id="utilizatori-body_type" />
 
-  <label>Înălțime (cm)</label>
-  <input type="number" id="utilizatori-height">
+          <label>Telefon</label>
+          <input type="text" id="utilizatori-phone_number" />
 
-  <label>Greutate (kg)</label>
-  <input type="number" id="utilizatori-weight">
+          <label>Înălțime (cm)</label>
+          <input type="number" id="utilizatori-height" />
 
-  <label>Nivel fitness</label>
-  <input type="text" id="utilizatori-nivel_fitness">
+          <label>Greutate (kg)</label>
+          <input type="number" id="utilizatori-weight" />
 
-  <button onclick="salveazaEntitate('utilizatori')">💾 Salvează</button>
-  <button onclick="inchideFormular('utilizatori')">❌ Anulează</button>
-</div>
+          <label>Nivel fitness</label>
+          <input type="text" id="utilizatori-nivel_fitness" />
 
-              
-           <table id="tabel-utilizatori">
-  <thead>
-    <tr>
-      <th>Nume</th>
-      <th>Email</th>
-      <th>Parolă</th>
-      <th>Gen</th>
-      <th>Interval vârstă</th>
-      <th>Tip corp</th>
-      <th>Telefon</th>
-      <th>Înălțime</th>
-      <th>Greutate</th>
-      <th>Nivel fitness</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-           
+          <button onclick="salveazaEntitate('utilizatori')">💾 Salvează</button>
+          <button onclick="inchideFormular('utilizatori')">❌ Anulează</button>
         </div>
 
-        <div id="sectiune-exercitii" class="section">
-            <h2>🏋️ Exerciții</h2>
-            <button id="add-exercitii-btn" onclick="toggleFormular('exercitii')">
-  ➕ Adaugă Exercițiu
-</button>
+        <table id="tabel-utilizatori">
+          <thead>
+            <tr>
+              <th>Nume</th>
+              <th>Email</th>
+              <th>Parolă</th>
+              <th>Gen</th>
+              <th>Interval vârstă</th>
+              <th>Tip corp</th>
+              <th>Telefon</th>
+              <th>Înălțime</th>
+              <th>Greutate</th>
+              <th>Nivel fitness</th>
+              <th>Acțiuni</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-            
-            <div id="form-exercitiu" class="form-wrapper hidden">
-  <h3 id="form-exercitiu-titlu">Adaugă Exercițiu</h3>
-  <input type="hidden" id="exercitii-id">
+      <div id="sectiune-exercitii" class="section">
+        <h2>🏋️ Exerciții</h2>
+        <button id="add-exercitii-btn" onclick="toggleFormular('exercitii')">
+          ➕ Adaugă Exercițiu
+        </button>
 
-  <label>ID Exercițiu</label>
-  <input type="number" id="exercitii-id_exercitiu">
+        <div id="form-exercitiu" class="form-wrapper hidden">
+          <h3 id="form-exercitiu-titlu">Adaugă Exercițiu</h3>
+          <input type="hidden" id="exercitii-id" />
 
-  <label>Nume</label>
-  <input type="text" id="exercitii-name">
+          <label>ID Exercițiu</label>
+          <input type="number" id="exercitii-id_exercitiu" />
 
-  <label>Tip</label>
-  <input type="text" id="exercitii-type">
+          <label>Nume</label>
+          <input type="text" id="exercitii-name" />
 
-  <label>Imagine principală (URL)</label>
-  <input type="text" id="exercitii-cover_image">
+          <label>Tip</label>
+          <input type="text" id="exercitii-type" />
 
-  <label>Rating</label>
-  <input type="number" id="exercitii-rating">
+          <label>Imagine principală (URL)</label>
+          <input type="text" id="exercitii-cover_image" />
 
-  <label>Grupe musculare (virgulă)</label>
-  <input type="text" id="exercitii-muscle_groups">
+          <label>Rating</label>
+          <input type="number" id="exercitii-rating" />
 
-  <label>Imagini (virgulă)</label>
-  <input type="text" id="exercitii-images">
+          <label>Grupe musculare (virgulă)</label>
+          <input type="text" id="exercitii-muscle_groups" />
 
-  <button onclick="salveazaEntitate('exercitii')">💾 Salvează</button>
-  <button onclick="inchideFormular('exercitii')">❌ Anulează</button>
-</div>
-            <table id="tabel-exercitii">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nume</th>
-      <th>Tip</th>
-      <th>Imagine principală</th>
-      <th>Rating</th>
-      <th>Grupe musculare</th>
-      <th>Imagini</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+          <label>Imagini (virgulă)</label>
+          <input type="text" id="exercitii-images" />
+
+          <button onclick="salveazaEntitate('exercitii')">💾 Salvează</button>
+          <button onclick="inchideFormular('exercitii')">❌ Anulează</button>
         </div>
-          
-        <div id="sectiune-antrenamente" class="section">
-            <h2>📅 Antrenamente</h2>
-           <button id="add-antrenamente-btn" onclick="toggleFormular('antrenamente')">
-  ➕ Adaugă Antrenament
-</button>
+        <table id="tabel-exercitii">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nume</th>
+              <th>Tip</th>
+              <th>Imagine principală</th>
+              <th>Rating</th>
+              <th>Grupe musculare</th>
+              <th>Imagini</th>
+              <th>Acțiuni</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-            
-            <div id="form-antrenament" class="form-wrapper hidden">
-  <h3 id="form-antrenament-titlu">Adaugă Antrenament</h3>
-  <input type="hidden" id="antrenamente-id">
+      <div id="sectiune-antrenamente" class="section">
+        <h2>📅 Antrenamente</h2>
+        <button
+          id="add-antrenamente-btn"
+          onclick="toggleFormular('antrenamente')"
+        >
+          ➕ Adaugă Antrenament
+        </button>
 
-  <label>ID Antrenament</label>
-  <input type="number" id="antrenamente-id_antrenament">
+        <div id="form-antrenament" class="form-wrapper hidden">
+          <h3 id="form-antrenament-titlu">Adaugă Antrenament</h3>
+          <input type="hidden" id="antrenamente-id" />
 
-  <label>Nume</label>
-  <input type="text" id="antrenamente-name">
+          <label>ID Antrenament</label>
+          <input type="number" id="antrenamente-id_antrenament" />
 
-  <label>Tip</label>
-  <input type="text" id="antrenamente-type">
+          <label>Nume</label>
+          <input type="text" id="antrenamente-name" />
 
-  <label>Email Utilizator</label>
-  <input type="email" id="antrenamente-user_email">
+          <label>Tip</label>
+          <input type="text" id="antrenamente-type" />
 
-  <label>Data creării</label>
-  <input type="datetime-local" id="antrenamente-created_at">
+          <label>Email Utilizator</label>
+          <input type="email" id="antrenamente-user_email" />
 
-  <button onclick="salveazaEntitate('antrenamente')">💾 Salvează</button>
-  <button onclick="inchideFormular('antrenamente')">❌ Anulează</button>
-</div>
-             <table id="tabel-antrenamente">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nume</th>
-      <th>Tip</th>
-      <th>Email utilizator</th>
-      <th>Creat la</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-       
+          <label>Data creării</label>
+          <input type="datetime-local" id="antrenamente-created_at" />
+
+          <button onclick="salveazaEntitate('antrenamente')">
+            💾 Salvează
+          </button>
+          <button onclick="inchideFormular('antrenamente')">❌ Anulează</button>
+        </div>
+        <table id="tabel-antrenamente">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nume</th>
+              <th>Tip</th>
+              <th>Email utilizator</th>
+              <th>Creat la</th>
+              <th>Acțiuni</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="sectiune-grupe" class="section">
+        <h2>💪 Grupe Musculare</h2>
+        <button id="add-grupa-btn" onclick="toggleFormular('grupe')">
+          ➕ Adaugă Grupă
+        </button>
+
+        <div id="form-grupa" class="form-wrapper hidden">
+          <h3 id="form-grupa-titlu">Adaugă Grupă</h3>
+          <input type="hidden" id="grupe-id" />
+
+          <label>Nume</label>
+          <input type="text" id="grupe-name" />
+
+          <label>Imagine (URL)</label>
+          <input type="text" id="grupe-image" />
+
+          <label>Descriere</label>
+          <input type="text" id="grupe-descriere" />
+
+          <button onclick="salveazaEntitate('grupe')">💾 Salvează</button>
+          <button onclick="inchideFormular('grupe')">❌ Anulează</button>
         </div>
 
-        <div id="sectiune-grupe" class="section">
-            <h2>💪 Grupe Musculare</h2>
-           <button id="add-grupa-btn" onclick="toggleFormular('grupe')">
-  ➕ Adaugă Grupă
-</button>
+        <table id="tabel-grupe">
+          <thead>
+            <tr>
+              <th>Nume</th>
+              <th>Imagine</th>
+              <th>Descriere</th>
+              <th>Acțiuni</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="sectiune-corespondente" class="section">
+        <h2>🔗 Corespondență Exerciții – Antrenamente</h2>
+        <button
+          id="add-corespondenta-btn"
+          onclick="toggleFormular('corespondente')"
+        >
+          ➕ Adaugă Corespondență
+        </button>
 
-            <div id="form-grupa" class="form-wrapper hidden">
-  <h3 id="form-grupa-titlu">Adaugă Grupă</h3>
-  <input type="hidden" id="grupe-id">
+        <div id="form-corespondenta" class="form-wrapper hidden">
+          <h3 id="form-corespondenta-titlu">Adaugă Corespondență</h3>
+          <input type="hidden" id="corespondente-id" />
 
-  <label>Nume</label>
-  <input type="text" id="grupe-name">
+          <label>ID Antrenament</label>
+          <input type="number" id="corespondente-id_antrenament" />
 
-  <label>Imagine (URL)</label>
-  <input type="text" id="grupe-image">
+          <label>ID Exercițiu</label>
+          <input type="number" id="corespondente-id_exercitiu" />
 
-  <label>Descriere</label>
-  <input type="text" id="grupe-descriere">
+          <label>Ordine</label>
+          <input type="number" id="corespondente-ordine" />
 
-  <button onclick="salveazaEntitate('grupe')">💾 Salvează</button>
-  <button onclick="inchideFormular('grupe')">❌ Anulează</button>
-</div>
+          <label>Repetări</label>
+          <input type="number" id="corespondente-repetari" />
 
+          <label>Pauză (secunde)</label>
+          <input type="number" id="corespondente-pauza_secunde" />
 
-            <table id="tabel-grupe">
-  <thead>
-    <tr>
-      <th>Nume</th>
-      <th>Imagine</th>
-      <th>Descriere</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+          <button onclick="salveazaEntitate('corespondente')">
+            💾 Salvează
+          </button>
+          <button onclick="inchideFormular('corespondente')">
+            ❌ Anulează
+          </button>
+        </div>  
 
-          
+        <table id="tabel-corespondente">
+          <thead>
+            <tr>
+              <th>ID Antrenament</th>
+              <th>ID Exercițiu</th>
+              <th>Ordine</th>
+              <th>Repetări</th>
+              <th>Pauză (sec)</th>
+              <th>Acțiuni</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      
+      <div id="sectiune-tip" class="section">
+        <h2>Tipuri</h2>
+        <button id="add-tip-btn" onclick="toggleFormular('tip')">
+          ➕ Adaugă Tip
+        </button>
+        
+        <table id="tabel-tip">
+          <thead>
+            <tr>
+              <th>Nume</th>
+              <th>Imagine</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        
+      
+        <div id="form-tip" class="form-wrapper hidden">
+          <h3 id="form-tip-titlu">Adaugă Tip</h3>
+          <input type="hidden" id="tip-id" />
+          <label>Nume</label>
+          <input type="text" id="tip-name" />
+          <label>Imagine</label>
+          <input type="text" id="tip-image" />
+          <button onclick="salveazaEntitate('tip')">
+            💾 Salvează
+          </button>
+          <button onclick="inchideFormular('tip')">
+            ❌ Anulează
+          </button>
         </div>
-        <div id="sectiune-corespondente" class="section">
-            <h2>🔗 Corespondență Exerciții – Antrenamente</h2>
-<button id="add-corespondenta-btn" onclick="toggleFormular('corespondente')">➕ Adaugă Corespondență</button>
-          
-            <div id="form-corespondenta" class="form-wrapper hidden">
-  <h3 id="form-corespondenta-titlu">Adaugă Corespondență</h3>
-  <input type="hidden" id="corespondente-id">
-
-  <label>ID Antrenament</label>
-  <input type="number" id="corespondente-id_antrenament">
-
-  <label>ID Exercițiu</label>
-  <input type="number" id="corespondente-id_exercitiu">
-
-  <label>Ordine</label>
-  <input type="number" id="corespondente-ordine">
-
-  <label>Repetări</label>
-  <input type="number" id="corespondente-repetari">
-
-  <label>Pauză (secunde)</label>
-  <input type="number" id="corespondente-pauza_secunde">
-
-  <button onclick="salveazaEntitate('corespondente')">💾 Salvează</button>
-  <button onclick="inchideFormular('corespondente')">❌ Anulează</button>
-</div>
-          
-           <table id="tabel-corespondente">
-  <thead>
-    <tr>
-      <th>ID Antrenament</th>
-      <th>ID Exercițiu</th>
-      <th>Ordine</th>
-      <th>Repetări</th>
-      <th>Pauză (sec)</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-          </div>          
+      </div>
+    
     </div>
     <script src="scripts/admin.js"></script>
-</body>
-
+  </body>
 </html>

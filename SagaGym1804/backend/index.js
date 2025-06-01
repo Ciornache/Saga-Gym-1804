@@ -4,6 +4,9 @@ const path = require("path");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const fsp = require("fs/promises");
+const Exercitiu = require("./models/Exercitiu");
+const Grupa = require("./models/Grupa");
+
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -16,6 +19,7 @@ const models = {
   antrenamente: require("./models/Antrenament"),
   grupe: require("./models/Grupa"),
   corespondente: require("./models/Corespondenta"),
+  tip: require("./models/Tip")
 };
 
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
@@ -139,6 +143,7 @@ const server = http.createServer(async (req, res) => {
     "../public",
     req.url === "/" ? "index.html" : req.url
   );
+
   const ext = path.extname(filePath);
   const contentType =
     {
@@ -165,28 +170,22 @@ const send = (res, code, payload) => {
   res.end(typeof payload === "string" ? payload : JSON.stringify(payload));
 };
 
-async function insertExercisesIntoDB(json_path) {
-  const data = await fsp.readFile(json_path, "utf-8");
-  const json = JSON.parse(data);
-  console.log(json);
-  for (exercise of json) {
-    try {
-      console.log(exercise);
-      const response = await fetch("/http://localhost:3000/admin/exercitii", {
-        method: "Post",
-        header: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(exercise),
-      });
-      console.log(response.status);
-    } catch (err) {
-      console.error("Failed to insert");
-    }
-  }
+const exercises_json_path = "public/assets/exercises.json";
+const grupe_json_path = "public/assets/grupe_musculare.json";
+
+async function updateDb() {
+    await Exercitiu.deleteMany({});
+    await Grupa.deleteMany({});
+    let data = await fsp.readFile(exercises_json_path, 'utf-8');
+    const exercises_array = JSON.parse(data);
+    await Exercitiu.insertMany(exercises_array);
+    data = await fsp.readFile(grupe_json_path, 'utf-8');
+    const muscles_array = JSON.parse(data);
+    await Grupa.insertMany(muscles_array);
 }
 
+
 server.listen(3000, () => {
-  insertExercisesIntoDB("public/assets/translated_exercises.json");
+  updateDb();
   console.log("✅ Serverul rulează pe http://localhost:3000");
 });

@@ -72,16 +72,16 @@
             <h2>Filter</h2>
             <hr class="delimiter" />
             <div class="filter-group">
-              <label>Muscle Group</label>
-              <!-- your control here -->
+              <button id="btn-open-muscle-modal" class="filter-label" type="button">
+                Muscle Group
+              </button>
             </div>
             <div class="filter-group">
-              <label>Type</label>
+              <button id="btn-open-type-modal" class="filter-label" type="button">
+                Type
+              </button>
             </div>
-            <div class="filter-group">
-              <label>Execution</label>
-            </div>
-
+    
             <section class="dual-slider-container">
               <div class="filter-group dual-slider">
                 <label>Score</label>
@@ -106,45 +106,35 @@
                 </div>
             </section>
 
-            <button class="btn show-filters">Show Filters</button>
+            <button class="btn show-filters" id="btn-open-summary-modal">
+              Show Filters
+            </button>
           </div>
     
           <div class="sort-panel">
             <h2>Sort</h2>
-            <hr class="delimiter"/>
-            <label>
-              <div>
-                <input type="checkbox" name="sort" />
-                <span>Score</span>
-              </div>
-              
-              <span class="arrows">
-                <i class="fa-solid fa-arrow-up"></i>
-                <i class="fa-solid fa-arrow-down"></i>
-              </span>
-            </label>  
-            <label>
-              <div>
-                <input type="checkbox" name="sort" />
-                <span>Difficulty</span>
-              </div>
-                <span class="arrows">
-                  <i class="fa-solid fa-arrow-up"></i>
-                  <i class="fa-solid fa-arrow-down"></i>
-                </span>
-            </label>
-            <label>
-              <div>
-                <input type="checkbox" name="sort" />
-                <span>Alphabetic</span>
-              </div>
-                <span class="arrows">
-                  <i class="fa-solid fa-arrow-up"></i>
-                  <i class="fa-solid fa-arrow-down"></i>
-                </span>
-            </label>
-            <button class="btn apply-sort">Apply Sort</button>
+            <hr class="delimiter" />
+            <div class="sort-group" id="sort-score-group">
+              <input type="checkbox" id="sort-score-checkbox" />
+              <label for="sort-score-checkbox">Score</label>
+              <span class="sort-arrow up" id="sort-score-up">▲</span>
+              <span class="sort-arrow down" id="sort-score-down">▼</span>
+            </div>
+            <div class="sort-group" id="sort-difficulty-group">
+              <input type="checkbox" id="sort-difficulty-checkbox" />
+              <label for="sort-difficulty-checkbox">Difficulty</label>
+              <span class="sort-arrow up" id="sort-difficulty-up">▲</span>
+              <span class="sort-arrow down" id="sort-difficulty-down">▼</span>
+            </div>
+            <div class="sort-group" id="sort-alpha-group">
+              <input type="checkbox" id="sort-alpha-checkbox" />
+              <label for="sort-alpha-checkbox">Alphabetic</label>
+              <span class="sort-arrow up" id="sort-alpha-up">▲</span>
+              <span class="sort-arrow down" id="sort-alpha-down">▼</span>
+            </div>
+            <button id="btn-apply-sort" class="btn apply-sort">Apply Sort</button>
           </div>
+          
         </aside>
       
 
@@ -191,16 +181,10 @@
 
         </section>
     
-        <nav class="pagination">
-          <button>«</button>
-          <button class="active">1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>4</button>
-          <button>…</button>
-          <button>10</button>
-          <button>»</button>
-        </nav>
+        <div class="pagination">
+          <button class="page-btn" id="btn-prev">«</button>
+          <span id="page-numbers"></span>
+          <button class="page-btn" id="btn-next">»</button>  </div>
       </div>
       </main>
 
@@ -215,6 +199,45 @@
       </p>
     </footer>
   </div>
+
+
+  <div class="modal" id="modal-muscle-groups">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Select Muscle Group(s)</h3>
+      <div class="modal-list" id="modal-list-muscle-groups"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-muscle-modal">Cancel</button>
+        <button class="modal-apply-btn" id="btn-apply-muscle-modal">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-types">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Select Type(s)</h3>
+      <div class="modal-list" id="modal-list-types"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-type-modal">Cancel</button>
+        <button class="modal-apply-btn" id="btn-apply-type-modal">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-summary">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Current Filters</h3>
+      <div class="modal-list" id="modal-list-summary"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-summary-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+
 </body>
 
 </html>

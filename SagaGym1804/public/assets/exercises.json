@@ -4,7 +4,7 @@
     "name": "Bench Press",
     "type": "strength",
     "muscle_groups": ["chest", "triceps"],
-    "cover_image": "/img/exercitii/bench_press.jpg",
+    "cover_image": "assets/images/exercitii/bench_press.jpg",
     "images": ["/img/exercitii/bench_press.jpg"],
     "difficulty": 4.1,
     "rating": 5.0
@@ -14,7 +14,7 @@
     "name": "Deadlift",
     "type": "strength",
     "muscle_groups": ["back", "legs", "glutes"],
-    "cover_image": "/img/exercitii/deadlift.jpg",
+    "cover_image": "assets/images/exercitii/deadlift.jpg",
     "images": ["/img/exercitii/deadlift.jpg"],
     "difficulty": 5.0,
     "rating": 5.0
@@ -24,7 +24,7 @@
     "name": "Squats",
     "type": "strength",
     "muscle_groups": ["quadriceps", "glutes"],
-    "cover_image": "/img/exercitii/squats.jpg",
+    "cover_image": "assets/images/exercitii/squats.jpg",
     "images": ["/img/exercitii/squats.jpg"],
     "difficulty": 3.7,
     "rating": 5.0
@@ -34,7 +34,7 @@
     "name": "Overhead Press",
     "type": "strength",
     "muscle_groups": ["shoulders", "triceps"],
-    "cover_image": "/img/exercitii/overhead_press.jpg",
+    "cover_image": "assets/images/exercitii/overhead_press.jpg",
     "images": ["/img/exercitii/overhead_press.jpg"],
     "difficulty": 2.3,
     "rating": 5.0
@@ -44,7 +44,7 @@
     "name": "Pull-ups",
     "type": "strength",
     "muscle_groups": ["back", "biceps"],
-    "cover_image": "/img/exercitii/pull_ups.jpg",
+    "cover_image": "assets/images/exercitii/pull_ups.jpg",
     "images": ["/img/exercitii/pull_ups.jpg"],
     "difficulty": 3.2,
     "rating": 5.0
@@ -54,7 +54,7 @@
     "name": "Lateral Raises",
     "type": "strength",
     "muscle_groups": ["shoulders"],
-    "cover_image": "/img/exercitii/lateral_raises.jpg",
+    "cover_image": "assets/images/exercitii/lateral_raises.jpg",
     "images": ["/img/exercitii/lateral_raises.jpg"],
     "difficulty": 1.9,
     "rating": 5.0
@@ -64,7 +64,7 @@
     "name": "Hip Thrusts",
     "type": "strength",
     "muscle_groups": ["glutes", "thighs"],
-    "cover_image": "/img/exercitii/hip_thrusts.jpg",
+    "cover_image": "assets/images/exercitii/hip_thrusts.jpg",
     "images": ["/img/exercitii/hip_thrusts.jpg"],
     "difficulty": 2.8,
     "rating": 5.0
@@ -74,7 +74,7 @@
     "name": "Dumbbell Rows",
     "type": "strength",
     "muscle_groups": ["back"],
-    "cover_image": "/img/exercitii/dumbbell_rows.jpg",
+    "cover_image": "assets/images/exercitii/dumbbell_rows.jpg",
     "images": ["/img/exercitii/dumbbell_rows.jpg"],
     "difficulty": 1.4,
     "rating": 5.0
@@ -84,7 +84,7 @@
     "name": "Leg Curls",
     "type": "strength",
     "muscle_groups": ["hamstrings"],
-    "cover_image": "/img/exercitii/leg_curls.jpg",
+    "cover_image": "assets/images/exercitii/leg_curls.jpg",
     "images": ["/img/exercitii/leg_curls.jpg"],
     "difficulty": 1.0,
     "rating": 5.0
@@ -94,7 +94,7 @@
     "name": "Plank",
     "type": "strength",
     "muscle_groups": ["abs", "back"],
-    "cover_image": "/img/exercitii/plank.jpg",
+    "cover_image": "assets/images/exercitii/plank.jpg",
     "images": ["/img/exercitii/plank.jpg"],
     "difficulty": 4.6,
     "rating": 5.0
@@ -104,7 +104,7 @@
     "name": "Wall Slid_exercitiues",
     "type": "kinetotherapy",
     "muscle_groups": ["shoulders", "back"],
-    "cover_image": "/img/exercitii/wall_slid_exercitiues.jpg",
+    "cover_image": "assets/images/exercitii/wall_slid_exercitiues.jpg",
     "images": ["/img/exercitii/wall_slid_exercitiues.jpg"],
     "difficulty": 3.7,
     "rating": 5.0
@@ -114,7 +114,7 @@
     "name": "Ankle Circles",
     "type": "kinetotherapy",
     "muscle_groups": ["ankles"],
-    "cover_image": "/img/exercitii/ankle_circles.jpg",
+    "cover_image": "assets/images/exercitii/ankle_circles.jpg",
     "images": ["/img/exercitii/ankle_circles.jpg"],
     "difficulty": 1.0,
     "rating": 5.0
@@ -124,7 +124,7 @@
     "name": "Heel Slid_exercitiues",
     "type": "kinetotherapy",
     "muscle_groups": ["thighs", "knees"],
-    "cover_image": "/img/exercitii/heel_slid_exercitiues.jpg",
+    "cover_image": "assets/images/exercitii/heel_slides.jpg",
     "images": ["/img/exercitii/heel_slid_exercitiues.jpg"],
     "difficulty": 2.8,
     "rating": 5.0
@@ -134,7 +134,7 @@
     "name": "Shoulder Pendulum",
     "type": "kinetotherapy",
     "muscle_groups": ["shoulders"],
-    "cover_image": "/img/exercitii/shoulder_pendulum.jpg",
+    "cover_image": "assets/images/exercitii/shoulder_pendulum.jpg",
     "images": ["/img/exercitii/shoulder_pendulum.jpg"],
     "difficulty": 1.9,
     "rating": 5.0
@@ -144,7 +144,7 @@
     "name": "Brid_exercitiuge Exercise",
     "type": "kinetotherapy",
     "muscle_groups": ["abs", "glutes"],
-    "cover_image": "/img/exercitii/brid_exercitiuge.jpg",
+    "cover_image": "assets/images/exercitii/brid_exercitiuge.jpg",
     "images": ["/img/exercitii/brid_exercitiuge.jpg"],
     "difficulty": 4.1,
     "rating": 5.0
@@ -154,7 +154,7 @@
     "name": "Arm Circles",
     "type": "kinetotherapy",
     "muscle_groups": ["shoulders", "arms"],
-    "cover_image": "/img/exercitii/arm_circles.jpg",
+    "cover_image": "assets/images/exercitii/arm_circles.jpg",
     "images": ["/img/exercitii/arm_circles.jpg"],
     "difficulty": 1.4,
     "rating": 5.0
@@ -164,7 +164,7 @@
     "name": "Bird Dog",
     "type": "kinetotherapy",
     "muscle_groups": ["back", "core"],
-    "cover_image": "/img/exercitii/bird_dog.jpg",
+    "cover_image": "assets/images/exercitii/bird_dog.jpg",
     "images": ["/img/exercitii/bird_dog.jpg"],
     "difficulty": 4.6,
     "rating": 5.0
@@ -174,7 +174,7 @@
     "name": "Sid_exercitiue Lying Leg Lifts",
     "type": "kinetotherapy",
     "muscle_groups": ["thighs"],
-    "cover_image": "/img/exercitii/sid_exercitiue_lying_leg_lifts.jpg",
+    "cover_image": "assets/images/exercitii/sid_lying_leg_lifts.jpg",
     "images": ["/img/exercitii/sid_exercitiue_lying_leg_lifts.jpg"],
     "difficulty": 3.2,
     "rating": 5.0
@@ -184,7 +184,7 @@
     "name": "Toe Raises",
     "type": "kinetotherapy",
     "muscle_groups": ["calves"],
-    "cover_image": "/img/exercitii/toe_raises.jpg",
+    "cover_image": "assets/images/exercitii/toe_raises.jpg",
     "images": ["/img/exercitii/toe_raises.jpg"],
     "difficulty": 2.3,
     "rating": 5.0
@@ -194,7 +194,7 @@
     "name": "Cat-Cow Stretch",
     "type": "kinetotherapy",
     "muscle_groups": ["back"],
-    "cover_image": "/img/exercitii/cat_cow.jpg",
+    "cover_image": "assets/images/exercitii/cat_cow.jpg",
     "images": ["/img/exercitii/cat_cow.jpg"],
     "difficulty": 5.0,
     "rating": 5.0
