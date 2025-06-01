@@ -35,6 +35,12 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
   updateRange.call(minInput);
 });
 
+document.querySelectorAll(".dual-slider").forEach((s) => {
+  s.addEventListener("change", () => {
+    applyAllFilters();
+  });
+});
+
 function fillCard(cardEl, data) {
   const imgDiv = cardEl.querySelector(".img");
   imgDiv.style.backgroundImage = `url(${data.cover_image})`;
@@ -66,6 +72,167 @@ const selectedFilters = {
   types: [],
 };
 
+const sortCriteria = [];
+
+function updateSortCriteria(fieldName, isChecked) {
+  const idx = sortCriteria.findIndex((c) => c.field === fieldName);
+  if (isChecked) {
+    if (idx === -1) {
+      sortCriteria.push({ field: fieldName, order: "asc" });
+    }
+  } else {
+    if (idx !== -1) sortCriteria.splice(idx, 1);
+  }
+}
+
+document.getElementById("sort-score-up").addEventListener("click", () => {
+  const idx = sortCriteria.findIndex((c) => c.field === "score");
+  if (idx !== -1) sortCriteria[idx].order = "asc";
+  else sortCriteria.push({ field: "score", order: "asc" });
+  document.getElementById("sort-score-up").classList.add("selected");
+  document.getElementById("sort-score-down").classList.remove("selected");
+  document.getElementById("sort-score-checkbox").checked = true;
+});
+
+document.getElementById("sort-score-down").addEventListener("click", () => {
+  const idx = sortCriteria.findIndex((c) => c.field === "score");
+  if (idx !== -1) sortCriteria[idx].order = "asc";
+  else sortCriteria.push({ field: "score", order: "asc" });
+  document.getElementById("sort-score-down").classList.add("selected");
+  document.getElementById("sort-score-up").classList.remove("selected");
+  document.getElementById("sort-score-checkbox").checked = true;
+});
+
+document.getElementById("sort-difficulty-up").addEventListener("click", () => {
+  const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
+  if (idx !== -1) {
+    sortCriteria[idx].order = "desc";
+  } else {
+    sortCriteria.push({ field: "difficulty", order: "desc" });
+  }
+  document.getElementById("sort-difficulty-up").classList.add("selected");
+  document.getElementById("sort-difficulty-down").classList.remove("selected");
+  document.getElementById("sort-difficulty-checkbox").checked = true;
+});
+
+document
+  .getElementById("sort-difficulty-down")
+  .addEventListener("click", () => {
+    const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
+    if (idx !== -1) {
+      sortCriteria[idx].order = "desc";
+    } else {
+      sortCriteria.push({ field: "difficulty", order: "desc" });
+    }
+    document.getElementById("sort-difficulty-down").classList.add("selected");
+    document.getElementById("sort-difficulty-up").classList.remove("selected");
+    document.getElementById("sort-difficulty-checkbox").checked = true;
+  });
+
+document.getElementById("sort-alpha-up").addEventListener("click", () => {
+  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
+  if (idx !== -1) {
+    sortCriteria[idx].order = "asc";
+  } else {
+    sortCriteria.push({ field: "alpha", order: "asc" });
+  }
+  document.getElementById("sort-alpha-up").classList.add("selected");
+  document.getElementById("sort-alpha-down").classList.remove("selected");
+  document.getElementById("sort-alpha-checkbox").checked = true;
+});
+
+document.getElementById("sort-alpha-down").addEventListener("click", () => {
+  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
+  if (idx !== -1) {
+    sortCriteria[idx].order = "asc";
+  } else {
+    sortCriteria.push({ field: "alpha", order: "asc" });
+  }
+  document.getElementById("sort-alpha-down").classList.add("selected");
+  document.getElementById("sort-alpha-up").classList.remove("selected");
+  document.getElementById("sort-alpha-checkbox").checked = true;
+});
+
+document
+  .getElementById("sort-score-checkbox")
+  .addEventListener("change", (e) => {
+    updateSortCriteria("score", e.target.checked);
+    if (!e.target.checked) {
+      document.getElementById("sort-score-up").classList.remove("selected");
+      document.getElementById("sort-score-down").classList.remove("selected");
+    }
+  });
+
+document
+  .getElementById("sort-difficulty-checkbox")
+  .addEventListener("change", (e) => {
+    updateSortCriteria("difficulty", e.target.checked);
+    if (!e.target.checked) {
+      document
+        .getElementById("sort-difficulty-up")
+        .classList.remove("selected");
+      document
+        .getElementById("sort-difficulty-down")
+        .classList.remove("selected");
+    }
+  });
+
+document
+  .getElementById("sort-score-checkbox")
+  .addEventListener("change", (e) => {
+    updateSortCriteria("score", e.target.checked);
+    if (!e.target.checked) {
+      document.getElementById("sort-score-up").classList.remove("selected");
+      document.getElementById("sort-score-down").classList.remove("selected");
+    }
+  });
+
+function sortCurrentArray() {
+  if (exercisesToDisplay.length === 0) return;
+  let arr = exercisesToDisplay;
+  const sorted = [...arr];
+  console.log(arr);
+  if (sortCriteria.length === 0) {
+    if (exercisesToDisplay.length > 0) {
+      renderFiltered();
+    } else {
+      render();
+    }
+    return;
+  }
+
+  sorted.sort((a, b) => {
+    for (const crit of sortCriteria) {
+      let diff = 0;
+      if (crit.field === "score") {
+        diff = parseFloat(a.rating) - parseFloat(b.rating);
+      } else if (crit.field === "difficulty") {
+        diff = parseFloat(a.difficulty) - parseFloat(b.difficulty);
+      } else if (crit.field === "alpha") {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        if (nameA < nameB) diff = -1;
+        else if (nameA > nameB) diff = 1;
+        else diff = 0;
+      }
+      if (diff !== 0) {
+        return crit.order === "asc" ? diff : -diff;
+      }
+    }
+    return 0;
+  });
+
+  if (exercisesToDisplay.length > 0) {
+    exercisesToDisplay = [...sorted];
+    currentPage = 1;
+    renderFiltered();
+  } else {
+    exercises = [...sorted];
+    currentPage = 1;
+    render();
+  }
+}
+
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -82,85 +249,145 @@ function closeModal(modalId) {
 
 async function populateMuscleGroupsModal() {
   const container = document.getElementById("modal-list-muscle-groups");
-  container.innerHTML = "";
+  container.innerHTML = ""; 
 
   try {
     const resp = await fetch("/admin/grupe");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const groups = await resp.json();
 
+    const grid = document.createElement("div");
+    grid.classList.add("modal-image-grid");
+    container.appendChild(grid);
+
     groups.forEach((groupObj) => {
-      const label = document.createElement("label");
-      label.innerHTML = `
-        <input
-          type="checkbox"
-          value="${groupObj.name}"
-          ${
-            selectedFilters.muscleGroups.includes(groupObj.name)
-              ? "checked"
-              : ""
-          }
-        />
-        <span>${groupObj.name}</span>
-      `;
-      const cb = label.querySelector("input[type='checkbox']");
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("image-checkbox-wrapper");
+
+      const cb = document.createElement("input");
+      cb.setAttribute("type", "checkbox");
+      cb.setAttribute("value", groupObj.name);
+      cb.classList.add("modal-image-checkbox");
+      if (selectedFilters.muscleGroups.includes(groupObj.name)) {
+        cb.checked = true;
+      }
+      wrapper.appendChild(cb);
+
+      const img = document.createElement("img");
+      img.setAttribute("src", groupObj.image);
+      img.setAttribute("alt", groupObj.name);
+      img.classList.add("modal-select-image");
+      wrapper.appendChild(img);
+
+      const overlay = document.createElement("div");
+      overlay.classList.add("checkmark-overlay");
+      overlay.innerHTML = "✔";
+      if (cb.checked) {
+        overlay.classList.add("selected");
+      }
+      wrapper.appendChild(overlay);
+
       cb.addEventListener("change", (e) => {
         const val = e.target.value;
         if (e.target.checked) {
           if (!selectedFilters.muscleGroups.includes(val)) {
             selectedFilters.muscleGroups.push(val);
           }
+          overlay.classList.add("selected");
         } else {
           selectedFilters.muscleGroups = selectedFilters.muscleGroups.filter(
             (m) => m !== val
           );
+          overlay.classList.remove("selected");
         }
       });
-      container.appendChild(label);
+
+      img.addEventListener("click", (e) => {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event("change")); // manually fire "change"
+      });
+      overlay.addEventListener("click", (e) => {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event("change"));
+      });
+
+      grid.appendChild(wrapper);
     });
   } catch (err) {
     console.error("Failed to load muscle‐groups:", err);
-    container.innerHTML = `<p style="color:red;">Eroare la încărcare</p>`;
+    container.innerHTML = `<p style="color:red;">Error loading muscle groups</p>`;
   }
 }
 
 async function populateTypesModal() {
   const container = document.getElementById("modal-list-types");
-  container.innerHTML = "";
+  container.innerHTML = ""; // clear anything
 
   try {
     const resp = await fetch("/admin/tip");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const types = await resp.json();
+    const types = await resp.json(); // e.g. [ { _id, name, image }, … ]
+
+    const grid = document.createElement("div");
+    grid.classList.add("modal-image-grid");
+    container.appendChild(grid);
 
     types.forEach((typeObj) => {
-      const label = document.createElement("label");
-      label.innerHTML = `
-        <input
-          type="checkbox"
-          value="${typeObj.name}"
-          ${selectedFilters.types.includes(typeObj.name) ? "checked" : ""}
-        />
-        <span>${typeObj.name}</span>
-      `;
-      const cb = label.querySelector("input[type='checkbox']");
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("image-checkbox-wrapper");
+
+      const cb = document.createElement("input");
+      cb.setAttribute("type", "checkbox");
+      cb.setAttribute("value", typeObj.name);
+      cb.classList.add("modal-image-checkbox");
+      if (selectedFilters.types.includes(typeObj.name)) {
+        cb.checked = true;
+      }
+      wrapper.appendChild(cb);
+
+      const img = document.createElement("img");
+      img.setAttribute("src", typeObj.image);
+      img.setAttribute("alt", typeObj.name);
+      img.classList.add("modal-select-image");
+      wrapper.appendChild(img);
+
+      const overlay = document.createElement("div");
+      overlay.classList.add("checkmark-overlay");
+      overlay.innerHTML = "✔";
+      if (cb.checked) {
+        overlay.classList.add("selected");
+      }
+      wrapper.appendChild(overlay);
+
       cb.addEventListener("change", (e) => {
         const val = e.target.value;
         if (e.target.checked) {
           if (!selectedFilters.types.includes(val)) {
             selectedFilters.types.push(val);
           }
+          overlay.classList.add("selected");
         } else {
           selectedFilters.types = selectedFilters.types.filter(
             (t) => t !== val
           );
+          overlay.classList.remove("selected");
         }
       });
-      container.appendChild(label);
+
+      img.addEventListener("click", () => {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event("change"));
+      });
+      overlay.addEventListener("click", () => {
+        cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event("change"));
+      });
+
+      grid.appendChild(wrapper);
     });
   } catch (err) {
     console.error("Failed to load types:", err);
-    container.innerHTML = `<p style="color:red;">Eroare la încărcare</p>`;
+    container.innerHTML = `<p style="color:red;">Error loading types</p>`;
   }
 }
 
@@ -194,7 +421,6 @@ function applyAllFilters() {
   let baseArray = exercises;
   if (selectedFilters.muscleGroups.length > 0) {
     baseArray = baseArray.filter((ex) => {
-      console.log(ex.muscle_groups);
       return selectedFilters.muscleGroups.some((mg) =>
         ex.muscle_groups.includes(mg.toLowerCase())
       );
@@ -209,46 +435,32 @@ function applyAllFilters() {
     );
   }
 
+  const sliders = document.querySelectorAll(".dual-slider");
+  const scoreSlider = sliders[0];
+  const difficultySlider = sliders[1];
+
+  // const minScore = scoreSlider.querySelector(".thumb--left").value;
+  // const maxScore = scoreSlider.querySelector(".thumb--right").value;
+
+  const minDiff = difficultySlider.querySelector(".thumb--left").value;
+  const maxDiff = difficultySlider.querySelector(".thumb--right").value;
+
+  // baseArray = baseArray.filter((ex) => {
+  //     ex.score >= minScore && ex.score <= maxScore
+  // });
+
+  baseArray = baseArray.filter((ex) => {
+    return (
+      ex.difficulty >= parseFloat(minDiff) &&
+      ex.difficulty <= parseFloat(maxDiff)
+    );
+  });
+
+  console.log("After filter", baseArray);
+
   exercisesToDisplay = [...baseArray];
   currentPage = 1;
   renderFiltered();
-}
-
-function sortCurrentArray() {
-  let arr = exercisesToDisplay.length > 0 ? exercisesToDisplay : exercises;
-  const sorted = [...arr];
-
-  sorted.sort((a, b) => {
-    if (currentSortField === "score") {
-      const diff = parseFloat(a.rating) - parseFloat(b.rating);
-      return currentSortOrder === "asc" ? diff : -diff;
-    }
-    if (currentSortField === "difficulty") {
-      const diff = parseFloat(a.difficulty) - parseFloat(b.difficulty);
-      return currentSortOrder === "asc" ? diff : -diff;
-    }
-    if (currentSortField === "alpha") {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-      if (nameA < nameB) return currentSortOrder === "asc" ? -1 : 1;
-      if (nameA > nameB) return currentSortOrder === "asc" ? 1 : -1;
-      return 0;
-    }
-    return 0;
-  });
-
-  if (exercisesToDisplay.length > 0) {
-    exercisesToDisplay = [...sorted];
-  } else {
-    exercises = [...sorted];
-  }
-
-  currentPage = 1;
-  if (exercisesToDisplay.length > 0) {
-    renderFiltered();
-  } else {
-    render();
-  }
 }
 
 const cards = document.querySelectorAll(".exercise-card");
@@ -377,7 +589,7 @@ function renderPagination(totalItems) {
 }
 
 function applySearch() {
-  const searchInput = document.querySelector(".search-bar");
+  const searchInput = document.getElementById("search-input");
   const term = searchInput.value.trim().toLowerCase();
   if (term === "") {
     console.log(exercisesToDisplay);
@@ -385,12 +597,15 @@ function applySearch() {
     renderFiltered();
     return;
   }
+  console.log(term);
   const filtered = exercisesToDisplay.filter((ex) => {
     return (
       ex.name.toLowerCase().includes(term) ||
       (ex.description && ex.description.toLowerCase().includes(term))
     );
   });
+
+  console.log("After Search Bar", filtered);
 
   exercisesToDisplay = [...filtered];
   currentPage = 1;
@@ -402,6 +617,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const resp = await fetch("/admin/exercitii");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     exercises = await resp.json();
+    exercisesToDisplay = exercises;
   } catch (err) {
     console.error("Nu am putut încărca exercițiile:", err);
   }
@@ -427,8 +643,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (btnRight) {
     btnRight.addEventListener("click", () => {
+      console.log(exercisesToDisplay);
       if (arrowIndex + 4 < exercisesToDisplay.length) {
         arrowIndex += 4;
+        console.log(arrowIndex);
         renderArrow();
       }
     });
@@ -482,147 +700,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   btnCloseSummary.addEventListener("click", () => closeModal("modal-summary"));
 
-  function uncheckOtherSortCheckbox(chosenId) {
-    const allCheckboxes = [
-      "sort-score-checkbox",
-      "sort-difficulty-checkbox",
-      "sort-alpha-checkbox",
-    ];
-    allCheckboxes.forEach((id) => {
-      if (id !== chosenId) {
-        const c = document.getElementById(id);
-        if (c) c.checked = false;
-        const upId = id.replace("-checkbox", "-up");
-        const downId = id.replace("-checkbox", "-down");
-        document.getElementById(upId).classList.remove("asc");
-        document.getElementById(downId).classList.remove("desc");
-        document.getElementById(upId).style.opacity = "0.3";
-        document.getElementById(downId).style.opacity = "0.3";
-      }
-    });
-  }
-
-  document
-    .getElementById("sort-score-checkbox")
-    .addEventListener("change", (e) => {
-      if (e.target.checked) {
-        uncheckOtherSortCheckbox("sort-score-checkbox");
-        currentSortField = "score";
-        currentSortOrder = null;
-        document.getElementById("sort-score-up").style.opacity = "0.7";
-        document.getElementById("sort-score-down").style.opacity = "0.7";
-      } else {
-        if (currentSortField === "score") {
-          currentSortField = null;
-          currentSortOrder = null;
-          document.getElementById("sort-score-up").style.opacity = "0.3";
-          document.getElementById("sort-score-down").style.opacity = "0.3";
-        }
-      }
-    });
-
-  document
-    .getElementById("sort-difficulty-checkbox")
-    .addEventListener("change", (e) => {
-      if (e.target.checked) {
-        uncheckOtherSortCheckbox("sort-difficulty-checkbox");
-        currentSortField = "difficulty";
-        currentSortOrder = null;
-        document.getElementById("sort-difficulty-up").style.opacity = "0.7";
-        document.getElementById("sort-difficulty-down").style.opacity = "0.7";
-      } else {
-        if (currentSortField === "difficulty") {
-          currentSortField = null;
-          currentSortOrder = null;
-          document.getElementById("sort-difficulty-up").style.opacity = "0.3";
-          document.getElementById("sort-difficulty-down").style.opacity = "0.3";
-        }
-      }
-    });
-
-  document
-    .getElementById("sort-alpha-checkbox")
-    .addEventListener("change", (e) => {
-      if (e.target.checked) {
-        uncheckOtherSortCheckbox("sort-alpha-checkbox");
-        currentSortField = "alpha";
-        currentSortOrder = null;
-        document.getElementById("sort-alpha-up").style.opacity = "0.7";
-        document.getElementById("sort-alpha-down").style.opacity = "0.7";
-      } else {
-        if (currentSortField === "alpha") {
-          currentSortField = null;
-          currentSortOrder = null;
-          document.getElementById("sort-alpha-up").style.opacity = "0.3";
-          document.getElementById("sort-alpha-down").style.opacity = "0.3";
-        }
-      }
-    });
-
-  document.getElementById("sort-score-up").addEventListener("click", () => {
-    if (currentSortField === "score") {
-      currentSortOrder = "asc";
-      sortCurrentArray();
-      document.getElementById("sort-score-up").classList.add("asc");
-      document.getElementById("sort-score-down").classList.remove("desc");
-    }
-  });
-  document.getElementById("sort-score-down").addEventListener("click", () => {
-    if (currentSortField === "score") {
-      currentSortOrder = "desc";
-      sortCurrentArray();
-      document.getElementById("sort-score-down").classList.add("desc");
-      document.getElementById("sort-score-up").classList.remove("asc");
-    }
-  });
-
-  document
-    .getElementById("sort-difficulty-up")
-    .addEventListener("click", () => {
-      if (currentSortField === "difficulty") {
-        currentSortOrder = "asc";
-        sortCurrentArray();
-        document.getElementById("sort-difficulty-up").classList.add("asc");
-        document
-          .getElementById("sort-difficulty-down")
-          .classList.remove("desc");
-      }
-    });
-  document
-    .getElementById("sort-difficulty-down")
-    .addEventListener("click", () => {
-      if (currentSortField === "difficulty") {
-        currentSortOrder = "desc";
-        sortCurrentArray();
-        document.getElementById("sort-difficulty-down").classList.add("desc");
-        document.getElementById("sort-difficulty-up").classList.remove("asc");
-      }
-    });
-
-  document.getElementById("sort-alpha-up").addEventListener("click", () => {
-    if (currentSortField === "alpha") {
-      currentSortOrder = "asc";
-      sortCurrentArray();
-      document.getElementById("sort-alpha-up").classList.add("asc");
-      document.getElementById("sort-alpha-down").classList.remove("desc");
-    }
-  });
-  document.getElementById("sort-alpha-down").addEventListener("click", () => {
-    if (currentSortField === "alpha") {
-      currentSortOrder = "desc";
-      sortCurrentArray();
-      document.getElementById("sort-alpha-down").classList.add("desc");
-      document.getElementById("sort-alpha-up").classList.remove("asc");
-    }
-  });
-
   document.getElementById("btn-apply-sort").addEventListener("click", () => {
     sortCurrentArray();
   });
-  const searchInput = document.querySelector(".search-bar");
+  const searchInput = document.getElementById("search-input");
   console.log(searchInput);
   if (searchInput) {
-    searchInput.addEventListener("input", applySearch);
+    searchInput.addEventListener("input", () => {
+      applyAllFilters();
+      applySearch();
+      sortCurrentArray();
+    });
     searchInput.addEventListener("keyup", (e) => {
       applyAllFilters();
       applySearch();
@@ -630,4 +718,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
   render();
+
+  const toggleBtn = document.getElementById("toggle-search-btn");
+  const searchContainer = document.getElementById("search-container");
+  const searchInput2 = document.getElementById("search-input");
+
+  if (!toggleBtn || !searchContainer) return;
+
+  toggleBtn.addEventListener("click", () => {
+    searchContainer.classList.toggle("show");
+    if (searchContainer.classList.contains("show")) {
+      searchInput2.focus();
+    }
+  });
+
+  searchInput2.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchContainer.classList.remove("show");
+    }
+  });
 });

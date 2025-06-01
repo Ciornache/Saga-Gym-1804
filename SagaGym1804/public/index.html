@@ -62,11 +62,11 @@
 
         <i class="slider-angles-right fa-solid fa-angles-right"></i>
         <i class="slider-angles-left fa-solid fa-angles-left"></i>
-        <i class="slider-magnifying-glass fa-solid fa-magnifying-glass"></i>
 
-        <div class="search-bar-area">
-          <input type="text" class="search-bar" placeholder="Search for exercises, workouts, or tips…" />
+        <div id="search-container" class="search-container">
+          <input id="search-input" class="input-search" placeholder="Search for exercises, workouts, or tips…" />  
         </div>
+        <i id="toggle-search-btn" class="slider-magnifying-glass fa-solid fa-magnifying-glass"></i>
         <aside class="sidebar">
           <div class="filter-panel">
             <h2>Filter</h2>
@@ -207,23 +207,23 @@
       <h3>Select Muscle Group(s)</h3>
       <div class="modal-list" id="modal-list-muscle-groups"></div>
       <div class="modal-buttons">
-        <button class="modal-close-btn" id="btn-close-muscle-modal">Cancel</button>
-        <button class="modal-apply-btn" id="btn-apply-muscle-modal">Apply</button>
+        <button class="modal-close-btn" id="btn-close-muscle-modal" type="button">Cancel</button>
+        <button class="modal-apply-btn" id="btn-apply-muscle-modal" type="button">Apply</button>
       </div>
     </div>
-  </div>
+    </div>
 
-  <div class="modal" id="modal-types">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content">
-      <h3>Select Type(s)</h3>
-      <div class="modal-list" id="modal-list-types"></div>
-      <div class="modal-buttons">
-        <button class="modal-close-btn" id="btn-close-type-modal">Cancel</button>
-        <button class="modal-apply-btn" id="btn-apply-type-modal">Apply</button>
+    <div class="modal" id="modal-types">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h3>Select Type(s)</h3>
+        <div class="modal-list" id="modal-list-types"></div>
+        <div class="modal-buttons">
+          <button class="modal-close-btn" id="btn-close-type-modal" type="button">Cancel</button>
+          <button class="modal-apply-btn" id="btn-apply-type-modal" type="button">Apply</button>
+        </div>
       </div>
-    </div>
-  </div>
+      </div>
 
   <div class="modal" id="modal-summary">
     <div class="modal-backdrop"></div>
