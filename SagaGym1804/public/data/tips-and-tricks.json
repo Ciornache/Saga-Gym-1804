@@ -1,0 +1,342 @@
+[
+  {
+    "name": "Bench Press",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing bench press."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing bench press."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the bench press."
+      }
+    ]
+  },
+  {
+    "name": "Deadlift",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing deadlift."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing deadlift."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the deadlift."
+      }
+    ]
+  },
+  {
+    "name": "Squats",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing squats."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing squats."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the squats."
+      }
+    ]
+  },
+  {
+    "name": "Overhead Press",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing overhead press."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing overhead press."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the overhead press."
+      }
+    ]
+  },
+  {
+    "name": "Pull-ups",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing pull-ups."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing pull-ups."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the pull-ups."
+      }
+    ]
+  },
+  {
+    "name": "Lateral Raises",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing lateral raises."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing lateral raises."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the lateral raises."
+      }
+    ]
+  },
+  {
+    "name": "Hip Thrusts",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing hip thrusts."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing hip thrusts."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the hip thrusts."
+      }
+    ]
+  },
+  {
+    "name": "Dumbbell Rows",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing dumbbell rows."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing dumbbell rows."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the dumbbell rows."
+      }
+    ]
+  },
+  {
+    "name": "Leg Curls",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing leg curls."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing leg curls."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the leg curls."
+      }
+    ]
+  },
+  {
+    "name": "Plank",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing plank."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing plank."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the plank."
+      }
+    ]
+  },
+  {
+    "name": "Wall Slid_exercitiues",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing wall slid_exercitiues."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing wall slid_exercitiues."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the wall slid_exercitiues."
+      }
+    ]
+  },
+  {
+    "name": "Ankle Circles",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing ankle circles."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing ankle circles."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the ankle circles."
+      }
+    ]
+  },
+  {
+    "name": "Heel Slid_exercitiues",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing heel slid_exercitiues."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing heel slid_exercitiues."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the heel slid_exercitiues."
+      }
+    ]
+  },
+  {
+    "name": "Shoulder Pendulum",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing shoulder pendulum."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing shoulder pendulum."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the shoulder pendulum."
+      }
+    ]
+  },
+  {
+    "name": "Brid_exercitiuge Exercise",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing brid_exercitiuge exercise."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing brid_exercitiuge exercise."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the brid_exercitiuge exercise."
+      }
+    ]
+  },
+  {
+    "name": "Arm Circles",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing arm circles."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing arm circles."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the arm circles."
+      }
+    ]
+  },
+  {
+    "name": "Bird Dog",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing bird dog."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing bird dog."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the bird dog."
+      }
+    ]
+  },
+  {
+    "name": "Sid_exercitiue Lying Leg Lifts",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing sid_exercitiue lying leg lifts."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing sid_exercitiue lying leg lifts."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the sid_exercitiue lying leg lifts."
+      }
+    ]
+  },
+  {
+    "name": "Toe Raises",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing toe raises."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing toe raises."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the toe raises."
+      }
+    ]
+  },
+  {
+    "name": "Cat-Cow Stretch",
+    "description": [
+      {
+        "index": 1,
+        "tip": "Always warm up before doing cat-cow stretch."
+      },
+      {
+        "index": 2,
+        "tip": "Focus on form rather than weight when performing cat-cow stretch."
+      },
+      {
+        "index": 3,
+        "tip": "Breathe properly and engage your core during the cat-cow stretch."
+      }
+    ]
+  }
+]

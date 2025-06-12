@@ -17,6 +17,7 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
         minVal = parseFloat(minInput.value);
       } else {
         maxInput.value = minVal + minGap;
+        c;
         maxVal = parseFloat(maxInput.value);
       }
     }
@@ -33,6 +34,17 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
   minInput.addEventListener("input", updateRange);
   maxInput.addEventListener("input", updateRange);
   updateRange.call(minInput);
+});
+
+document.querySelectorAll(".exercise-card").forEach((c) => {
+  console.log("Do I even attack the event?");
+  c.addEventListener("click", () => {
+    console.log("Clicked on this shit");
+    console.log(c);
+    let title = c.querySelector("h3");
+    console.log(title.textContent);
+    window.location.href = `exercitiu.html?exercise-name=${title.textContent}`;
+  });
 });
 
 document.querySelectorAll(".dual-slider").forEach((s) => {
@@ -249,7 +261,7 @@ function closeModal(modalId) {
 
 async function populateMuscleGroupsModal() {
   const container = document.getElementById("modal-list-muscle-groups");
-  container.innerHTML = ""; 
+  container.innerHTML = "";
 
   try {
     const resp = await fetch("/admin/grupe");
@@ -321,12 +333,12 @@ async function populateMuscleGroupsModal() {
 
 async function populateTypesModal() {
   const container = document.getElementById("modal-list-types");
-  container.innerHTML = ""; // clear anything
+  container.innerHTML = "";
 
   try {
     const resp = await fetch("/admin/tip");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const types = await resp.json(); // e.g. [ { _id, name, image }, … ]
+    const types = await resp.json();
 
     const grid = document.createElement("div");
     grid.classList.add("modal-image-grid");

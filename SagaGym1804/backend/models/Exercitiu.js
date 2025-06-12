@@ -8,5 +8,8 @@ const exercitiuSchema = new mongoose.Schema({
   difficulty: Number,
   muscle_groups: [String],
   images: [String],
+  risk: String,
+  description: String,
+  video: String,
 });
 module.exports = mongoose.model("Exercitiu", exercitiuSchema);

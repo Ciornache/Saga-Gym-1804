@@ -7,19 +7,17 @@ const fsp = require("fs/promises");
 const Exercitiu = require("./models/Exercitiu");
 const Grupa = require("./models/Grupa");
 
-
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
-// Modele
 const models = {
   users: require("./models/User"),
   exercitii: require("./models/Exercitiu"),
   antrenamente: require("./models/Antrenament"),
   grupe: require("./models/Grupa"),
   corespondente: require("./models/Corespondenta"),
-  tip: require("./models/Tip")
+  tip: require("./models/Tip"),
 };
 
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
@@ -28,6 +26,18 @@ mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
 });
 
 const server = http.createServer(async (req, res) => {
+  if (req.method === "GET" && req.url === "/exercise/getExerciseByName") {
+    console.log("Request sent");
+    const exercise = await models.exercitii.findOne({ name: req.headers.name });
+    if (exercise) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(exercise));
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Exercitiul nu a fost gasit" }));
+    }
+    return;
+  }
   if (req.method === "GET" && req.url === "/validation/getUserByEmail") {
     const user = await models.users.findOne({ email: req.headers.email });
     if (!user) {
@@ -36,7 +46,6 @@ const server = http.createServer(async (req, res) => {
     } else {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(user));
-      console.log(user);
     }
     return;
   }
@@ -138,6 +147,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  req.url = req.url.split("?")[0];
+
   const filePath = path.join(
     __dirname,
     "../public",
@@ -174,16 +185,15 @@ const exercises_json_path = "public/assets/exercises.json";
 const grupe_json_path = "public/assets/grupe_musculare.json";
 
 async function updateDb() {
-    await Exercitiu.deleteMany({});
-    await Grupa.deleteMany({});
-    let data = await fsp.readFile(exercises_json_path, 'utf-8');
-    const exercises_array = JSON.parse(data);
-    await Exercitiu.insertMany(exercises_array);
-    data = await fsp.readFile(grupe_json_path, 'utf-8');
-    const muscles_array = JSON.parse(data);
-    await Grupa.insertMany(muscles_array);
+  await Exercitiu.deleteMany({});
+  await Grupa.deleteMany({});
+  let data = await fsp.readFile(exercises_json_path, "utf-8");
+  const exercises_array = JSON.parse(data);
+  await Exercitiu.insertMany(exercises_array);
+  data = await fsp.readFile(grupe_json_path, "utf-8");
+  const muscles_array = JSON.parse(data);
+  await Grupa.insertMany(muscles_array);
 }
-
 
 server.listen(3000, () => {
   updateDb();
