@@ -5,10 +5,12 @@
 <head>
   <title>Saga Gym Web App</title>
   <meta charset="UTF-8" />
+  <link href="styles/index.css" rel="stylesheet" />
   <link href="styles/main.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -37,15 +39,15 @@
           <span>My Account</span>
         </button>
         <div class="dropdown-menu">
-          <button class="dropdown-item">
+          <a class="dropdown-item" href="login.html">
             <span>Login</span>
             <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
-          </button>
+          </a>
 
-          <button class="dropdown-item">
-            <span>Register</span>
+          <a class="dropdown-item" href="signup.html">
+            <span>Sign&nbsp;Up</span>
             <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
-          </button>
+          </a>
         </div>
       </div>
 
@@ -55,260 +57,138 @@
       </button>
     </nav>
 
-    <main class="main-login">
+    <main class="main-presentation">
+      <div class="presentation-area">
 
-      <form class="login-form" action="index.html" method="post">
-        
-        <section class="sign-up-step1 hidden">
-          
-        <div class="step2-text-div">
-          <h1>Create your Gym Account </h1>
+        <i class="slider-angles-right fa-solid fa-angles-right"></i>
+        <i class="slider-angles-left fa-solid fa-angles-left"></i>
+
+        <div id="search-container" class="search-container">
+          <input id="search-input" class="input-search" placeholder="Search for exercises, workouts, or tips…" />  
         </div>
-
-        <div class="input-wrapper">
-          <div class="form-flex-item">
-            <label style="display:block" for="email">Email</label>
-            <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" required id="email"
-              placeholder="Enter your email..." />
-          </div>
-
-          <div class="form-flex-item">
-            <label style="display:block" for="username">Username</label>
-            <input type="text" required id="username"
-              placeholder="Enter your username..." />
-          </div>
-
-          <div class="form-flex-item">
-            <label style="display:block; width:auto;" for="phone-number">Phone Number</label>
-            <input type="text" required id="phone-number" placeholder="Enter your phone number..." />
-          </div>
-          
-          
-          <div class="form-flex-item">
-            <label style="display:block" for="password">Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="confirm-password" minlength="8" placeholder="Enter your password..." required>
-              <span class="toggle-password"></span>
+        <i id="toggle-search-btn" class="slider-magnifying-glass fa-solid fa-magnifying-glass"></i>
+        <aside class="sidebar">
+          <div class="filter-panel">
+            <h2>Filter</h2>
+            <hr class="delimiter" />
+            <div class="filter-group">
+              <button id="btn-open-muscle-modal" class="filter-label" type="button">
+                Muscle Group
+              </button>
             </div>
-          </div>
-
-          <div class="form-flex-item">
-            <label style="display:block" for="confirm-password">Confirm Password</label>
-            <div class="password-input-wrapper">
-              <input type="password" id="confirm-password" minlength="8" placeholder="Enter your password..." required>
-              <span class="toggle-password"></span>
+            <div class="filter-group">
+              <button id="btn-open-type-modal" class="filter-label" type="button">
+                Type
+              </button>
             </div>
-           
-          </div>
-      
-        </div>
-            
-          <div class="form-button-wrapper">
-            <p>Already have an account? <a href="login.html">Login Here!</a></p>
-            <button class="form-submit-button" type="submit">Next</button>
-          </div>
-        </section>
-
-
-        <section class="sign-up-step2 hidden">
-        
-          <div class="step2-text-div"> 
-            <h1>Create your Gym Account </h1> 
-            <p>How would you describe your body type?</p>
-          </div>
-          
-          <div class="step2-img-container">
-              <div class="step2-radio-button-container">
-                <input type="radio" id="ectomorph" name="body-type" value="ectomorph" />
-                <label for="ectomorph" class="step2-radio-button-container">
-                  <img src="assets/ectomorph.png" alt="Ectomorph" class="body-type-img" />
-                  <div class="img-p-flex">
-                    <p>Ectomorph</p>
-                  </div>
-                </label>
-              </div>
-             
-          <div class="step2-radio-button-container">
-            <input type="radio" id="mesomorph" name="body-type" value="mesomorph" />
-            <label for="mesomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Mesomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Mesomorph</p>
-              </div>
-            </label>
-          </div>
-          
-          <div class="step2-radio-button-container">
-            <input type="radio" id="endomorph" name="body-type" value="endomorph" />
-            <label for="endomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Endomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Endomorph</p>
-              </div>
-            </label>
-          </div>
-          
-          <div class="step2-radio-button-container">
-            <input type="radio" id="ecto-mesomorph" name="body-type" value="ecto-mesomorph" />
-            <label for="ecto-mesomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Ecto-Mesomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Ecto</p>
-                <p>Mesomorph</p>
-              </div>
-            </label>
-          </div>
-          
-          <div class="step2-radio-button-container">
-            <input type="radio" id="meso-endomorph" name="body-type" value="meso-endomorph" />
-            <label for="meso-endomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Meso-Endomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Meso</p>
-                <p>Endomorph</p>
-              </div>
-            </label>
-          </div>
-          
-          <div class="step2-radio-button-container">
-            <input type="radio" id="endo-mesomorph" name="body-type" value="endo-mesomorph" />
-            <label for="endo-mesomorph" class="step2-radio-button-container">
-              <img src="assets/ectomorph.png" alt="Endo-Mesomorph" class="body-type-img" />
-              <div class="img-p-flex">
-                <p>Endo</p>
-                <p>Mesomorph</p>
-              </div>
-            </label>
-          </div>
-          </div>
-
-            <div class="form-button-wrapper">
-              <p>Already have an account? <a href="login.html">Login Here!</a></p>
-              <button class="form-submit-button" type="submit">Next</button>
-            </div>
-
-        </section>
-
-        <section class="sign-up-step3 hidden">
-            <div class="step3-text-div">
-                <h1>Create your Gym Account </h1>
-                <p>What is your age?</p>
-            </div>
-            
-            <div class="step3-button-wrapper">
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-18-25" name="age" value="18-25" />
-                <label for="age-18-25">< 18</label>
-              </div>
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-18-25" name="age" value="18-25" />
-                <label for="age-18-25">18-25</label>
-              </div>
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-26-35" name="age" value="26-35" />
-                <label for="age-26-35">26-35</label>
+    
+            <section class="dual-slider-container">
+              <div class="filter-group dual-slider">
+                <label>Score</label>
+                <div class="slider-container">
+                  <input type="range" min="0" max="5" step="0.1" value="1" class="thumb thumb--left" id="score-min" />
+                  <input type="range" min="0" max="5" step="0.1" value="4" class="thumb thumb--right" id="score-max" />
+                  <div class="slider-track"></div>
+                  <div class="slider-range"></div>
                 </div>
-
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-36-45" name="age" value="36-45" />
-                <label for="age-36-45">36-45</label>
+                <p>Selected: <span class="slider-value" id="score-display">1 – 4</span></p>
               </div>
-
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-46-55" name="age" value="46-59" />
-                <label for="age-46-55">46-55</label>
-              </div>
-
-              <div class="step3-radio-button-container">
-                <input type="radio" id="age-60+" name="age" value="60+" />
-                <label for="age-60+">60+</label>
-             </div>
-            </div>
-
-            <div class="form-button-wrapper">
-              <p>Already have an account? <a href="login.html">Login Here!</a></p>
-              <button class="form-submit-button" type="submit">Next</button>
-            </div>
-
-        </section>
-
-        <section class="sign-up-step4">
-            <div class="step3-text-div">
-              <h1>Create your Gym Account </h1>
-            </div>
-            <article class="step4-article">
-                <div class="step4-flex-element">
-                    <h4>What is your height?</h4>
-                        <div class="step4-flex-button-container">
-                          <label for="ft">ft</label>
-                          <input type="number" id="ft" required />
-                        
-                          <label for="in">in</label>
-                          <input type="number" id="in" required />
-                        
-                          <div class="step4-flex-radio-button-container">
-                            <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="ft-radio" name="unit" value="ft" />
-                              <label for="ft-radio">ft</label>
-                            </div>
-                            <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="cm-radio" name="unit" value="cm" />
-                              <label for="cm-radio">cm</label>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                
-                 <div class="step4-flex-element">
-                    <h4>What is your weight?</h4>
-                        <div class="step4-flex-button-container">
-                          <div class="step4-lb-container">
-                                <label for="lb">lbs</label>
-                                <input type="text" id="lb" required />
-                          </div>
-                       
-            
-                          <div class="step4-flex-radio-button-container">
-                            <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="lb-radio" name="unit" value="ft" />
-                              <label for="lb-radio">lb</label>
-                            </div>
-                            <div class="step4-flex-element-radio-button-container">
-                              <input type="radio" id="kg-radio" name="unit" value="cm" />
-                              <label for="kg-radio">kg</label>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <div class="step4-flex-element">
-                      <h4>What is your gender?</h4>
-                      <div class="step4-flex-button-container">
-                        <div class="step4-flex-radio-button-container">
-                          <input type="radio" id="male" name="male" value="46-59" />
-                          <label for="age-46-55">Male</label>
-                        </div>
-                        <div class="step4-flex-radio-button-container">
-                          <input type="radio" id="female" name="femlae" value="46-59" />
-                          <label for="age-46-55">Female</label>
-                        </div>
-                      </div>
-                    </div>
               
+              <div class="filter-group dual-slider">
+                <label>Difficulty</label>
+                <div class="slider-container">
+                  <input type="range" min="0" max="5" step="0.1" value="1" class="thumb thumb--left" id="score-min" />
+                  <input type="range" min="0" max="5" step="0.1" value="4" class="thumb thumb--right" id="score-max" />
+                  <div class="slider-track"></div>
+                  <div class="slider-range"></div>
+                </div>
+                <p>Selected: <span class="slider-value" id="score-display">1 – 4</span></p>
+                </div>
+            </section>
 
-              </article>
+            <button class="btn show-filters" id="btn-open-summary-modal">
+              Show Filters
+            </button>
+          </div>
+    
+          <div class="sort-panel">
+            <h2>Sort</h2>
+            <hr class="delimiter" />
+            <div class="sort-group" id="sort-score-group">
+              <input type="checkbox" id="sort-score-checkbox" />
+              <label for="sort-score-checkbox">Score</label>
+              <span class="sort-arrow up" id="sort-score-up">▲</span>
+              <span class="sort-arrow down" id="sort-score-down">▼</span>
+            </div>
+            <div class="sort-group" id="sort-difficulty-group">
+              <input type="checkbox" id="sort-difficulty-checkbox" />
+              <label for="sort-difficulty-checkbox">Difficulty</label>
+              <span class="sort-arrow up" id="sort-difficulty-up">▲</span>
+              <span class="sort-arrow down" id="sort-difficulty-down">▼</span>
+            </div>
+            <div class="sort-group" id="sort-alpha-group">
+              <input type="checkbox" id="sort-alpha-checkbox" />
+              <label for="sort-alpha-checkbox">Alphabetic</label>
+              <span class="sort-arrow up" id="sort-alpha-up">▲</span>
+              <span class="sort-arrow down" id="sort-alpha-down">▼</span>
+            </div>
+            <button id="btn-apply-sort" class="btn apply-sort">Apply Sort</button>
+          </div>
+          
+        </aside>
+      
 
-              <div class="form-button-wrapper">
-                <p>Already have an account? <a href="login.html">Login Here!</a></p>
-                <button class="form-submit-button" type="submit">SubmitA</button>
-              </div>
+        <section class="cards-area">
+          <article class="exercise-card">
+            <div class="img"><i class="fa-solid fa-star"></i></div>
+            <h3>Bench Press</h3>
+            <div class="stats">
+              <div><i class="fa-solid fa-star"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-dumbbell"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
+            </div>
+          </article>
+
+          <article class="exercise-card">
+            <div class="img"><i class="fa-solid fa-star"></i></div>
+            <h3>Bench Press</h3>
+            <div class="stats">
+              <div><i class="fa-solid fa-star"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-dumbbell"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
+            </div>
+          </article>
+
+          <article class="exercise-card">
+            <div class="img"><i class="fa-solid fa-star"></i></div>
+            <h3>Bench Press</h3>
+            <div class="stats">
+              <div><i class="fa-solid fa-star"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-dumbbell"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
+            </div>
+          </article>
+
+          <article class="exercise-card">
+            <div class="img"><i class="fa-solid fa-star"></i></div>
+            <h3>Bench Press</h3>
+            <div class="stats">
+              <div><i class="fa-solid fa-star"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-dumbbell"></i><span>4.5</span></div>
+              <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
+            </div>
+          </article>
 
         </section>
-        
+    
+        <div class="pagination">
+          <button class="page-btn" id="btn-prev">«</button>
+          <span id="page-numbers"></span>
+          <button class="page-btn" id="btn-next">»</button>  </div>
+      </div>
+      </main>
 
-      </form>
-
-    </main>
+      <script src="scripts/index.js"></script>
 
     <footer>
       <p>Proiect realizat pentru cursul Tehnologii Web - UAIC 2025</p>
@@ -319,6 +199,45 @@
       </p>
     </footer>
   </div>
+
+
+  <div class="modal" id="modal-muscle-groups">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Select Muscle Group(s)</h3>
+      <div class="modal-list" id="modal-list-muscle-groups"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-muscle-modal" type="button">Cancel</button>
+        <button class="modal-apply-btn" id="btn-apply-muscle-modal" type="button">Apply</button>
+      </div>
+    </div>
+    </div>
+
+    <div class="modal" id="modal-types">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <h3>Select Type(s)</h3>
+        <div class="modal-list" id="modal-list-types"></div>
+        <div class="modal-buttons">
+          <button class="modal-close-btn" id="btn-close-type-modal" type="button">Cancel</button>
+          <button class="modal-apply-btn" id="btn-apply-type-modal" type="button">Apply</button>
+        </div>
+      </div>
+      </div>
+
+  <div class="modal" id="modal-summary">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Current Filters</h3>
+      <div class="modal-list" id="modal-list-summary"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-summary-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+
 </body>
 
 </html>

@@ -1,0 +1,354 @@
+.exercise-article {
+  background: var(--cards-area-bg);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exercise-info-container {
+  display: flex;
+  gap: 2rem;
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex-direction: row;
+  min-width: 100%;
+}
+
+.exercise-info {
+  flex: 2 1 250px;
+  background: var(--bg-filter);
+  color: var(--text-light);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.exercise-info p {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.exercise-info p span {
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
+
+.exercise-presentation {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1.5 1 400px;
+}
+
+.presentation {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+
+.image-mode img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.presentation .fa-angles-left,
+.presentation .fa-angles-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.presentation .fa-angles-left {
+  left: 1rem;
+}
+.presentation .fa-angles-right {
+  right: 1rem;
+}
+
+/* start with image, hide video by default */
+.video-mode {
+  display: none;
+}
+.video-mode.active {
+  display: block;
+}
+
+.presentation-modes {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-self: center;
+}
+
+.presentation-modes .fa-image,
+.presentation-modes .fa-video {
+  font-size: 1.4rem;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+.presentation-modes .active {
+  color: var(--accent);
+}
+
+.exercise-lorep-ipsum {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.exercise-lorep-ipsum h2 {
+  margin-bottom: 0.5rem;
+  color: var(--bg-filter-dark);
+}
+
+.exercise-instructions,
+.exercise-tips {
+  background: var(--bg-card);
+  color: var(--text-light);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+@media (max-width: 800px) {
+  .exercise-info-container {
+    flex-direction: column;
+  }
+  .exercise-lorep-ipsum {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.image-mode,
+.video-mode {
+  display: none;
+}
+
+.image-mode.active,
+.video-mode.active {
+  display: block;
+}
+
+@keyframes slide-out-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.image-mode.animate-out {
+  animation: slide-out-left 0.4s forwards ease-in-out;
+}
+.image-mode.animate-in {
+  animation: slide-in-right 0.4s forwards ease-in-out;
+}
+
+/* 3) Cross-fade alternative (uncomment if you prefer fade instead)
+/.image-mode img {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+.image-mode.fade-out img {
+  opacity: 0;
+}
+*/
+
+.video-mode.active ~ .presentation-modes + .presentation .fa-angles-left,
+.video-mode.active ~ .presentation-modes + .presentation .fa-angles-right {
+  display: none;
+}
+
+.presentation-modes .image-toggle,
+.presentation-modes .video-toggle {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.presentation-modes .active {
+  color: var(--accent);
+}
+
+#view-more {
+  cursor: pointer;
+  color: var(--accent);
+  text-align: center;
+  margin: 1.5rem 0;
+  user-select: none;
+}
+
+.muscle-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Container spacing */
+.exercise-details {
+  margin-top: 2rem;
+  gap: 2rem;
+}
+
+/* 1. Instructions: nicer paragraphs */
+#instructions-container {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+#instructions-container p {
+  margin-bottom: 1rem;
+  line-height: 1.7; /* increase readability */
+  text-align: justify; /* even edges on both sides */
+  font-size: 1rem; /* comfortable reading size */
+  color: var(--text-dark); /* darker text for contrast */
+}
+
+/* 2. Tips: spaced list items */
+.exercise-tips {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+#tips-list {
+  margin: 0;
+  padding-left: 1.25rem; /* indent numbers */
+}
+#tips-list li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+/* 3. Heading spacing */
+.exercise-instructions h2,
+.exercise-tips h2 {
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+}
+
+/* 4. Toggle (“View More”) spacing */
+#view-more {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  user-select: none;
+}
+
+.video-mode,
+.video-mode.active {
+  text-align: center;
+}
+#exercise-video,
+#exercise-iframe {
+  width: 100%;
+  max-width: 480px;
+  height: auto; /* iframe will scale its height automatically if you set padding-bottom via aspect-ratio or inline style */
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* ─────── Presentation wrapper ─────── */
+.presentation {
+  /* ensure both image & video share the same card style */
+  background: #fff; /* white card background */
+  border-radius: 12px;
+  overflow: hidden; /* clip any overhang */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* ─────── 16:9 Aspect Ratio ─────── */
+.presentation iframe,
+.presentation video {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* modern way to enforce ratio */
+  height: auto;
+  display: block;
+  border: none;
+  background: #000; /* fallback while loading */
+}
+
+/* ─────── Slide arrows on top ─────── */
+.presentation .fa-angles-left,
+.presentation .fa-angles-right {
+  position: absolute; /* keep arrows over the card */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  font-size: 1.6rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.presentation .fa-angles-left {
+  left: 0.75rem;
+}
+.presentation .fa-angles-right {
+  right: 0.75rem;
+}
+
+/* ─────── Presentation modes ─────── */
+.presentation-modes {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+.presentation-modes i {
+  font-size: 1.5rem;
+  margin: 0 0.75rem;
+  cursor: pointer;
+}
+
+/* ─────── Info panel breathing room ─────── */
+.exercise-info {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* ─────── Muscle icons slightly larger ─────── */
+.muscle-icon {
+  width: 36px;
+  height: 36px;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+}
+
+/* Optional: Darker background behind the two columns */
+.exercise-article {
+  background: var(--bg-offset);
+  padding: 2rem;
+  border-radius: 12px;
+}

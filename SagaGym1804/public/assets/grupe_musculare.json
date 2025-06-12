@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Chest",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The chest muscle group, involved in bench presses and push-ups."
+  },
+  {
+    "name": "Back",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The dorsal muscle group, responsible for pull-ups, rows, and trunk stabilization."
+  },
+  {
+    "name": "Shoulders",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The deltoid group, involved in front raises, lateral raises, and overhead presses."
+  },
+  {
+    "name": "Biceps",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The front arm muscle, important for elbow flexion and rowing."
+  },
+  {
+    "name": "Triceps",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The back arm muscle, used in elbow extension and pressing movements."
+  },
+  {
+    "name": "Abs",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The core muscles of the trunk, essential for stability and balance."
+  },
+  {
+    "name": "Legs",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The thigh and calf group, involved in squats, lunges, and leg presses."
+  },
+  {
+    "name": "Glutes",
+    "image": "/assets/images/grupe_musculare/chest.png",
+    "description": "The gluteal muscles, important for hip extension and pelvis stability."
+  }
+]
