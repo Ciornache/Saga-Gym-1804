@@ -33,6 +33,23 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  console.log("HERE");
+
+  const resp = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: email_input.value.trim(),
+      password: password_input.value,
+    }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) {
+    showErrorMessage(email_input, data.msg || "Autentificare eșuată");
+    return;
+  }
+
+  localStorage.setItem("token", data.token);
   showValidMessage(email_input);
   showValidMessage(password_input);
 

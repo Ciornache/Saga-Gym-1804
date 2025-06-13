@@ -1,3 +1,4 @@
+require("dotenv").config();
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -5,11 +6,15 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const fsp = require("fs/promises");
 const Exercitiu = require("./models/Exercitiu");
+const Favourites = require("./models/Favourites");
 const Grupa = require("./models/Grupa");
+const jwt = require("jsonwebtoken");
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
+
+const { MongoClient, ObjectId } = require("mongodb");
 
 const models = {
   users: require("./models/User"),
@@ -77,6 +82,64 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "POST" && req.url === "/api/auth/login") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { email, password } = JSON.parse(body);
+        const user = await models.users.findOne({ email });
+        if (!user) {
+          return send(res, 400, { msg: "Email inexistent" });
+        }
+        const hashedPassword = hashPassword(password);
+        if (user.password !== hashedPassword) {
+          return send(res, 400, { msg: "Parolă greșită" });
+        }
+        const payload = { id: user._id.toString(), email: user.email };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: process.env.JWT_EXPIRES_IN,
+        });
+        return send(res, 200, { token });
+      } catch (err) {
+        return send(res, 500, { msg: err.message });
+      }
+    });
+    return;
+  }
+
+  if (req.method === "POST" && req.url === "/api/favourites/toggle") {
+    console.log("Request aici");
+    const userData = requireAuth();
+    if (!userData) return;
+
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { id_exercitiu } = JSON.parse(body);
+        console.log(id_exercitiu);
+        const filter = {
+          id_user: new ObjectId(userData.id),
+          id_exercitiu,
+        };
+
+        const existing = await Favourites.findOne(filter);
+        if (existing) {
+          await Favourites.deleteOne({ _id: existing._id });
+          return send(res, 200, { msg: "Removed from favourites" });
+        } else {
+          await Favourites.create(filter);
+          return send(res, 201, { msg: "Added to favourites" });
+        }
+      } catch (err) {
+        console.error(err);
+        return send(res, 500, { msg: "Server error" });
+      }
+    });
+    return;
+  }
+
   if (req.method === "POST" && req.url === "/api/register") {
     let body = "";
 
@@ -91,8 +154,7 @@ const server = http.createServer(async (req, res) => {
         data.password = hashPassword(data.password);
 
         const model = models["users"];
-        const user = model.create(data);
-
+        const newUser = await model.create(data);
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Utilizator salvat cu succes" }));
       } catch (err) {
@@ -101,8 +163,23 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ error: "Eroare la salvarea utilizatorului" }));
       }
     });
-
     return;
+  }
+
+  function requireAuth() {
+    const auth = req.headers.authorization;
+    if (!auth || !auth.startsWith("Bearer ")) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Unauthorized" }));
+      return null;
+    }
+    try {
+      return jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+    } catch {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid token" }));
+      return null;
+    }
   }
 
   const match = req.url.match(/^\/admin\/(\w+)(?:\/(.*))?$/);

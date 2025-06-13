@@ -749,4 +749,63 @@ document.addEventListener("DOMContentLoaded", async () => {
       searchContainer.classList.remove("show");
     }
   });
+
+  function authFetch(url, options = {}) {
+    const token = localStorage.getItem("token");
+    options.headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+    return fetch(url, options);
+  }
+
+  async function toggleFavourite(star) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+    const card = star.closest(".exercise-card");
+    if (!card) {
+      console.error("Cannot find exercise card");
+      return;
+    }
+    const nameEl = card.querySelector("h3");
+    const name = nameEl?.textContent.trim();
+    if (!name) {
+      console.error("Cannot find exercise name");
+      return;
+    }
+    console.log(name);
+    const exer = exercises.find((e) => e.name === name);
+    if (!exer) {
+      console.error("Exercise not found in array:", name);
+      return;
+    }
+    console.log(exer);
+    console.log("HERE?");
+    const exercitiuId = exer._id;
+    try {
+      const resp = await authFetch("/api/favourites/toggle", {
+        method: "POST",
+        body: JSON.stringify({ id_exercitiu: exercitiuId }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        window.location.href = "login.html";
+        return;
+      }
+    } catch (err) {
+      alert("Eroare: " + err.message);
+    }
+  }
+
+  document.querySelectorAll(".fa-star").forEach((star) => {
+    star.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await toggleFavourite(star);
+      star.classList.toggle("star-selected");
+    });
+  });
 });

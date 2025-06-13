@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const exercitiuSchema = new mongoose.Schema({
-  id_exercitiu: Number,
+  id: Number,
   name: String,
   type: String,
   cover_image: String,
