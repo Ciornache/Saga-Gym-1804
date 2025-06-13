@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Saga Gym Web App</title>
-  <meta charset="UTF-8" />
-  <link href="styles/index.css" rel="stylesheet" />
-  <link href="styles/main.css" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="styles/index.css" rel="stylesheet">
+  <link href="styles/main.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
 </head>
 
@@ -17,7 +17,7 @@
   <div class="page-wrapper">
     <header class="header">
       <div class="logo-container">
-        <img src="assets/Web-Logo.png" alt="The logo of the application" class="logo" />
+        <img src="assets/Web-Logo.png" alt="The logo of the application" class="logo">
       </div>
       <div class="header-message">
         <h1>Your path to better health starts today</h1>
@@ -26,34 +26,32 @@
     </header>
 
     <nav class="navbar">
-      <button class="navbar-button">
+      <button class="navbar-button" type="button">
         <span>Home</span>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
+        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
       </button>
-      <button class="navbar-button">
+      <button class="navbar-button" type="button">
         <span>Exercises</span>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
+        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
       </button>
       <div class="dropdown-wrapper">
-        <button class="navbar-button">
+        <button class="navbar-button" type="button">
           <span>My Account</span>
         </button>
         <div class="dropdown-menu">
           <a class="dropdown-item" href="login.html">
             <span>Login</span>
-            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
           </a>
-
           <a class="dropdown-item" href="signup.html">
-            <span>Sign&nbsp;Up</span>
-            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
+            <span>Sign Up</span>
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
           </a>
         </div>
       </div>
-
-      <button class="navbar-button">
+      <button class="navbar-button" type="button">
         <span>Contact</span>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon" />
+        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
       </button>
     </nav>
 
@@ -64,81 +62,73 @@
         <i class="slider-angles-left fa-solid fa-angles-left"></i>
 
         <div id="search-container" class="search-container">
-          <input id="search-input" class="input-search" placeholder="Search for exercises, workouts, or tips…" />  
+          <input id="search-input" class="input-search" placeholder="Search for exercises, workouts, or tips…">
         </div>
         <i id="toggle-search-btn" class="slider-magnifying-glass fa-solid fa-magnifying-glass"></i>
+
         <aside class="sidebar">
           <div class="filter-panel">
             <h2>Filter</h2>
-            <hr class="delimiter" />
+            <hr class="delimiter">
             <div class="filter-group">
-              <button id="btn-open-muscle-modal" class="filter-label" type="button">
-                Muscle Group
-              </button>
+              <button id="btn-open-muscle-modal" class="filter-label" type="button">Muscle Group</button>
             </div>
             <div class="filter-group">
-              <button id="btn-open-type-modal" class="filter-label" type="button">
-                Type
-              </button>
+              <button id="btn-open-type-modal" class="filter-label" type="button">Type</button>
             </div>
-    
-            <section class="dual-slider-container">
+            <div class="dual-slider-container">
               <div class="filter-group dual-slider">
-                <label>Score</label>
+                <label for="score-min">Score</label>
                 <div class="slider-container">
-                  <input type="range" min="0" max="5" step="0.1" value="1" class="thumb thumb--left" id="score-min" />
-                  <input type="range" min="0" max="5" step="0.1" value="4" class="thumb thumb--right" id="score-max" />
+                  <input type="range" id="score-min" min="0" max="5" step="0.1" value="1" class="thumb thumb--left">
+                  <input type="range" id="score-max" min="0" max="5" step="0.1" value="4" class="thumb thumb--right">
                   <div class="slider-track"></div>
                   <div class="slider-range"></div>
                 </div>
                 <p>Selected: <span class="slider-value" id="score-display">1 – 4</span></p>
               </div>
-              
               <div class="filter-group dual-slider">
-                <label>Difficulty</label>
+                <label for="difficulty-min">Difficulty</label>
                 <div class="slider-container">
-                  <input type="range" min="0" max="5" step="0.1" value="1" class="thumb thumb--left" id="score-min" />
-                  <input type="range" min="0" max="5" step="0.1" value="4" class="thumb thumb--right" id="score-max" />
+                  <input type="range" id="difficulty-min" min="0" max="5" step="0.1" value="1"
+                    class="thumb thumb--left">
+                  <input type="range" id="difficulty-max" min="0" max="5" step="0.1" value="4"
+                    class="thumb thumb--right">
                   <div class="slider-track"></div>
                   <div class="slider-range"></div>
                 </div>
-                <p>Selected: <span class="slider-value" id="score-display">1 – 4</span></p>
-                </div>
-            </section>
-
-            <button class="btn show-filters" id="btn-open-summary-modal">
-              Show Filters
-            </button>
+                <p>Selected: <span class="slider-value" id="difficulty-display">1 – 4</span></p>
+              </div>
+            </div>
+            <button class="btn show-filters" id="btn-open-summary-modal" type="button">Show Filters</button>
           </div>
-    
+
           <div class="sort-panel">
             <h2>Sort</h2>
-            <hr class="delimiter" />
+            <hr class="delimiter">
             <div class="sort-group" id="sort-score-group">
-              <input type="checkbox" id="sort-score-checkbox" />
+              <input type="checkbox" id="sort-score-checkbox">
               <label for="sort-score-checkbox">Score</label>
-              <span class="sort-arrow up" id="sort-score-up">▲</span>
-              <span class="sort-arrow down" id="sort-score-down">▼</span>
+              <span class="sort-arrow up" id="sort-score-up">&uarr;</span>
+              <span class="sort-arrow down" id="sort-score-down">&darr;</span>
             </div>
             <div class="sort-group" id="sort-difficulty-group">
-              <input type="checkbox" id="sort-difficulty-checkbox" />
+              <input type="checkbox" id="sort-difficulty-checkbox">
               <label for="sort-difficulty-checkbox">Difficulty</label>
-              <span class="sort-arrow up" id="sort-difficulty-up">▲</span>
-              <span class="sort-arrow down" id="sort-difficulty-down">▼</span>
+              <span class="sort-arrow up" id="sort-difficulty-up">&uarr;</span>
+              <span class="sort-arrow down" id="sort-difficulty-down">&darr;</span>
             </div>
             <div class="sort-group" id="sort-alpha-group">
-              <input type="checkbox" id="sort-alpha-checkbox" />
+              <input type="checkbox" id="sort-alpha-checkbox">
               <label for="sort-alpha-checkbox">Alphabetic</label>
-              <span class="sort-arrow up" id="sort-alpha-up">▲</span>
-              <span class="sort-arrow down" id="sort-alpha-down">▼</span>
+              <span class="sort-arrow up" id="sort-alpha-up">&uarr;</span>
+              <span class="sort-arrow down" id="sort-alpha-down">&darr;</span>
             </div>
-            <button id="btn-apply-sort" class="btn apply-sort">Apply Sort</button>
+            <button id="btn-apply-sort" class="btn apply-sort" type="button">Apply Sort</button>
           </div>
-          
         </aside>
-      
 
-        <section class="cards-area">
+        <div class="cards-area">
           <article class="exercise-card">
             <div class="img"><i class="fa-solid fa-star"></i></div>
             <h3>Bench Press</h3>
@@ -148,7 +138,6 @@
               <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
             </div>
           </article>
-
           <article class="exercise-card">
             <div class="img"><i class="fa-solid fa-star"></i></div>
             <h3>Bench Press</h3>
@@ -158,7 +147,6 @@
               <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
             </div>
           </article>
-
           <article class="exercise-card">
             <div class="img"><i class="fa-solid fa-star"></i></div>
             <h3>Bench Press</h3>
@@ -168,7 +156,6 @@
               <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
             </div>
           </article>
-
           <article class="exercise-card">
             <div class="img"><i class="fa-solid fa-star"></i></div>
             <h3>Bench Press</h3>
@@ -178,29 +165,26 @@
               <div><i class="fa-solid fa-medal"></i><span>4.5</span></div>
             </div>
           </article>
+        </div>
 
-        </section>
-    
         <div class="pagination">
-          <button class="page-btn" id="btn-prev">«</button>
+          <button class="page-btn" id="btn-prev" type="button">&laquo;</button>
           <span id="page-numbers"></span>
-          <button class="page-btn" id="btn-next">»</button>  </div>
+          <button class="page-btn" id="btn-next" type="button">&raquo;</button>
+        </div>
       </div>
-      </main>
+    </main>
 
-      <script src="scripts/index.js"></script>
+    <script src="scripts/index.js"></script>
 
     <footer>
       <p>Proiect realizat pentru cursul Tehnologii Web - UAIC 2025</p>
-      <p><span>&copy; 2025 Saga Gym. All rights reserved.</span></p>
-      <p>
-        <a href="mailto:support@sagagym.ro">Contact Us</a> |
-        <a href="#">Privacy Policy</a>
-      </p>
+      <p>&copy; 2025 Saga Gym. All rights reserved.</p>
+      <p><a href="mailto:support@sagagym.ro">Contact Us</a> | <a href="#">Privacy Policy</a></p>
     </footer>
   </div>
 
-
+  <!-- Modals -->
   <div class="modal" id="modal-muscle-groups">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
@@ -211,19 +195,19 @@
         <button class="modal-apply-btn" id="btn-apply-muscle-modal" type="button">Apply</button>
       </div>
     </div>
-    </div>
+  </div>
 
-    <div class="modal" id="modal-types">
-      <div class="modal-backdrop"></div>
-      <div class="modal-content">
-        <h3>Select Type(s)</h3>
-        <div class="modal-list" id="modal-list-types"></div>
-        <div class="modal-buttons">
-          <button class="modal-close-btn" id="btn-close-type-modal" type="button">Cancel</button>
-          <button class="modal-apply-btn" id="btn-apply-type-modal" type="button">Apply</button>
-        </div>
+  <div class="modal" id="modal-types">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>Select Type(s)</h3>
+      <div class="modal-list" id="modal-list-types"></div>
+      <div class="modal-buttons">
+        <button class="modal-close-btn" id="btn-close-type-modal" type="button">Cancel</button>
+        <button class="modal-apply-btn" id="btn-apply-type-modal" type="button">Apply</button>
       </div>
-      </div>
+    </div>
+  </div>
 
   <div class="modal" id="modal-summary">
     <div class="modal-backdrop"></div>
@@ -231,12 +215,10 @@
       <h3>Current Filters</h3>
       <div class="modal-list" id="modal-list-summary"></div>
       <div class="modal-buttons">
-        <button class="modal-close-btn" id="btn-close-summary-modal">Close</button>
+        <button class="modal-close-btn" id="btn-close-summary-modal" type="button">Close</button>
       </div>
     </div>
   </div>
-
-
 
 </body>
 

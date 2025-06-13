@@ -75,7 +75,6 @@
   right: 1rem;
 }
 
-/* start with image, hide video by default */
 .video-mode {
   display: none;
 }
@@ -208,13 +207,11 @@
   vertical-align: middle;
 }
 
-/* Container spacing */
 .exercise-details {
   margin-top: 2rem;
   gap: 2rem;
 }
 
-/* 1. Instructions: nicer paragraphs */
 #instructions-container {
   background: var(--bg-card);
   padding: 1.5rem;
@@ -222,13 +219,12 @@
 }
 #instructions-container p {
   margin-bottom: 1rem;
-  line-height: 1.7; /* increase readability */
-  text-align: justify; /* even edges on both sides */
-  font-size: 1rem; /* comfortable reading size */
-  color: var(--text-dark); /* darker text for contrast */
+  line-height: 1.7;
+  text-align: justify;
+  font-size: 1rem;
+  color: var(--text-dark);
 }
 
-/* 2. Tips: spaced list items */
 .exercise-tips {
   background: var(--bg-card);
   padding: 1.5rem;
@@ -236,7 +232,7 @@
 }
 #tips-list {
   margin: 0;
-  padding-left: 1.25rem; /* indent numbers */
+  padding-left: 1.25rem;
 }
 #tips-list li {
   margin-bottom: 0.75rem;
@@ -245,14 +241,12 @@
   color: var(--text-dark);
 }
 
-/* 3. Heading spacing */
 .exercise-instructions h2,
 .exercise-tips h2 {
   margin-bottom: 0.75rem;
   color: var(--text-dark);
 }
 
-/* 4. Toggle (“View More”) spacing */
 #view-more {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -270,38 +264,34 @@
 #exercise-iframe {
   width: 100%;
   max-width: 480px;
-  height: auto; /* iframe will scale its height automatically if you set padding-bottom via aspect-ratio or inline style */
+  height: auto;
   border-radius: 8px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* ─────── Presentation wrapper ─────── */
 .presentation {
-  /* ensure both image & video share the same card style */
-  background: #fff; /* white card background */
+  background: #fff; 
   border-radius: 12px;
-  overflow: hidden; /* clip any overhang */
+  overflow: hidden;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   position: relative;
   width: 100%;
   max-width: 480px;
 }
 
-/* ─────── 16:9 Aspect Ratio ─────── */
 .presentation iframe,
 .presentation video {
   width: 100%;
-  aspect-ratio: 16 / 9; /* modern way to enforce ratio */
+  aspect-ratio: 16 / 9;
   height: auto;
   display: block;
   border: none;
-  background: #000; /* fallback while loading */
+  background: #000;
 }
 
-/* ─────── Slide arrows on top ─────── */
 .presentation .fa-angles-left,
 .presentation .fa-angles-right {
-  position: absolute; /* keep arrows over the card */
+  position: absolute; 
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
@@ -318,7 +308,6 @@
   right: 0.75rem;
 }
 
-/* ─────── Presentation modes ─────── */
 .presentation-modes {
   margin-top: 0.75rem;
   display: flex;
@@ -330,7 +319,6 @@
   cursor: pointer;
 }
 
-/* ─────── Info panel breathing room ─────── */
 .exercise-info {
   background: #fff;
   padding: 2rem;
@@ -338,7 +326,6 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
-/* ─────── Muscle icons slightly larger ─────── */
 .muscle-icon {
   width: 36px;
   height: 36px;
@@ -346,9 +333,108 @@
   vertical-align: middle;
 }
 
-/* Optional: Darker background behind the two columns */
 .exercise-article {
   background: var(--bg-offset);
   padding: 2rem;
   border-radius: 12px;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    max-width: 140px;
+  }
+
+  .header-message h1 {
+    font-size: 1.6rem;
+  }
+
+  .header-message p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0.5rem 1rem;
+  }
+
+  .logo {
+    max-width: 100px;
+  }
+
+  .header-message h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-message p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo {
+    max-width: 80px;
+  }
+
+  .header-message {
+    text-align: right;
+    width: 100%;
+  }
+
+  .header-message h1 {
+    font-size: 1.1rem;
+  }
+
+  .header-message p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .header {
+    padding: 0.5rem 1rem;
+  }
+  .header-message h1 {
+    font-size: 1rem;
+  }
+  .header-message p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 500px) {
+  .header {
+    padding: 0.4rem 0.8rem;
+  }
+  .header-message h1 {
+    font-size: 0.9rem;
+  }
+  .header-message p {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-height: 400px) {
+  .header {
+    padding: 0.3rem 0.6rem;
+  }
+  .header-message h1 {
+    font-size: 0.8rem;
+  }
+  .header-message p {
+    font-size: 0.6rem;
+  }
+}
+
+.header-message p {
+  font-size: clamp(0.5rem, 8vh, 1rem) !important;
 }

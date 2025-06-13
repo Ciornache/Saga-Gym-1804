@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Admin Dashboard – SagaGym1804</title>
-    <link rel="stylesheet" href="styles/admin.css" />
+    <link rel="stylesheet" href="styles/admin.css">
   </head>
 
   <body>
@@ -26,37 +26,37 @@
 
         <div id="form-utilizator" class="form-wrapper hidden">
           <h3 id="form-titlu">Adaugă Utilizator</h3>
-          <input type="hidden" id="utilizatori-id" />
+          <input type="hidden" id="utilizatori-id">
 
           <label>Nume</label>
-          <input type="text" id="utilizatori-name" />
+          <input type="text" id="utilizatori-name">
 
           <label>Email</label>
-          <input type="email" id="utilizatori-email" />
+          <input type="email" id="utilizatori-email">
 
           <label>Parolă</label>
-          <input type="password" id="utilizatori-password" />
+          <input type="password" id="utilizatori-password">
 
           <label>Gen</label>
-          <input type="text" id="utilizatori-gender" />
+          <input type="text" id="utilizatori-gender">
 
           <label>Interval vârstă</label>
-          <input type="text" id="utilizatori-interval_varsta" />
+          <input type="text" id="utilizatori-interval_varsta">
 
           <label>Tip corp</label>
-          <input type="text" id="utilizatori-body_type" />
+          <input type="text" id="utilizatori-body_type">
 
           <label>Telefon</label>
-          <input type="text" id="utilizatori-phone_number" />
+          <input type="text" id="utilizatori-phone_number">
 
           <label>Înălțime (cm)</label>
-          <input type="number" id="utilizatori-height" />
+          <input type="number" id="utilizatori-height">
 
           <label>Greutate (kg)</label>
-          <input type="number" id="utilizatori-weight" />
+          <input type="number" id="utilizatori-weight">
 
           <label>Nivel fitness</label>
-          <input type="text" id="utilizatori-nivel_fitness" />
+          <input type="text" id="utilizatori-nivel_fitness">
 
           <button onclick="salveazaEntitate('utilizatori')">💾 Salvează</button>
           <button onclick="inchideFormular('utilizatori')">❌ Anulează</button>
@@ -90,28 +90,28 @@
 
         <div id="form-exercitiu" class="form-wrapper hidden">
           <h3 id="form-exercitiu-titlu">Adaugă Exercițiu</h3>
-          <input type="hidden" id="exercitii-id" />
+          <input type="hidden" id="exercitii-id">
 
           <label>ID Exercițiu</label>
-          <input type="number" id="exercitii-id_exercitiu" />
+          <input type="number" id="exercitii-id_exercitiu">
 
           <label>Nume</label>
-          <input type="text" id="exercitii-name" />
+          <input type="text" id="exercitii-name">
 
           <label>Tip</label>
-          <input type="text" id="exercitii-type" />
+          <input type="text" id="exercitii-type">
 
           <label>Imagine principală (URL)</label>
-          <input type="text" id="exercitii-cover_image" />
+          <input type="text" id="exercitii-cover_image">
 
           <label>Rating</label>
-          <input type="number" id="exercitii-rating" />
+          <input type="number" id="exercitii-rating">
 
           <label>Grupe musculare (virgulă)</label>
-          <input type="text" id="exercitii-muscle_groups" />
+          <input type="text" id="exercitii-muscle_groups">
 
           <label>Imagini (virgulă)</label>
-          <input type="text" id="exercitii-images" />
+          <input type="text" id="exercitii-images">
 
           <button onclick="salveazaEntitate('exercitii')">💾 Salvează</button>
           <button onclick="inchideFormular('exercitii')">❌ Anulează</button>
@@ -144,22 +144,22 @@
 
         <div id="form-antrenament" class="form-wrapper hidden">
           <h3 id="form-antrenament-titlu">Adaugă Antrenament</h3>
-          <input type="hidden" id="antrenamente-id" />
+          <input type="hidden" id="antrenamente-id">
 
           <label>ID Antrenament</label>
-          <input type="number" id="antrenamente-id_antrenament" />
+          <input type="number" id="antrenamente-id_antrenament">
 
           <label>Nume</label>
-          <input type="text" id="antrenamente-name" />
+          <input type="text" id="antrenamente-name">
 
           <label>Tip</label>
-          <input type="text" id="antrenamente-type" />
+          <input type="text" id="antrenamente-type">
 
           <label>Email Utilizator</label>
-          <input type="email" id="antrenamente-user_email" />
+          <input type="email" id="antrenamente-user_email">
 
           <label>Data creării</label>
-          <input type="datetime-local" id="antrenamente-created_at" />
+          <input type="datetime-local" id="antrenamente-created_at">
 
           <button onclick="salveazaEntitate('antrenamente')">
             💾 Salvează
@@ -189,16 +189,16 @@
 
         <div id="form-grupa" class="form-wrapper hidden">
           <h3 id="form-grupa-titlu">Adaugă Grupă</h3>
-          <input type="hidden" id="grupe-id" />
+          <input type="hidden" id="grupe-id">
 
           <label>Nume</label>
-          <input type="text" id="grupe-name" />
+          <input type="text" id="grupe-name">
 
           <label>Imagine (URL)</label>
-          <input type="text" id="grupe-image" />
+          <input type="text" id="grupe-image">
 
           <label>Descriere</label>
-          <input type="text" id="grupe-descriere" />
+          <input type="text" id="grupe-descriere">
 
           <button onclick="salveazaEntitate('grupe')">💾 Salvează</button>
           <button onclick="inchideFormular('grupe')">❌ Anulează</button>
@@ -227,22 +227,22 @@
 
         <div id="form-corespondenta" class="form-wrapper hidden">
           <h3 id="form-corespondenta-titlu">Adaugă Corespondență</h3>
-          <input type="hidden" id="corespondente-id" />
+          <input type="hidden" id="corespondente-id">
 
           <label>ID Antrenament</label>
-          <input type="number" id="corespondente-id_antrenament" />
+          <input type="number" id="corespondente-id_antrenament">
 
           <label>ID Exercițiu</label>
-          <input type="number" id="corespondente-id_exercitiu" />
+          <input type="number" id="corespondente-id_exercitiu">
 
           <label>Ordine</label>
-          <input type="number" id="corespondente-ordine" />
+          <input type="number" id="corespondente-ordine">
 
           <label>Repetări</label>
-          <input type="number" id="corespondente-repetari" />
+          <input type="number" id="corespondente-repetari">
 
           <label>Pauză (secunde)</label>
-          <input type="number" id="corespondente-pauza_secunde" />
+          <input type="number" id="corespondente-pauza_secunde">
 
           <button onclick="salveazaEntitate('corespondente')">
             💾 Salvează
@@ -287,11 +287,11 @@
       
         <div id="form-tip" class="form-wrapper hidden">
           <h3 id="form-tip-titlu">Adaugă Tip</h3>
-          <input type="hidden" id="tip-id" />
+          <input type="hidden" id="tip-id">
           <label>Nume</label>
-          <input type="text" id="tip-name" />
+          <input type="text" id="tip-name">
           <label>Imagine</label>
-          <input type="text" id="tip-image" />
+          <input type="text" id="tip-image">
           <button onclick="salveazaEntitate('tip')">
             💾 Salvează
           </button>
