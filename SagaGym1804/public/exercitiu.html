@@ -160,29 +160,39 @@
       highlight(0);
     }
 
-    submitBtn.onclick = async () => {
-      const comment = commentInput.value.trim();
-      const exerciseId = document.getElementById("exercise-title").dataset.id;
+   submitBtn.onclick = async () => {
+  const comment = commentInput.value.trim();
+  const exerciseId = document.getElementById("exercise-title").dataset.id;
 
-      if (!selectedRating || !comment || !exerciseId) {
-        alert('Please select a rating and write a comment.');
-        return;
-      }
-      try {
-        const res = await fetch('/api/reviews', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ exerciseId, rating: selectedRating, comment })
-        });
-        if (!res.ok) throw new Error(await res.text());
-        await loadReviews(exerciseId);
-        modal.classList.add('hidden');
-        resetStars();
-        commentInput.value = '';
-      } catch (err) {
-        alert('Could not submit review.');
-      }
-    };
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Trebuie să fii autentificat pentru a trimite un review.");
+    return;
+  }
+
+  if (!selectedRating || !comment || !exerciseId) {
+    alert('Please select a rating and write a comment.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ exerciseId, rating: selectedRating, comment })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    await loadReviews(exerciseId);
+    modal.classList.add('hidden');
+    resetStars();
+    commentInput.value = '';
+  } catch (err) {
+    alert('Could not submit review.');
+  }
+};
 
     async function loadReviews(exerciseId) {
       try {

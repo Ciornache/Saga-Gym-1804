@@ -211,6 +211,9 @@ ${message}
   }
   // POST /api/reviews → salvează un review
 if (req.method === 'POST' && url === '/api/reviews') {
+  const userData = requireAuth(req, res); // ✅ verifică tokenul
+  if (!userData) return;  // dacă nu e token valid → răspuns 401
+
   let body = '';
   req.on('data', c => body += c);
   return req.on('end', async () => {
@@ -219,8 +222,13 @@ if (req.method === 'POST' && url === '/api/reviews') {
       if (!exerciseId || !rating || !comment) {
         return send(res, 400, { error: 'Missing fields.' });
       }
-      // creează review-ul
-      const r = await Review.create({ exerciseId, rating, comment });
+      const r = await Review.create({
+        exerciseId,
+        rating,
+        comment,
+        userId: userData.id,        // ← poți salva cine a făcut review-ul
+        userEmail: userData.email   // ← util dacă vrei să-l afișezi în UI
+      });
       return send(res, 201, r);
     } catch (err) {
       console.error(err);
@@ -228,7 +236,6 @@ if (req.method === 'POST' && url === '/api/reviews') {
     }
   });
 }
-
 // GET /api/reviews?exerciseId=xxx → aduce toate review-urile
 if (req.method === 'GET' && url.startsWith('/api/reviews')) {
   const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
