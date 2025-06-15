@@ -8,9 +8,11 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.log("Access denied!");
+    console.error("Unauthorized access");
+    window.location.href = "login.html";
     return;
   }
+  console.log("AICI", token);
 
   const res = await fetch("/token/getuser", {
     headers: {

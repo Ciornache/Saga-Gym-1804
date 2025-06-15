@@ -1,30 +1,29 @@
 require("dotenv").config();
-const http       = require("http");
-const fs         = require("fs");
-const path       = require("path");
-const mongoose   = require("mongoose");
-const crypto     = require("crypto");
-const fsp        = require("fs/promises");
-const Exercitiu  = require("./models/Exercitiu");
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+const mongoose = require("mongoose");
+const crypto = require("crypto");
+const fsp = require("fs/promises");
+const Exercitiu = require("./models/Exercitiu");
 const Favourites = require("./models/Favourites");
 const Activity = require("./models/Activity");
-const Grupa      = require("./models/Grupa");
-const jwt        = require("jsonwebtoken");
+const Grupa = require("./models/Grupa");
+const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const Contact    = require("./models/Contact");      // <— new
-const Review = require('./models/Review');
-const ReviewLike = require('./models/ReviewLike');
-const { MongoClient, ObjectId } = require("mongodb");
+const Contact = require("./models/Contact"); // <— new
+const Review = require("./models/Review");
+const ReviewLike = require("./models/ReviewLike");
 
 const models = {
-  users:         require("./models/User"),
-  exercitii:     Exercitiu,
-  antrenamente:  require("./models/Antrenament"),
-  grupe:         Grupa,
+  users: require("./models/User"),
+  exercitii: Exercitiu,
+  antrenamente: require("./models/Antrenament"),
+  grupe: Grupa,
   corespondente: require("./models/Corespondenta"),
-  tip:           require("./models/Tip"),
-  contact:       Contact,                         
-  favourites: require("./models/Favourites")
+  tip: require("./models/Tip"),
+  contact: Contact,
+  favourites: require("./models/Favourites"),
 };
 models.reviews = Review;
 const url = require("url");
@@ -38,36 +37,25 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "icmtproducts@gmail.com",
-    pass: "yjkdwkmiichjlslc"  // ← your App Password
-  }
+    pass: "yjkdwkmiichjlslc", // ← your App Password
+  },
 });
 const CONTACT_EMAIL = "icmtproducts@gmail.com";
 const { MongoClient, ObjectId } = require("mongodb");
 
-const models = {
-  users: require("./models/User"),
-  exercitii: require("./models/Exercitiu"),
-  antrenamente: require("./models/Antrenament"),
-  grupe: require("./models/Grupa"),
-  corespondente: require("./models/Corespondenta"),
-  tip: require("./models/Tip"),
-  favourites: require("./models/Favourites"),
-};
-
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
-  useNewUrlParser:    true,
-  useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 const server = http.createServer(async (req, res) => {
-  const url = req.url.split("?")[0];
+  const { pathname, query } = url.parse(req.url, true);
 
   // ————————— EXISTING ROUTES —————————
 
   // GET /exercise/getExerciseByName
-  const { pathname, query } = url.parse(req.url, true);
 
-  if (req.method === "GET" && url === "/exercise/getExerciseByName") {
+  if (req.method === "GET" && pathname === "/exercise/getExerciseByName") {
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
     if (exercise) {
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -80,14 +68,17 @@ const server = http.createServer(async (req, res) => {
   }
 
   // GET validation routes
-  if (req.method === "GET" && url.startsWith("/validation/")) {
+  if (req.method === "GET" && pathname.startsWith("/validation/")) {
     let user, field, headerKey;
-    if (url === "/validation/getUserByEmail") {
-      field = "email"; headerKey = "email";
-    } else if (url === "/validation/getUserByName") {
-      field = "name"; headerKey = "name";
-    } else if (url === "/validation/getUserByPhoneNumber") {
-      field = "phone_number"; headerKey = "phonenumber";
+    if (pathname === "/validation/getUserByEmail") {
+      field = "email";
+      headerKey = "email";
+    } else if (pathname === "/validation/getUserByName") {
+      field = "name";
+      headerKey = "name";
+    } else if (pathname === "/validation/getUserByPhoneNumber") {
+      field = "phone_number";
+      headerKey = "phonenumber";
     }
     if (field) {
       user = await models.users.findOne({ [field]: req.headers[headerKey] });
@@ -158,6 +149,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && req.url === "/token/getuser") {
     const payload = requireAuth();
     if (!payload) return;
+    console.log("AICI", payload);
     const user = await models.users.findById(payload.id);
     if (!user) {
       return send(res, 404, { error: "User not found" });
@@ -239,7 +231,6 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "PUT" && pathname === "/api/activities") {
     const user = requireAuth();
-
     let body = "";
     req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
@@ -267,9 +258,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // POST /api/auth/login
-  if (req.method === "POST" && url === "/api/auth/login") {
+  if (req.method === "POST" && pathname === "/api/auth/login") {
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       try {
         const { email, password } = JSON.parse(body);
@@ -295,13 +286,13 @@ const server = http.createServer(async (req, res) => {
     const userData = requireAuth();
     if (!userData) return;
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       try {
         const { id_exercitiu } = JSON.parse(body);
         const filter = {
           id_user: new ObjectId(userData.id),
-          id_exercitiu
+          id_exercitiu,
         };
         const existing = await Favourites.findOne(filter);
         if (existing) {
@@ -319,9 +310,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // POST /api/register
-  if (req.method === "POST" && url === "/api/register") {
+  if (req.method === "POST" && pathname === "/api/register") {
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
@@ -336,9 +327,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ————— CONTACT FORM ENDPOINT —————
-  if (req.method === "POST" && url === "/api/contact") {
+  if (req.method === "POST" && pathname === "/api/contact") {
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       let data;
       try {
@@ -352,26 +343,30 @@ const server = http.createServer(async (req, res) => {
       }
 
       // save to MongoDB
-      Contact.create({ firstName, lastName, email, phone, message })
-        .catch(err => console.error("DB save error:", err));
+      Contact.create({ firstName, lastName, email, phone, message }).catch(
+        (err) => console.error("DB save error:", err)
+      );
 
       // send email
       const mailOptions = {
-        from:    `"Gym Saga Contact" <icmtproducts@gmail.com>`,
-        to:      CONTACT_EMAIL,
+        from: `"Gym Saga Contact" <icmtproducts@gmail.com>`,
+        to: CONTACT_EMAIL,
         replyTo: email,
         subject: `New contact from ${firstName} ${lastName}`,
-        text:    `
+        text: `
 Name:    ${firstName} ${lastName}
 Email:   ${email}
-Phone:   ${phone || '(none)'}
+Phone:   ${phone || "(none)"}
 Message:
 ${message}
-        `
+        `,
       };
-      transporter.sendMail(mailOptions)
-        .then(() => send(res, 200, { message: "Your message was sent successfully!" }))
-        .catch(err => {
+      transporter
+        .sendMail(mailOptions)
+        .then(() =>
+          send(res, 200, { message: "Your message was sent successfully!" })
+        )
+        .catch((err) => {
           console.error("Mailer error:", err);
           send(res, 500, { error: "Could not send email." });
         });
@@ -380,7 +375,7 @@ ${message}
   }
 
   // ————— GET ALL CONTACTS —————
-  if (req.method === "GET" && url === "/api/contacts") {
+  if (req.method === "GET" && pathname === "/api/contacts") {
     try {
       const list = await Contact.find().sort({ createdAt: -1 });
       return send(res, 200, list);
@@ -389,108 +384,136 @@ ${message}
     }
   }
   // POST /api/reviews → salvează un review
-if (req.method === 'POST' && url === '/api/reviews') {
-  const userData = requireAuth(req, res);
-  if (!userData) return;
+  if (req.method === "POST" && pathname === "/api/reviews") {
+    const userData = requireAuth();
+    if (!userData) return;
 
-  let body = '';
-  req.on('data', c => body += c);
-  return req.on('end', async () => {
+    let body = "";
+    req.on("data", (c) => (body += c));
+    return req.on("end", async () => {
+      try {
+        const { exerciseId, rating, comment } = JSON.parse(body);
+        if (!exerciseId || !rating || !comment) {
+          return send(res, 400, { error: "Missing fields." });
+        }
+
+        const existing = await Review.findOne({
+          exerciseId,
+          userEmail: userData.email,
+        });
+        if (existing) {
+          existing.rating = rating;
+          existing.comment = comment;
+          existing.updatedAt = new Date();
+          await existing.save();
+          return send(res, 200, existing);
+        } else {
+          const newReview = await Review.create({
+            exerciseId,
+            rating,
+            comment,
+            userEmail: userData.email,
+          });
+          return send(res, 201, newReview);
+        }
+      } catch (err) {
+        console.error(err);
+        return send(res, 500, { error: "Server error." });
+      }
+    });
+  }
+  // GET /api/reviews?exerciseId=xxx → aduce toate review-urile
+  if (req.method === "GET" && pathname.startsWith("/api/reviews")) {
+    const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
+    const exerciseId = qs.get("exerciseId");
+    if (!exerciseId) {
+      return send(res, 400, { error: "exerciseId required" });
+    }
     try {
-      const { exerciseId, rating, comment } = JSON.parse(body);
-      if (!exerciseId || !rating || !comment) {
-        return send(res, 400, { error: 'Missing fields.' });
-      }
-
-      const existing = await Review.findOne({ exerciseId, userEmail: userData.email });
-      if (existing) {
-        existing.rating = rating;
-        existing.comment = comment;
-        existing.updatedAt = new Date();
-        await existing.save();
-        return send(res, 200, existing);
-      } else {
-        const newReview = await Review.create({ exerciseId, rating, comment, userEmail: userData.email });
-        return send(res, 201, newReview);
-      }
+      const list = await Review.find({ exerciseId }).sort({ createdAt: -1 });
+      return send(res, 200, list);
     } catch (err) {
       console.error(err);
-      return send(res, 500, { error: 'Server error.' });
+      return send(res, 500, { error: "Server error." });
     }
-  });
-}
-// GET /api/reviews?exerciseId=xxx → aduce toate review-urile
-if (req.method === 'GET' && url.startsWith('/api/reviews')) {
-  const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
-  const exerciseId = qs.get('exerciseId');
-  if (!exerciseId) {
-    return send(res, 400, { error: 'exerciseId required' });
   }
-  try {
-    const list = await Review.find({ exerciseId })
-                             .sort({ createdAt: -1 });
-    return send(res, 200, list);
-  } catch (err) {
-    console.error(err);
-    return send(res, 500, { error: 'Server error.' });
-  }
-}
-// DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
-if (req.method === "DELETE" && url.startsWith("/api/reviews/")) {
-  const user = requireAuth(req, res);
-  if (!user) return;
+  // DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
+  if (req.method === "DELETE" && pathname.startsWith("/api/reviews/")) {
+    const user = requireAuth();
+    if (!user) return;
 
-  const reviewId = url.split("/")[3];
-  try {
-    const review = await Review.findById(reviewId);
-    if (!review) return send(res, 404, { error: "Review not found" });
+    const reviewId = pathname.split("/")[3];
+    try {
+      const review = await Review.findById(reviewId);
+      if (!review) return send(res, 404, { error: "Review not found" });
 
-    if (review.userEmail !== user.email) {
-      return send(res, 403, { error: "Forbidden" });
+      if (review.userEmail !== user.email) {
+        return send(res, 403, { error: "Forbidden" });
+      }
+
+      await Review.findByIdAndDelete(reviewId);
+      return send(res, 200, { message: "Review șters cu succes" });
+    } catch (err) {
+      console.error(err);
+      return send(res, 500, { error: "Server error" });
     }
-
-    await Review.findByIdAndDelete(reviewId);
-    return send(res, 200, { message: "Review șters cu succes" });
-  } catch (err) {
-    console.error(err);
-    return send(res, 500, { error: "Server error" });
   }
-}
-if (req.method === 'GET' && url.startsWith('/api/review-likes/')) {
-  const user = requireAuth(req, res);
-  if (!user) return;
+  if (req.method === "GET" && pathname.startsWith("/api/review-likes/")) {
+    const user = requireAuth();
+    if (!user) return;
 
-  const reviewId = url.split('/')[3];
-  try {
-    const count = await ReviewLike.countDocuments({ reviewId });
-    const alreadyLiked = await ReviewLike.exists({ reviewId, userEmail: user.email });
-    return send(res, 200, { count, liked: !!alreadyLiked });
-  } catch (err) {
-    return send(res, 500, { error: 'Server error' });
-  }
-}
-if (req.method === 'POST' && url.startsWith('/api/review-likes/')) {
-  const user = requireAuth(req, res);
-  if (!user) return;
-
-  const reviewId = url.split('/')[3];
-  try {
-    const existing = await ReviewLike.findOne({ reviewId, userEmail: user.email });
-    if (existing) {
-      await ReviewLike.deleteOne({ _id: existing._id });
-      return send(res, 200, { liked: false });
-    } else {
-      await ReviewLike.create({ reviewId, userEmail: user.email });
-      return send(res, 201, { liked: true });
+    const reviewId = pathname.split("/")[3];
+    try {
+      const count = await ReviewLike.countDocuments({ reviewId });
+      const alreadyLiked = await ReviewLike.exists({
+        reviewId,
+        userEmail: user.email,
+      });
+      return send(res, 200, { count, liked: !!alreadyLiked });
+    } catch (err) {
+      return send(res, 500, { error: "Server error" });
     }
-  } catch (err) {
-    return send(res, 500, { error: 'Server error' });
   }
-}
+  if (req.method === "POST" && pathname.startsWith("/api/review-likes/")) {
+    const user = requireAuth();
+    if (!user) return;
 
+    const reviewId = pathname.split("/")[3];
+    try {
+      const existing = await ReviewLike.findOne({
+        reviewId,
+        userEmail: user.email,
+      });
+      if (existing) {
+        await ReviewLike.deleteOne({ _id: existing._id });
+        return send(res, 200, { liked: false });
+      } else {
+        await ReviewLike.create({ reviewId, userEmail: user.email });
+        return send(res, 201, { liked: true });
+      }
+    } catch (err) {
+      return send(res, 500, { error: "Server error" });
+    }
+  }
+
+  function requireAuth() {
+    const auth = req.headers.authorization;
+    if (!auth || !auth.startsWith("Bearer ")) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Unauthorized" }));
+      return null;
+    }
+    try {
+      return jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+    } catch {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid token" }));
+      return null;
+    }
+  }
 
   // ————— EXISTING ADMIN & CRUD ROUTES —————
-  const match = url.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
+  const match = pathname.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
   if (match) {
     const [, entity, id] = match;
     const model = models[entity];
@@ -510,7 +533,7 @@ if (req.method === 'POST' && url.startsWith('/api/review-likes/')) {
     }
 
     let body = "";
-    req.on("data", chunk => body += chunk);
+    req.on("data", (chunk) => (body += chunk));
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
@@ -535,15 +558,20 @@ if (req.method === 'POST' && url.startsWith('/api/review-likes/')) {
   const filePath = path.join(
     __dirname,
     "../public",
-    url === "/" ? "index.html" : url
+    pathname === "/" ? "index.html" : pathname
   );
   const ext = path.extname(filePath);
-  const contentType = {
-    ".html": "text/html", ".css": "text/css",
-    ".js":   "application/javascript", ".json": "application/json",
-    ".jpg":  "image/jpeg", ".jpeg": "image/jpeg",
-    ".png":  "image/png", ".svg": "image/svg+xml"
-  }[ext] || "text/plain";
+  const contentType =
+    {
+      ".html": "text/html",
+      ".css": "text/css",
+      ".js": "application/javascript",
+      ".json": "application/json",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+      ".svg": "image/svg+xml",
+    }[ext] || "text/plain";
 
   if (fs.existsSync(filePath)) {
     res.writeHead(200, { "Content-Type": contentType });
@@ -553,27 +581,13 @@ if (req.method === 'POST' && url.startsWith('/api/review-likes/')) {
   }
 });
 
-function requireAuth(req, res) {
-  const auth = req.headers.authorization;
-  if (!auth || !auth.startsWith("Bearer ")) {
-    send(res, 401, { error: "Unauthorized" });
-    return null;
-  }
-  try {
-    return jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
-  } catch {
-    send(res, 401, { error: "Invalid token" });
-    return null;
-  }
-}
-
 const send = (res, code, payload) => {
   res.writeHead(code, { "Content-Type": "application/json" });
   res.end(typeof payload === "string" ? payload : JSON.stringify(payload));
 };
 
 const exercises_json_path = "public/assets/exercises.json";
-const grupe_json_path     = "public/assets/grupe_musculare.json";
+const grupe_json_path = "public/assets/grupe_musculare.json";
 
 async function updateDb() {
   await Exercitiu.deleteMany({});
