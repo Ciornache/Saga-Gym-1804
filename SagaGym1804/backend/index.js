@@ -1,38 +1,57 @@
 require("dotenv").config();
-const http = require("http");
-const fs = require("fs");
-const path = require("path");
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-const fsp = require("fs/promises");
-const Exercitiu = require("./models/Exercitiu");
+const http       = require("http");
+const fs         = require("fs");
+const path       = require("path");
+const mongoose   = require("mongoose");
+const crypto     = require("crypto");
+const fsp        = require("fs/promises");
+const Exercitiu  = require("./models/Exercitiu");
 const Favourites = require("./models/Favourites");
-const Grupa = require("./models/Grupa");
-const jwt = require("jsonwebtoken");
+const Grupa      = require("./models/Grupa");
+const jwt        = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const Contact    = require("./models/Contact");      // <— new
+const Review = require('./models/Review');
+
+const { MongoClient, ObjectId } = require("mongodb");
+
+const models = {
+  users:         require("./models/User"),
+  exercitii:     Exercitiu,
+  antrenamente:  require("./models/Antrenament"),
+  grupe:         Grupa,
+  corespondente: require("./models/Corespondenta"),
+  tip:           require("./models/Tip"),
+  contact:       Contact                         // <— new
+};
+models.reviews = Review;
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
-const { MongoClient, ObjectId } = require("mongodb");
-
-const models = {
-  users: require("./models/User"),
-  exercitii: require("./models/Exercitiu"),
-  antrenamente: require("./models/Antrenament"),
-  grupe: require("./models/Grupa"),
-  corespondente: require("./models/Corespondenta"),
-  tip: require("./models/Tip"),
-};
+// — configure nodemailer to send via Gmail
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "icmtproducts@gmail.com",
+    pass: "yjkdwkmiichjlslc"  // ← your App Password
+  }
+});
+const CONTACT_EMAIL = "icmtproducts@gmail.com";
 
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useNewUrlParser:    true,
+  useUnifiedTopology: true
 });
 
 const server = http.createServer(async (req, res) => {
-  if (req.method === "GET" && req.url === "/exercise/getExerciseByName") {
-    console.log("Request sent");
+  const url = req.url.split("?")[0];
+
+  // ————————— EXISTING ROUTES —————————
+
+  // GET /exercise/getExerciseByName
+  if (req.method === "GET" && url === "/exercise/getExerciseByName") {
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
     if (exercise) {
       res.writeHead(200, { "Content-Type": "application/json" });
@@ -43,63 +62,47 @@ const server = http.createServer(async (req, res) => {
     }
     return;
   }
-  if (req.method === "GET" && req.url === "/validation/getUserByEmail") {
-    const user = await models.users.findOne({ email: req.headers.email });
-    if (!user) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
-    } else {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(user));
+
+  // GET validation routes
+  if (req.method === "GET" && url.startsWith("/validation/")) {
+    let user, field, headerKey;
+    if (url === "/validation/getUserByEmail") {
+      field = "email"; headerKey = "email";
+    } else if (url === "/validation/getUserByName") {
+      field = "name"; headerKey = "name";
+    } else if (url === "/validation/getUserByPhoneNumber") {
+      field = "phone_number"; headerKey = "phonenumber";
     }
-    return;
+    if (field) {
+      user = await models.users.findOne({ [field]: req.headers[headerKey] });
+      if (user) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(user));
+      } else {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
+      }
+      return;
+    }
   }
 
-  if (req.method === "GET" && req.url === "/validation/getUserByName") {
-    const user = await models.users.findOne({ name: req.headers.name });
-    if (!user) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
-    } else {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(user));
-    }
-    return;
-  }
-
-  if (req.method === "GET" && req.url === "/validation/getUserByPhoneNumber") {
-    const user = await models.users.findOne({
-      phone_number: req.headers.phonenumber,
-    });
-    console.log(req.headers.phonenumber);
-    if (!user) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Utilizatorul nu a fost găsit" }));
-    } else {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify(user));
-    }
-    return;
-  }
-
-  if (req.method === "POST" && req.url === "/api/auth/login") {
+  // POST /api/auth/login
+  if (req.method === "POST" && url === "/api/auth/login") {
     let body = "";
-    req.on("data", (chunk) => (body += chunk));
+    req.on("data", chunk => body += chunk);
     req.on("end", async () => {
       try {
         const { email, password } = JSON.parse(body);
         const user = await models.users.findOne({ email });
-        if (!user) {
-          return send(res, 400, { msg: "Email inexistent" });
-        }
-        const hashedPassword = hashPassword(password);
-        if (user.password !== hashedPassword) {
+        if (!user) return send(res, 400, { msg: "Email inexistent" });
+        if (user.password !== hashPassword(password)) {
           return send(res, 400, { msg: "Parolă greșită" });
         }
-        const payload = { id: user._id.toString(), email: user.email };
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {
-          expiresIn: process.env.JWT_EXPIRES_IN,
-        });
+        const token = jwt.sign(
+          { id: user._id.toString(), email: user.email },
+          process.env.JWT_SECRET,
+          { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
         return send(res, 200, { token });
       } catch (err) {
         return send(res, 500, { msg: err.message });
@@ -108,22 +111,19 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (req.method === "POST" && req.url === "/api/favourites/toggle") {
-    console.log("Request aici");
-    const userData = requireAuth();
+  // POST /api/favourites/toggle
+  if (req.method === "POST" && url === "/api/favourites/toggle") {
+    const userData = requireAuth(req, res);
     if (!userData) return;
-
     let body = "";
-    req.on("data", (chunk) => (body += chunk));
+    req.on("data", chunk => body += chunk);
     req.on("end", async () => {
       try {
         const { id_exercitiu } = JSON.parse(body);
-        console.log(id_exercitiu);
         const filter = {
           id_user: new ObjectId(userData.id),
-          id_exercitiu,
+          id_exercitiu
         };
-
         const existing = await Favourites.findOne(filter);
         if (existing) {
           await Favourites.deleteOne({ _id: existing._id });
@@ -133,56 +133,122 @@ const server = http.createServer(async (req, res) => {
           return send(res, 201, { msg: "Added to favourites" });
         }
       } catch (err) {
-        console.error(err);
         return send(res, 500, { msg: "Server error" });
       }
     });
     return;
   }
 
-  if (req.method === "POST" && req.url === "/api/register") {
+  // POST /api/register
+  if (req.method === "POST" && url === "/api/register") {
     let body = "";
-
-    req.on("data", (chunk) => {
-      body += chunk.toString();
-    });
-
+    req.on("data", chunk => body += chunk);
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
-        console.log("Received data:", data);
         data.password = hashPassword(data.password);
-
-        const model = models["users"];
-        const newUser = await model.create(data);
-        res.writeHead(201, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Utilizator salvat cu succes" }));
+        await models.users.create(data);
+        return send(res, 201, { message: "Utilizator salvat cu succes" });
       } catch (err) {
-        console.error("Eroare la salvare:", err);
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Eroare la salvarea utilizatorului" }));
+        return send(res, 500, { error: "Eroare la salvarea utilizatorului" });
       }
     });
     return;
   }
 
-  function requireAuth() {
-    const auth = req.headers.authorization;
-    if (!auth || !auth.startsWith("Bearer ")) {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Unauthorized" }));
-      return null;
-    }
-    try {
-      return jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
-    } catch {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Invalid token" }));
-      return null;
-    }
+  // ————— CONTACT FORM ENDPOINT —————
+  if (req.method === "POST" && url === "/api/contact") {
+    let body = "";
+    req.on("data", chunk => body += chunk);
+    req.on("end", async () => {
+      let data;
+      try {
+        data = JSON.parse(body);
+      } catch {
+        return send(res, 400, { error: "Invalid JSON." });
+      }
+      const { firstName, lastName, email, phone, message } = data;
+      if (!firstName || !lastName || !email || !message) {
+        return send(res, 400, { error: "Missing required fields." });
+      }
+
+      // save to MongoDB
+      Contact.create({ firstName, lastName, email, phone, message })
+        .catch(err => console.error("DB save error:", err));
+
+      // send email
+      const mailOptions = {
+        from:    `"Gym Saga Contact" <icmtproducts@gmail.com>`,
+        to:      CONTACT_EMAIL,
+        replyTo: email,
+        subject: `New contact from ${firstName} ${lastName}`,
+        text:    `
+Name:    ${firstName} ${lastName}
+Email:   ${email}
+Phone:   ${phone || '(none)'}
+Message:
+${message}
+        `
+      };
+      transporter.sendMail(mailOptions)
+        .then(() => send(res, 200, { message: "Your message was sent successfully!" }))
+        .catch(err => {
+          console.error("Mailer error:", err);
+          send(res, 500, { error: "Could not send email." });
+        });
+    });
+    return;
   }
 
-  const match = req.url.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
+  // ————— GET ALL CONTACTS —————
+  if (req.method === "GET" && url === "/api/contacts") {
+    try {
+      const list = await Contact.find().sort({ createdAt: -1 });
+      return send(res, 200, list);
+    } catch {
+      return send(res, 500, { error: "Could not fetch contacts." });
+    }
+  }
+  // POST /api/reviews → salvează un review
+if (req.method === 'POST' && url === '/api/reviews') {
+  let body = '';
+  req.on('data', c => body += c);
+  return req.on('end', async () => {
+    try {
+      const { exerciseId, rating, comment } = JSON.parse(body);
+      if (!exerciseId || !rating || !comment) {
+        return send(res, 400, { error: 'Missing fields.' });
+      }
+      // creează review-ul
+      const r = await Review.create({ exerciseId, rating, comment });
+      return send(res, 201, r);
+    } catch (err) {
+      console.error(err);
+      return send(res, 500, { error: 'Server error.' });
+    }
+  });
+}
+
+// GET /api/reviews?exerciseId=xxx → aduce toate review-urile
+if (req.method === 'GET' && url.startsWith('/api/reviews')) {
+  const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
+  const exerciseId = qs.get('exerciseId');
+  if (!exerciseId) {
+    return send(res, 400, { error: 'exerciseId required' });
+  }
+  try {
+    const list = await Review.find({ exerciseId })
+                             .sort({ createdAt: -1 });
+    return send(res, 200, list);
+  } catch (err) {
+    console.error(err);
+    return send(res, 500, { error: 'Server error.' });
+  }
+}
+
+
+  // ————— EXISTING ADMIN & CRUD ROUTES —————
+  const match = url.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
   if (match) {
     const [, entity, id] = match;
     const model = models[entity];
@@ -192,19 +258,17 @@ const server = http.createServer(async (req, res) => {
       const data = await model.find();
       return send(res, 200, data);
     }
-
     if (req.method === "GET" && id) {
       const item = await model.findById(id);
       return send(res, 200, item);
     }
-
     if (req.method === "DELETE" && id) {
       await model.findByIdAndDelete(id);
       return send(res, 200, { message: "Șters" });
     }
 
     let body = "";
-    req.on("data", (chunk) => (body += chunk));
+    req.on("data", chunk => body += chunk);
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
@@ -217,33 +281,26 @@ const server = http.createServer(async (req, res) => {
           return send(res, 200, { message: "Actualizat" });
         }
         return send(res, 400, { error: "Cerere invalidă" });
-      } catch (e) {
+      } catch {
         return send(res, 400, { error: "JSON invalid" });
       }
     });
     return;
   }
 
-  req.url = req.url.split("?")[0];
-
+  // ————— STATIC FILES —————
   const filePath = path.join(
     __dirname,
     "../public",
-    req.url === "/" ? "index.html" : req.url
+    url === "/" ? "index.html" : url
   );
-
   const ext = path.extname(filePath);
-  const contentType =
-    {
-      ".html": "text/html",
-      ".css": "text/css",
-      ".js": "application/javascript",
-      ".json": "application/json",
-      ".jpg": "image/jpeg",
-      ".jpeg": "image/jpeg",
-      ".png": "image/png",
-      ".svg": "image/svg+xml",
-    }[ext] || "text/plain";
+  const contentType = {
+    ".html": "text/html", ".css": "text/css",
+    ".js":   "application/javascript", ".json": "application/json",
+    ".jpg":  "image/jpeg", ".jpeg": "image/jpeg",
+    ".png":  "image/png", ".svg": "image/svg+xml"
+  }[ext] || "text/plain";
 
   if (fs.existsSync(filePath)) {
     res.writeHead(200, { "Content-Type": contentType });
@@ -253,13 +310,27 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+function requireAuth(req, res) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith("Bearer ")) {
+    send(res, 401, { error: "Unauthorized" });
+    return null;
+  }
+  try {
+    return jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET);
+  } catch {
+    send(res, 401, { error: "Invalid token" });
+    return null;
+  }
+}
+
 const send = (res, code, payload) => {
   res.writeHead(code, { "Content-Type": "application/json" });
   res.end(typeof payload === "string" ? payload : JSON.stringify(payload));
 };
 
 const exercises_json_path = "public/assets/exercises.json";
-const grupe_json_path = "public/assets/grupe_musculare.json";
+const grupe_json_path     = "public/assets/grupe_musculare.json";
 
 async function updateDb() {
   await Exercitiu.deleteMany({});

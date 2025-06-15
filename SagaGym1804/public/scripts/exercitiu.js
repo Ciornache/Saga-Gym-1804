@@ -1,20 +1,17 @@
+// public/scripts/exercitiu.js
+
 async function fetchExercise(exerciseName) {
   const resp = await fetch("/exercise/getExerciseByName", {
     method: "GET",
     headers: { name: exerciseName },
   });
-  console.log("fetchExercise resp:", resp);
-  if (!resp.ok) {
-    throw new Error(`Server returned ${resp.status} for "${exerciseName}"`);
-  }
+  if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
   return resp.json();
 }
 
 async function fetchJSON(path) {
   const resp = await fetch(path);
-  if (!resp.ok) {
-    throw new Error(`Could not load ${path}: ${resp.status}`);
-  }
+  if (!resp.ok) throw new Error(`Could not load ${path}: ${resp.status}`);
   return resp.json();
 }
 
@@ -22,54 +19,49 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const params = new URLSearchParams(window.location.search);
     const name = params.get("exercise-name");
-    console.log("Param exercise-name:", name);
     if (!name) throw new Error("Parametrul 'exercise-name' lipsește.");
 
     const ex = await fetchExercise(name);
-    console.log("Exercise data:", ex);
-
     populatePage(ex);
 
     const allInstr = await fetchJSON("data/instructions.json");
-    const instrObj = allInstr.find((i) => i.name === ex.name);
-    if (instrObj) {
-      populateInstructions(instrObj.description);
-    } else {
-      console.warn("No instructions found for", ex.name);
-    }
+    const instrObj = allInstr.find(i => i.name === ex.name);
+    if (instrObj) populateInstructions(instrObj.description);
 
     const allTips = await fetchJSON("data/tips-and-tricks.json");
-    const tipsObj = allTips.find((t) => t.name === ex.name);
-    if (tipsObj) {
-      populateTips(tipsObj.description);
-    } else {
-      console.warn("No tips found for", ex.name);
-    }
+    const tipsObj = allTips.find(t => t.name === ex.name);
+    if (tipsObj) populateTips(tipsObj.description);
+
+    // setează ID exercițiu pentru review
+    document.getElementById("exercise-title").dataset.id = ex._id;
+    incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);
     showError(err.message);
+    return;
   }
 
   const viewMoreEl = document.getElementById("view-more");
-  const detailsEl = document.querySelector(".exercise-details");
-
-  viewMoreEl.addEventListener("click", () => {
-    const isHidden = detailsEl.classList.toggle("hidden");
-    viewMoreEl.textContent = isHidden ? "View More" : "View Less";
+  const detailsEl  = document.querySelector(".exercise-details");
+  viewMoreEl?.addEventListener("click", () => {
+    const hidden = detailsEl.classList.toggle("hidden");
+    viewMoreEl.textContent = hidden ? "View More" : "View Less";
   });
+
+  document.getElementById("submit-review")?.addEventListener("click", handleReviewSubmit);
 });
 
 function populatePage(data) {
-  document.getElementById("exercise-title").textContent = data.name;
-  document.getElementById("score").textContent = data.score;
+  const titleEl = document.getElementById("exercise-title");
+  titleEl.textContent = data.name;
   document.getElementById("difficulty").textContent = data.difficulty;
   document.getElementById("risk").textContent = data.risk;
   document.getElementById("short-desc").textContent = data.description;
+  document.getElementById("score").textContent = data.score;
+
   const musclesEl = document.getElementById("targeted-muscles");
   musclesEl.innerHTML = "";
-
   (data.muscle_groups || []).forEach((src) => {
-    console.log(src);
     const img = document.createElement("img");
     img.src = `assets/images/grupe_musculare/${src}.png`;
     img.alt = "muscle icon";
@@ -78,6 +70,10 @@ function populatePage(data) {
   });
 
   const imageWrapper = document.querySelector(".image-mode");
+  const imgEl = document.getElementById("exercise-image");
+  let idx = 0;
+  let imgs = [data.cover_image, ...(data.images || [])];
+
   function slideTo(newIdx) {
     imageWrapper.classList.add("animate-out");
     imageWrapper.addEventListener("animationend", function handleOut(e) {
@@ -97,50 +93,23 @@ function populatePage(data) {
     });
   }
 
-  const imgEl = document.getElementById("exercise-image");
-  let idx = 0;
-  let imgs = [data.cover_image];
-  imgs.push(imgs[0]);
-  console.log(imgs);
   if (imgs.length) {
-    imgEl.src = `${imgs[0]}`;
+    imgEl.src = imgs[0];
     document.querySelector(".next-image").onclick = () => {
       const nextIdx = (idx + 1) % imgs.length;
-      slideTo(nextIdx, "next");
+      slideTo(nextIdx);
     };
-
     document.querySelector(".prev-image").onclick = () => {
       const prevIdx = (idx - 1 + imgs.length) % imgs.length;
-      slideTo(prevIdx, "prev");
+      slideTo(prevIdx);
     };
   }
 
-  const imgModeBtn = document.querySelector(".image-toggle");
-  const vidModeBtn = document.querySelector(".video-toggle");
-  const videoWrapper = document.querySelector(".video-mode");
-
-  imgModeBtn.addEventListener("click", () => {
-    imageWrapper.classList.add("active");
-    videoWrapper.classList.remove("active");
-    imgModeBtn.classList.add("active");
-    vidModeBtn.classList.remove("active");
-  });
-
-  vidModeBtn.addEventListener("click", () => {
-    videoWrapper.classList.add("active");
-    imageWrapper.classList.remove("active");
-    vidModeBtn.classList.add("active");
-    imgModeBtn.classList.remove("active");
-  });
-
   const iframeEl = document.getElementById("exercise-iframe");
-  const isYouTubeUrl = (url) => /youtu(?:\.be|be\.com)\/.+/.test(url);
-
-  if (isYouTubeUrl(data.video)) {
+  if (/youtu(?:\.be|be\.com)\/.+/.test(data.video)) {
     let videoId = data.video.split("v=")[1] || data.video.split("/").pop();
     videoId = videoId.split("&")[0];
-    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-    iframeEl.src = embedUrl;
+    iframeEl.src = `https://www.youtube.com/embed/${videoId}`;
     iframeEl.style.display = "block";
   }
 }
@@ -158,7 +127,7 @@ function populateInstructions(text) {
 function populateTips(tipsArr) {
   const ol = document.getElementById("tips-list");
   ol.innerHTML = "";
-  tipsArr.forEach(({ index, tip }) => {
+  tipsArr.forEach(({ tip }) => {
     const li = document.createElement("li");
     li.textContent = tip;
     ol.appendChild(li);
@@ -166,7 +135,64 @@ function populateTips(tipsArr) {
 }
 
 function showError(msg) {
-  document.querySelector(
-    "main"
-  ).innerHTML = `<p class="error">Eroare: ${msg}</p>`;
+  document.querySelector("main").innerHTML = `<p class="error">Eroare: ${msg}</p>`;
+}
+
+async function handleReviewSubmit() {
+  const exerciseId = document.getElementById("exercise-title").dataset.id;
+  const rating = parseInt(document.getElementById("reviewuri-rating").value);
+  const comentariu = document.getElementById("reviewuri-comentariu").value.trim();
+
+  if (!exerciseId || !rating || !comentariu) {
+    alert("Completează toate câmpurile!");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/reviews", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({
+  exerciseId,
+  rating,
+  comment: comentariu
+})
+
+    });
+    if (!res.ok) throw new Error(await res.text());
+    alert("✅ Review adăugat cu succes!");
+    document.getElementById("reviewuri-rating").value = "";
+    document.getElementById("reviewuri-comentariu").value = "";
+    await incarcaReviewuriExercitiu();
+  } catch (err) {
+    alert("Eroare la trimitere: " + err.message);
+  }
+}
+
+async function incarcaReviewuriExercitiu() {
+  const exerciseId = document.getElementById("exercise-title").dataset.id;
+  const container = document.getElementById("reviews-list");
+  if (!exerciseId || !container) return;
+
+  try {
+    const res = await fetch(`/api/reviews?exerciseId=${exerciseId}`);
+    const list = await res.json();
+
+    container.innerHTML = "";
+   list.forEach(r => {
+  const div = document.createElement("div");
+  div.className = "review-item";
+  div.innerHTML = `
+    <div class="stars">
+      ${Array(5).fill().map((_, i) =>
+        `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#ccc'}"></i>`).join("")}
+    </div>
+    <p>${r.comment.replace(/\n/g, "<br>")}</p>
+    <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+  `;
+  container.appendChild(div);
+});
+  } catch (err) {
+    container.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
+  }
 }
