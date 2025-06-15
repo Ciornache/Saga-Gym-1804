@@ -1,0 +1,331 @@
+main {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.workout-tag-section {
+  flex: 0 0 280px;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+.workout-tag-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-button-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+.add-button-container button {
+  background-color: #2b2d42;
+  color: #edf2f4;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.add-button-container button:hover {
+  background-color: #4e516e;
+}
+
+.workout-exercises-section {
+  flex: 1;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.workout-exercises-section h2 {
+  margin-top: 0;
+}
+.exercise-info {
+  margin-bottom: 1.5rem;
+}
+.sets-details {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+.set-details {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.workout-button-container {
+  display: flex;
+  gap: 1rem;
+}
+.workout-button-container button {
+  flex: 1;
+  background-color: #ef233c;
+  color: #fff;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.workout-button-container button:hover {
+  background-color: #d62828;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  height: 80%;
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+}
+.hidden {
+  display: none;
+}
+
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+#training-form.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  z-index: 1001;
+  padding: 2rem 1.5rem;
+}
+.hidden {
+  display: none !important;
+}
+
+#picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.picker-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 900px;
+  width: 90%;
+}
+.picker-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+.picker-card h3 {
+  margin-top: 0;
+}
+.picker-card button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #2b2d42;
+  color: #edf2f4;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.picker-card button:hover {
+  background-color: #4e516e;
+}
+
+.muscle-icon {
+  width: 36px;
+  height: 36px;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+}
+
+.picker-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.picker-card::-webkit-scrollbar {
+  width: 8px;
+}
+.picker-card::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+.picker-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.workout-tag.active {
+  background-color: #2b2d42;
+  color: #edf2f4;
+}
+.workout-tag {
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.workout-tag:hover {
+  background: #4e516e;
+}
+
+.exercise-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2b2d42;
+  color: #edf2f4;
+  padding: 0.75rem 1rem;
+}
+.card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.muscle-icons {
+  display: flex;
+  gap: 0.5rem;
+}
+.muscle-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.card-body {
+  padding: 1rem;
+}
+.exercise-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+.meta-item strong {
+  color: #2b2d42;
+}
+
+.sets-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+.set-item {
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 0.5rem;
+  text-align: center;
+}
+.set-duration {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+.set-reps {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.workout-button-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.workout-button-container button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: #ef233c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.workout-button-container button:hover {
+  background: #d62828;
+}
+
+/* fă fiecare set-item relative, ca să putem poziţiona tooltip‐ul */
+.set-item {
+  position: relative;
+}
+
+.set-info {
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 0.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.set-info span {
+  align-self: flex-start;
+}
+
+.set-info .set-duration {
+  font-weight: bold;
+}
+.set-info .set-reps {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* checkbox‐ul care apare la start */
+.set-checkbox {
+  position: relative;
+  top: 3px;
+  margin-top: 0.5rem;
+  display: inline-block;
+}

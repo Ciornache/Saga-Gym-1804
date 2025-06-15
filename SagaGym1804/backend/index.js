@@ -7,8 +7,10 @@ const crypto = require("crypto");
 const fsp = require("fs/promises");
 const Exercitiu = require("./models/Exercitiu");
 const Favourites = require("./models/Favourites");
+const Activity = require("./models/Activity");
 const Grupa = require("./models/Grupa");
 const jwt = require("jsonwebtoken");
+const url = require("url");
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -31,6 +33,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
 });
 
 const server = http.createServer(async (req, res) => {
+  const { pathname, query } = url.parse(req.url, true);
+
   if (req.method === "GET" && req.url === "/exercise/getExerciseByName") {
     console.log("Request sent");
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
@@ -82,6 +86,78 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "GET" && req.url === "/token/getuser") {
+    const auth = requireAuth();
+    if (!auth) return;
+    req.on("data", (chunk) => (body += chunk));
+    const headers = req.headers.authorization;
+    const token = headers.split(" ")[1];
+    const payload = parseJwt(token);
+    const user = await models.users.findById(payload.id);
+    if (!user) {
+      return send(res, 404, { error: "User not found" });
+    }
+    return send(res, 200, {
+      user_id: payload.id,
+      interval_varsta: user.interval_varsta,
+    });
+  }
+
+  if (req.method === "GET" && pathname === "/api/workouts/") {
+    const user = await requireAuth();
+    if (!user) return;
+    const filter = {};
+    console.log(query);
+    if (query.id) {
+      filter.id_user = query.id;
+    }
+    console.log(filter);
+    let workouts;
+    try {
+      workouts = await models.antrenamente.find(filter);
+    } catch (err) {
+      console.error("Eroare");
+      console.error(err);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ error: "Database error" }));
+    }
+    console.log("Antrenamente", workouts);
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    return res.end(JSON.stringify(workouts));
+  }
+
+  if (req.method === "PUT" && pathname === "/api/activities") {
+    // 1️⃣ Authenticate
+    const user = requireAuth();
+
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { id_exercitiu, activity_cnt, time } = JSON.parse(body);
+        const id_user = user.id; // from your JWT payload
+
+        const filter = { id_exercitiu, id_user };
+        const update = { $inc: { activity_cnt, time } };
+        const options = { new: true, upsert: true, setDefaultsOnInsert: true };
+
+        const activity = await Activity.findOneAndUpdate(
+          filter,
+          update,
+          options
+        );
+
+        // 4️⃣ Return the updated-or-created document
+        return send(res, 200, { success: true, activity });
+      } catch (err) {
+        console.error("Activity upsert error:", err);
+        return send(res, 500, { error: "Database error" });
+      }
+    });
+    return;
+  }
+
   if (req.method === "POST" && req.url === "/api/auth/login") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -109,7 +185,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "POST" && req.url === "/api/favourites/toggle") {
-    console.log("Request aici");
     const userData = requireAuth();
     if (!userData) return;
 
@@ -166,6 +241,18 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  function parseJwt(token) {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const payload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => `%${("00" + c.charCodeAt(0).toString(16)).slice(-2)}`)
+        .join("")
+    );
+    return JSON.parse(payload);
+  }
+
   function requireAuth() {
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith("Bearer ")) {
@@ -208,6 +295,7 @@ const server = http.createServer(async (req, res) => {
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
+        console.log(data);
         if (req.method === "POST") {
           await model.create(data);
           return send(res, 201, { message: "Creat" });

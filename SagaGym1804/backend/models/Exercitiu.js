@@ -11,5 +11,6 @@ const exercitiuSchema = new mongoose.Schema({
   risk: String,
   description: String,
   video: String,
+  rep_duration: Number
 });
 module.exports = mongoose.model("Exercitiu", exercitiuSchema);

@@ -121,6 +121,12 @@ main {
   transform: translateX(10px) rotate(180deg);
 }
 
+.navbar-button a {
+  text-decoration: none;
+  color: black;
+  font-size: inherit;
+}
+
 .logo {
   height: 100%;
   width: auto;

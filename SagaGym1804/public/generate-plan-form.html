@@ -6,43 +6,6 @@
     <link href="styles/generate-plan-form.css" rel="stylesheet" />
 </head>
 <body>
-<form id="training-form">
-    <div class="form-group">
-        <label for="training-type">Type of Training:</label>
-        <select id="training-type" name="training-type">
-            <option value="calesthenics">Calesthenics</option>
-            <option value="fitness">Fitness</option>
-            <option value="cardio">Cardio</option>
-            <option value="physical-therapy">Physical Therapy</option>
-        </select>
-    </div>
 
-    <div class="form-group">
-        <label for="difficulty-level">
-            Difficulty Level: <span id="difficulty-value">2.5</span>
-        </label>
-        <input type="range" id="difficulty-level" name="difficulty-level" min="1" max="4" step="0.1" value="2.5">
-    </div>
-
-    <div class="form-group" id="muscle-group-container">
-        <label for="muscle-group-1">Muscle Group:</label>
-        <select id="muscle-group-1" name="muscle-group[]">
-            <option value="chest">Chest</option>
-            <option value="back">Back</option>
-            <option value="shoulders">Shoulders</option>
-            <option value="biceps">Biceps</option>
-            <option value="triceps">Triceps</option>
-            <option value="legs">Legs</option>
-            <option value="abs">Abs</option>
-        </select>
-    </div>
-
-    <button type="button" id="add-muscle-group">Add Muscle Group</button>
-    <div class="form-group">
-        <button type="button" id="submit-btn">Submit Button</button>
-    </div>
-</form>
-
-<script src="scripts/generate-plan-form.js"></script>
 </body>
 </html>

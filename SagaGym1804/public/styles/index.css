@@ -252,7 +252,7 @@
   height: 1.2rem;
   background: none;
   pointer-events: none;
-    appearance: none;
+  appearance: none;
 
   -webkit-appearance: none;
 }
@@ -599,7 +599,6 @@ hr {
   color: #000;
 }
 
-/* ——— Modal generic ——— */
 .modal {
   display: none;
   position: fixed;
@@ -776,6 +775,8 @@ hr {
   pointer-events: none;
 }
 
+
+
 .modal-select-image {
   position: absolute;
   top: 0;
@@ -832,7 +833,7 @@ hr {
 }
 
 .search-container {
-  display: none; /* hidden by default */
+  display: none;
   justify-content: center;
   margin-bottom: 1rem;
   width: 100%;
@@ -850,15 +851,10 @@ hr {
   opacity: 1;
 }
 
-
-
 .star-selected {
   color: gold !important;
 }
 
-
-
-/* ===== HEADER RESPONSIVE FIX ===== */
 .header {
   padding: 1rem 2rem;
   background-color: var(--bg-light);
@@ -951,7 +947,6 @@ hr {
   }
 }
 
-/* ==== HEADER HEIGHT RESPONSIVE TIERS === */
 @media (max-height: 600px) {
   .header {
     padding: 0.5rem 1rem;
@@ -988,9 +983,6 @@ hr {
   }
 }
 
-
-/* ==== GLOBAL SUBTITLE SCALE ==== */
 .header-message p {
-  /* mai agresiv scalat în funcție de înălțime */
   font-size: clamp(0.5rem, 8vh, 1rem) !important;
 }
