@@ -1,35 +1,5 @@
 // public/scripts/exercitiu.js
 
-const workoutButton = document.querySelector(
-  ".navbar .navbar-button:nth-child(4)"
-);
-
-workoutButton.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (!token) {
-    console.log("Access denied!");
-    return;
-  }
-
-  const res = await fetch("/token/getuser", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-
-  if (res.status === 200) {
-    const data = await res.json();
-    window.location.href = `workout.html?id=${data.user_id}`;
-  } else {
-    console.error("Unauthorized access");
-    window.location.href = "login.html";
-  }
-});
-
 async function fetchExercise(exerciseName) {
   const resp = await fetch("/exercise/getExerciseByName", {
     method: "GET",
@@ -62,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tipsObj = allTips.find(t => t.name === ex.name);
     if (tipsObj) populateTips(tipsObj.description);
 
-    document.getElementById("exercise-title").dataset.id = ex._id;
+    document.getElementById("exercise-title").dataset.id = ex.id;
     await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);

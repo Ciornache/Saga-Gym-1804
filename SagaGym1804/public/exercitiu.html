@@ -193,7 +193,7 @@ btn.onclick = () => {
 
    submitBtn.onclick = async () => {
   const comment = commentInput.value.trim();
-  const exerciseId = document.getElementById("exercise-title").dataset.id;
+const exerciseId = Number(document.getElementById("exercise-title").dataset.id);
 
   const token = localStorage.getItem("token");
   if (!token) {
@@ -201,7 +201,7 @@ btn.onclick = () => {
     return;
   }
 
-  if (!selectedRating || !comment || !exerciseId) {
+  if (!selectedRating || !comment ) {
     alert('Please select a rating and write a comment.');
     return;
   }
@@ -272,6 +272,7 @@ list.forEach(r => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
+      console.log("LIKE DATA:", data); // 👈 vezi dacă e { count: ..., liked: ... }
       likeBtn.textContent = `👍 ${data.count}`;
       if (data.liked) likeBtn.classList.add('liked');
     } catch {
@@ -324,7 +325,7 @@ list.forEach(r => {
     }
 
 
-    const exerciseId = document.getElementById("exercise-title").dataset.id;
+const exerciseId = Number(document.getElementById("exercise-title").dataset.id);
     if (exerciseId) loadReviews(exerciseId);
   });
 </script>
