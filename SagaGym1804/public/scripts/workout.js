@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       section.appendChild(card);
-      const setItems = section.querySelectorAll(".set-item");
+      const setItems = card.querySelectorAll(".set-item");
       setItems.forEach((item) => {
         item.style.cursor = "pointer";
         item.addEventListener("click", () => {
@@ -430,9 +430,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       section.querySelectorAll(".set-checkbox").forEach((cb) => cb.remove());
       section.querySelectorAll(".set-info").forEach((info) => info.remove());
-      section
-        .querySelectorAll(".mark-complete-text")
-        .forEach((sp) => sp.remove());
+      section.querySelectorAll("span").forEach((sp) => sp.remove());
     });
   }
 });

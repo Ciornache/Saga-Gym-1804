@@ -169,15 +169,15 @@ document
   });
 
 document.getElementById("sort-alpha-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
+  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
   if (idx !== -1) {
-    sortCriteria[idx].order = "desc";
+    sortCriteria[idx].order = "asc";
   } else {
-    sortCriteria.push({ field: "difficulty", order: "desc" });
+    sortCriteria.push({ field: "alpha", order: "asc" });
   }
-  document.getElementById("sort-difficulty-down").classList.add("selected");
-  document.getElementById("sort-difficulty-up").classList.remove("selected");
-  document.getElementById("sort-difficulty-checkbox").checked = true;
+  document.getElementById("sort-alpha-up").classList.add("selected");
+  document.getElementById("sort-alpha-down").classList.remove("selected");
+  document.getElementById("sort-alpha-checkbox").checked = true;
 });
 
 document.getElementById("sort-alpha-down").addEventListener("click", () => {
@@ -229,6 +229,7 @@ function sortCurrentArray() {
     }
     return;
   }
+  console.log("Sortez", sortCriteria);
 
   sorted.sort((a, b) => {
     for (const crit of sortCriteria) {
@@ -261,6 +262,16 @@ function sortCurrentArray() {
     render();
   }
 }
+
+document
+  .getElementById("sort-alpha-checkbox")
+  .addEventListener("change", (e) => {
+    updateSortCriteria("alpha", e.target.checked);
+    if (!e.target.checked) {
+      document.getElementById("sort-alpha-up").classList.remove("selected");
+      document.getElementById("sort-alpha-down").classList.remove("selected");
+    }
+  });
 
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
@@ -532,6 +543,8 @@ function renderFiltered() {
   renderPagination(exercisesToDisplay.length);
 }
 
+let arrowIndex = 0;
+
 function renderPagination(totalItems) {
   const totalPages = Math.ceil(totalItems / pageSize);
   pagination.innerHTML = "";
@@ -651,8 +664,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Nu am putut încărca exercițiile:", err);
   }
 
-  let arrowIndex = 0;
-
   const cardEls = document.querySelectorAll(".exercise-card");
 
   function renderArrow() {
@@ -672,26 +683,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (btnRight) {
     btnRight.addEventListener("click", () => {
-      console.log(exercisesToDisplay);
-      if (arrowIndex + 4 < exercisesToDisplay.length) {
-        arrowIndex += 4;
-        console.log(arrowIndex);
-        renderArrow();
+      const totalPages = Math.ceil(exercisesToDisplay.length / pageSize);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderFiltered();
+        renderPagination(exercisesToDisplay.length);
       }
     });
   }
 
   if (btnLeft) {
     btnLeft.addEventListener("click", () => {
-      if (arrowIndex >= 4) {
-        arrowIndex -= 4;
-        renderArrow();
+      if (currentPage > 1) {
+        currentPage--;
+        renderFiltered();
+        renderPagination(exercisesToDisplay.length);
       }
     });
   }
 
-  arrowIndex = 0;
-  renderArrow();
+  renderFiltered();
+  renderPagination(exercisesToDisplay.length);
 
   const btnOpenMuscle = document.getElementById("btn-open-muscle-modal");
   const btnCloseMuscle = document.getElementById("btn-close-muscle-modal");

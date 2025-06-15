@@ -76,8 +76,9 @@ form.addEventListener("submit", async (event) => {
     showErrorMessage(email_input, data.msg || "Autentificare eșuată");
     return;
   }
-
-  localStorage.setItem("token", data.token);
+  const checked = document.getElementById("remember-me").checked;
+  if (checked) localStorage.setItem("token", data.token);
+  else sessionStorage.setItem("token", data.token);
   showValidMessage(email_input);
   showValidMessage(password_input);
 
