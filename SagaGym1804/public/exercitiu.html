@@ -2,27 +2,30 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Exercise Details – Saga Gym</title>
-    <link href="styles/main.css" rel="stylesheet">
-    <link href="styles/exercitiu.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Exercise Details – Saga Gym</title>
+  <link href="styles/main.css" rel="stylesheet">
+  <link href="styles/exercitiu.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="page-wrapper">
-        <header class="header">
-            <div class="logo-container">
-                <img src="assets/Web-Logo.png" alt="The logo of the application" class="logo">
-            </div>
-            <div class="header-message">
-                <h1>Your path to better health starts today</h1>
-                <p>Custom workouts. Real progress. Just for you</p>
-            </div>
-        </header>
+  <div class="page-wrapper">
+    <header class="header">
+      <div class="logo-container">
+        <img src="assets/Web-Logo.png" alt="Saga Gym logo" class="logo">
+      </div>
+      <div class="header-message">
+        <h1>Your path to better health starts today</h1>
+        <p>Custom workouts. Real progress. Just for you</p>
+      </div>
+    </header>
 
         <nav class="navbar">
             <button class="navbar-button" type="button">
@@ -58,57 +61,273 @@
             </button>
         </nav>
 
-        <main>
-            <article class="exercise-article">
-                <h2 id="exercise-title">Loading…</h2>
-                <div id="info-container" class="exercise-info-container">
-                    <div class="exercise-info">
-                        <p><strong>Score:</strong> <span id="score"></span></p>
-                        <p><strong>Difficulty:</strong> <span id="difficulty"></span></p>
-                        <p><strong>Targeted Muscles:</strong> <span id="targeted-muscles"></span></p>
-                        <p><strong>Risk Level:</strong> <span id="risk"></span></p>
-                        <p><strong>Description:</strong> <span id="short-desc"></span></p>
-                    </div>
-                    <div class="exercise-presentation">
-                        <div class="presentation">
-                            <div class="image-mode active">
-                                <img id="exercise-image" src="assets/images/exercitii/bench_press.jpg" alt="Exercise image">
-                                <i class="fa-solid fa-angles-left prev-image"></i>
-                                <i class="fa-solid fa-angles-right next-image"></i>
-                            </div>
-                            <div class="video-mode">
-                                <iframe id="exercise-iframe"
-                                    style="display:none; width:100%; max-width:600px; height:320px; border:0; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.15);"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                                </iframe>
-                            </div>
-                        </div>
-                        <div class="presentation-modes">
-                            <i class="fa-solid fa-image image-toggle active"></i>
-                            <i class="fa-solid fa-video video-toggle"></i>
-                        </div>
-                    </div>
-                </div>
-                <p id="view-more">View More</p>
-                <div class="hidden exercise-details">
-                    <div class="exercise-instructions">
-                        <h2>How to perform</h2>
-                        <div id="instructions-container"></div>
-                    </div>
-            
-                    <div class="exercise-tips">
-                        <h2>Tips & Tricks</h2>
-                        <ol id="tips-list"></ol>
-                    </div>    
-                </div>
-            </article>
-        </main>
+    <main>
+      <article class="exercise-article">
+        <h2 id="exercise-title" data-id="">Loading…</h2>
 
-        <footer>
-        </footer>
-    </div>
+        <div class="exercise-info-container">
+          <div class="exercise-info">
+            <button id="write-review-btn" class="btn-review">Write a review</button>
+            <p class="score-line">
+              <strong>Score:</strong>
+              <i class="fa-solid fa-medal stat-icon"></i>
+              <span id="score"></span>
+            </p>
+            <p><strong>Difficulty:</strong> <span id="difficulty"></span></p>
+            <p><strong>Targeted Muscles:</strong> <span id="targeted-muscles"></span></p>
+            <p><strong>Risk Level:</strong> <span id="risk"></span></p>
+            <p><strong>Description:</strong> <span id="short-desc"></span></p>
+          </div>
 
-    <script src="scripts/exercitiu.js"></script>
+          <div class="exercise-presentation">
+            <div class="presentation">
+              <div class="image-mode active">
+                <img id="exercise-image" src="" alt="Exercise image">
+                <i class="fa-solid fa-angles-left prev-image"></i>
+                <i class="fa-solid fa-angles-right next-image"></i>
+              </div>
+              <div class="video-mode">
+                <iframe id="exercise-iframe"
+                  style="display:none;"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+            <div class="presentation-modes">
+              <i class="fa-solid fa-image image-toggle active"></i>
+              <i class="fa-solid fa-video video-toggle"></i>
+            </div>
+          </div>
+        </div>
+
+        <p id="view-more">View More</p>
+        <div class="exercise-details hidden">
+          <div class="exercise-instructions">
+            <h2>How to perform</h2>
+            <div id="instructions-container"></div>
+          </div>
+          <div class="exercise-tips">
+            <h2>Tips & Tricks</h2>
+            <ol id="tips-list"></ol>
+          </div>
+        </div>
+
+        <!-- Review Modal -->
+        <div id="review-modal" class="modal hidden">
+          <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Leave a review</h3>
+            <div id="star-container" class="stars">
+              <i data-value="1" class="fa-solid fa-medal"></i>
+              <i data-value="2" class="fa-solid fa-medal"></i>
+              <i data-value="3" class="fa-solid fa-medal"></i>
+              <i data-value="4" class="fa-solid fa-medal"></i>
+              <i data-value="5" class="fa-solid fa-medal"></i>
+            </div>
+            <textarea id="review-comment" rows="4" placeholder="Your comments…"></textarea>
+            <button id="submit-review" class="btn-submit">Submit Review</button>
+          </div>
+        </div>
+
+        <!-- All Reviews -->
+        <section id="reviews-section">
+          <h3>All Reviews</h3>
+          <div id="reviews-list"></div>
+        </section>
+      </article>
+    </main>
+
+    <footer></footer>
+  </div>
+
+  <script src="scripts/exercitiu.js"></script>
+  <!-- Updated review modal script integrated into exercitiu.html -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const titleEl = document.getElementById('exercise-title');
+    const btn = document.getElementById('write-review-btn');
+    const modal = document.getElementById('review-modal');
+    const close = document.querySelector('.close-modal');
+    const stars = Array.from(document.querySelectorAll('#star-container i'));
+    const commentInput = document.getElementById('review-comment');
+    const submitBtn = document.getElementById('submit-review');
+    const reviewsList = document.getElementById('reviews-list');
+
+    let selectedRating = 0;
+    let currentUserReview = null;
+btn.onclick = () => {
+  modal.classList.remove('hidden');
+  if (currentUserReview) {
+    commentInput.value = currentUserReview.comment;
+    selectedRating = currentUserReview.rating;
+    highlight(selectedRating); // colorează medaliile
+  } else {
+    commentInput.value = '';
+    resetStars();
+  }
+};
+    close.onclick = () => {
+      modal.classList.add('hidden');
+      resetStars();
+      commentInput.value = '';
+    };
+
+    stars.forEach(star => {
+      star.addEventListener('mouseover', () => highlight(star.dataset.value));
+      star.addEventListener('mouseout', () => highlight(selectedRating));
+      star.addEventListener('click', () => {
+        selectedRating = +star.dataset.value;
+        highlight(selectedRating);
+      });
+    });
+
+    function highlight(r) {
+      stars.forEach(s => s.classList.toggle('selected', +s.dataset.value <= r));
+    }
+
+    function resetStars() {
+      selectedRating = 0;
+      highlight(0);
+    }
+
+   submitBtn.onclick = async () => {
+  const comment = commentInput.value.trim();
+  const exerciseId = document.getElementById("exercise-title").dataset.id;
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Trebuie să fii autentificat pentru a trimite un review.");
+    return;
+  }
+
+  if (!selectedRating || !comment || !exerciseId) {
+    alert('Please select a rating and write a comment.');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ exerciseId, rating: selectedRating, comment })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    await loadReviews(exerciseId);
+    modal.classList.add('hidden');
+    resetStars();
+    commentInput.value = '';
+  } catch (err) {
+    alert('Could not submit review.');
+  }
+};
+
+    async function loadReviews(exerciseId) {
+      
+      try {
+        const res = await fetch(`/api/reviews?exerciseId=${exerciseId}`);
+        if (!res.ok) throw new Error();
+        const list = await res.json();
+        reviewsList.innerHTML = '';
+        const token = localStorage.getItem("token");
+let currentUser = null;
+if (token) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  currentUser = payload.email;
+}
+list.forEach(r => {
+  if (r.userEmail === currentUser) {
+    currentUserReview = r;
+  }
+});
+
+        list.forEach(r => {
+  const div = document.createElement('div');
+  div.className = 'review-item';
+  const starHtml = Array(5).fill().map((_, i) =>
+    `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#bbb'}"></i>`).join('');
+  div.innerHTML = `
+    <div class="stars">${starHtml}</div>
+    <p class="review-meta">
+      <strong>${r.userEmail || 'Anonim'}</strong>
+      ${r.userEmail === currentUser ? `<button class="delete-btn" data-id="${r._id}">🗑️</button>` : ""}
+    </p>
+    <p>${r.comment.replace(/\n/g, '<br>')}</p>
+    <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+  `;
+
+  // 👇 LIKE BUTTON pentru TOATE reviewurile
+  const likeBtn = document.createElement('button');
+  likeBtn.className = 'like-btn';
+  likeBtn.textContent = '👍';
+  likeBtn.style.marginLeft = '1rem';
+  likeBtn.title = 'Apreciază recenzia';
+
+  (async () => {
+    try {
+      const res = await fetch(`/api/review-likes/${r._id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      likeBtn.textContent = `👍 ${data.count}`;
+      if (data.liked) likeBtn.classList.add('liked');
+    } catch {
+      likeBtn.textContent = '👍 0';
+    }
+  })();
+
+  likeBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`/api/review-likes/${r._id}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Like nereușit");
+      await loadReviews(exerciseId);
+    } catch (err) {
+      alert("Eroare la like: " + err.message);
+    }
+  });
+
+  div.appendChild(likeBtn);
+
+  // 🟢 Salvează review-ul utilizatorului logat
+  if (r.userEmail === currentUser) {
+    currentUserReview = r;
+
+    const btn = div.querySelector(".delete-btn");
+    btn.addEventListener("click", async () => {
+      if (!confirm("Sigur vrei să ștergi această recenzie?")) return;
+      try {
+        const res = await fetch(`/api/reviews/${r._id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error();
+        await loadReviews(exerciseId);
+        alert("Review șters!");
+      } catch {
+        alert("Eroare la ștergere.");
+      }
+    });
+  }
+
+  reviewsList.appendChild(div);
+});
+
+      } catch {
+        reviewsList.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
+      }
+    }
+
+
+    const exerciseId = document.getElementById("exercise-title").dataset.id;
+    if (exerciseId) loadReviews(exerciseId);
+  });
+</script>
 </body>
 
 </html>

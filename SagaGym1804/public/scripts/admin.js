@@ -105,8 +105,24 @@ const entityConfig = {
     titleId: "form-tip-titlu",
     resetFunc: resetFormularGeneric("tip"),
   },
-};
+    reviewuri: {
+    url: "/admin/review-exercitii",
+    tableId: "tabel-reviewuri",
+    formId: "form-reviewuri",
+    buttonId: "add-reviewuri-btn",
+    fields: [
+      "exercise_name",
+      "user_email",
+      "rating",
+      "comentariu",
+      "data"
+    ],
+    titleId: "form-reviewuri-titlu",
+    resetFunc: resetFormularGeneric("reviewuri")
+  }
 
+};
+  
 function resetFormularUtilizator() {
   entityConfig.utilizatori.fields.forEach((f) => {
     const el = document.getElementById(f.replace("_", "-"));
