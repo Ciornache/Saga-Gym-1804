@@ -12,7 +12,7 @@ const jwt        = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const Contact    = require("./models/Contact");      // <— new
 const Review = require('./models/Review');
-
+const ReviewLike = require('./models/ReviewLike');
 const { MongoClient, ObjectId } = require("mongodb");
 
 const models = {
@@ -275,6 +275,37 @@ if (req.method === "DELETE" && url.startsWith("/api/reviews/")) {
   } catch (err) {
     console.error(err);
     return send(res, 500, { error: "Server error" });
+  }
+}
+if (req.method === 'GET' && url.startsWith('/api/review-likes/')) {
+  const user = requireAuth(req, res);
+  if (!user) return;
+
+  const reviewId = url.split('/')[3];
+  try {
+    const count = await ReviewLike.countDocuments({ reviewId });
+    const alreadyLiked = await ReviewLike.exists({ reviewId, userEmail: user.email });
+    return send(res, 200, { count, liked: !!alreadyLiked });
+  } catch (err) {
+    return send(res, 500, { error: 'Server error' });
+  }
+}
+if (req.method === 'POST' && url.startsWith('/api/review-likes/')) {
+  const user = requireAuth(req, res);
+  if (!user) return;
+
+  const reviewId = url.split('/')[3];
+  try {
+    const existing = await ReviewLike.findOne({ reviewId, userEmail: user.email });
+    if (existing) {
+      await ReviewLike.deleteOne({ _id: existing._id });
+      return send(res, 200, { liked: false });
+    } else {
+      await ReviewLike.create({ reviewId, userEmail: user.email });
+      return send(res, 201, { liked: true });
+    }
+  } catch (err) {
+    return send(res, 500, { error: 'Server error' });
   }
 }
 

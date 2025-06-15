@@ -134,8 +134,18 @@
     const reviewsList = document.getElementById('reviews-list');
 
     let selectedRating = 0;
-
-    btn.onclick = () => modal.classList.remove('hidden');
+    let currentUserReview = null;
+btn.onclick = () => {
+  modal.classList.remove('hidden');
+  if (currentUserReview) {
+    commentInput.value = currentUserReview.comment;
+    selectedRating = currentUserReview.rating;
+    highlight(selectedRating); // colorează medaliile
+  } else {
+    commentInput.value = '';
+    resetStars();
+  }
+};
     close.onclick = () => {
       modal.classList.add('hidden');
       resetStars();
@@ -207,41 +217,86 @@ if (token) {
   const payload = JSON.parse(atob(token.split('.')[1]));
   currentUser = payload.email;
 }
-        list.forEach(r => {
-          const div = document.createElement('div');
-          div.className = 'review-item';
-          const starHtml = Array(5).fill().map((_, i) =>
-            `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#bbb'}"></i>`).join('');
-        div.innerHTML = `
-  <div class="stars">${starHtml}</div>
-  <p class="review-meta">
-    <strong>${r.userEmail || 'Anonim'}</strong>
-    ${r.userEmail === currentUser ? `<button class="delete-btn" data-id="${r._id}">🗑️</button>` : ""}
-  </p>
-  <p>${r.comment.replace(/\n/g, '<br>')}</p>
-  <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
-`;
+list.forEach(r => {
+  if (r.userEmail === currentUser) {
+    currentUserReview = r;
+  }
+});
 
-if (r.userEmail === currentUser) {
-  const btn = div.querySelector(".delete-btn");
-  btn.addEventListener("click", async () => {
-    if (!confirm("Sigur vrei să ștergi această recenzie?")) return;
+        list.forEach(r => {
+  const div = document.createElement('div');
+  div.className = 'review-item';
+  const starHtml = Array(5).fill().map((_, i) =>
+    `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#bbb'}"></i>`).join('');
+  div.innerHTML = `
+    <div class="stars">${starHtml}</div>
+    <p class="review-meta">
+      <strong>${r.userEmail || 'Anonim'}</strong>
+      ${r.userEmail === currentUser ? `<button class="delete-btn" data-id="${r._id}">🗑️</button>` : ""}
+    </p>
+    <p>${r.comment.replace(/\n/g, '<br>')}</p>
+    <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+  `;
+
+  // 👇 LIKE BUTTON pentru TOATE reviewurile
+  const likeBtn = document.createElement('button');
+  likeBtn.className = 'like-btn';
+  likeBtn.textContent = '👍';
+  likeBtn.style.marginLeft = '1rem';
+  likeBtn.title = 'Apreciază recenzia';
+
+  (async () => {
     try {
-      const res = await fetch(`/api/reviews/${r._id}`, {
-        method: 'DELETE',
+      const res = await fetch(`/api/review-likes/${r._id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error();
-      await loadReviews(exerciseId);
-      alert("Review șters!");
+      const data = await res.json();
+      likeBtn.textContent = `👍 ${data.count}`;
+      if (data.liked) likeBtn.classList.add('liked');
     } catch {
-      alert("Eroare la ștergere.");
+      likeBtn.textContent = '👍 0';
+    }
+  })();
+
+  likeBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`/api/review-likes/${r._id}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Like nereușit");
+      await loadReviews(exerciseId);
+    } catch (err) {
+      alert("Eroare la like: " + err.message);
     }
   });
-}
 
-          reviewsList.appendChild(div);
+  div.appendChild(likeBtn);
+
+  // 🟢 Salvează review-ul utilizatorului logat
+  if (r.userEmail === currentUser) {
+    currentUserReview = r;
+
+    const btn = div.querySelector(".delete-btn");
+    btn.addEventListener("click", async () => {
+      if (!confirm("Sigur vrei să ștergi această recenzie?")) return;
+      try {
+        const res = await fetch(`/api/reviews/${r._id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!res.ok) throw new Error();
+        await loadReviews(exerciseId);
+        alert("Review șters!");
+      } catch {
+        alert("Eroare la ștergere.");
+      }
+    });
+  }
+
+  reviewsList.appendChild(div);
+});
+
       } catch {
         reviewsList.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
       }

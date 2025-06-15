@@ -208,6 +208,41 @@ async function incarcaReviewuriExercitiu() {
         <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
       `;
 
+      // 🔥 LIKE button pentru toate review-urile
+      const likeBtn = document.createElement("button");
+      likeBtn.className = "like-btn";
+      likeBtn.textContent = "👍";
+      likeBtn.style.marginLeft = "1rem";
+      likeBtn.title = "Apreciază recenzia";
+
+      (async () => {
+        try {
+          const likeRes = await fetch(`/api/review-likes/${r._id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await likeRes.json();
+          likeBtn.textContent = `👍 ${data.count}`;
+          if (data.liked) likeBtn.classList.add("liked");
+        } catch {
+          likeBtn.textContent = "👍 0";
+        }
+      })();
+
+      likeBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(`/api/review-likes/${r._id}`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (!res.ok) throw new Error("Like nereușit");
+          await incarcaReviewuriExercitiu();
+        } catch (err) {
+          alert("Eroare la like: " + err.message);
+        }
+      });
+
+      div.appendChild(likeBtn);
+
       const btn = div.querySelector(".btn-delete");
       if (btn) {
         btn.addEventListener("click", async () => {
