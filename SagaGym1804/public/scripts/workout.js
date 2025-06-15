@@ -294,6 +294,23 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
       `;
+
+      const exNameNode = card.querySelector("h3");
+      exNameNode.style = "cursor:pointer";
+      exNameNode.addEventListener("mouseenter", (e) => {
+        e.target.setAttribute("name", e.target.textContent);
+        e.target.innerHTML =
+          '<i class="fa-solid fa-arrow-right-long"></i> <span>Go to Exercise Page</span>';
+      });
+      exNameNode.addEventListener("mouseleave", (e) => {
+        e.target.innerHTML = `${e.target.getAttribute("name")}`;
+      });
+      exNameNode.addEventListener("click", (e) => {
+        const exName = e.target.parentNode.getAttribute("name");
+        console.log(exName);
+        window.location.href = `http://localhost:3000/exercitiu.html?exercise-name=${exName}`;
+      });
+
       section.appendChild(card);
       const setItems = section.querySelectorAll(".set-item");
       setItems.forEach((item) => {
@@ -334,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const sp = document.createElement("span");
         sp.textContent = "Mark as complete";
+        sp.className = "mark-complete-text";
         sp.style = "font-size:0.80rem";
         const cb = document.createElement("input");
         cb.type = "checkbox";
@@ -412,7 +430,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       section.querySelectorAll(".set-checkbox").forEach((cb) => cb.remove());
       section.querySelectorAll(".set-info").forEach((info) => info.remove());
-      section.querySelectorAll("span").forEach((sp) => sp.remove());
+      section
+        .querySelectorAll(".mark-complete-text")
+        .forEach((sp) => sp.remove());
     });
   }
 });

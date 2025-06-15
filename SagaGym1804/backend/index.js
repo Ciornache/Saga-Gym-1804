@@ -87,12 +87,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET" && req.url === "/token/getuser") {
-    const auth = requireAuth();
-    if (!auth) return;
-    req.on("data", (chunk) => (body += chunk));
-    const headers = req.headers.authorization;
-    const token = headers.split(" ")[1];
-    const payload = parseJwt(token);
+    const payload = requireAuth();
+    if (!payload) return;
     const user = await models.users.findById(payload.id);
     if (!user) {
       return send(res, 404, { error: "User not found" });
@@ -239,18 +235,6 @@ const server = http.createServer(async (req, res) => {
       }
     });
     return;
-  }
-
-  function parseJwt(token) {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const payload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => `%${("00" + c.charCodeAt(0).toString(16)).slice(-2)}`)
-        .join("")
-    );
-    return JSON.parse(payload);
   }
 
   function requireAuth() {

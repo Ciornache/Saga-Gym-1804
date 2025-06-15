@@ -45,7 +45,6 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
         minVal = parseFloat(minInput.value);
       } else {
         maxInput.value = minVal + minGap;
-        c;
         maxVal = parseFloat(maxInput.value);
       }
     }
@@ -136,8 +135,8 @@ document.getElementById("sort-score-up").addEventListener("click", () => {
 
 document.getElementById("sort-score-down").addEventListener("click", () => {
   const idx = sortCriteria.findIndex((c) => c.field === "score");
-  if (idx !== -1) sortCriteria[idx].order = "asc";
-  else sortCriteria.push({ field: "score", order: "asc" });
+  if (idx !== -1) sortCriteria[idx].order = "desc";
+  else sortCriteria.push({ field: "score", order: "desc" });
   document.getElementById("sort-score-down").classList.add("selected");
   document.getElementById("sort-score-up").classList.remove("selected");
   document.getElementById("sort-score-checkbox").checked = true;
@@ -146,9 +145,9 @@ document.getElementById("sort-score-down").addEventListener("click", () => {
 document.getElementById("sort-difficulty-up").addEventListener("click", () => {
   const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
   if (idx !== -1) {
-    sortCriteria[idx].order = "desc";
+    sortCriteria[idx].order = "asc";
   } else {
-    sortCriteria.push({ field: "difficulty", order: "desc" });
+    sortCriteria.push({ field: "difficulty", order: "asc" });
   }
   document.getElementById("sort-difficulty-up").classList.add("selected");
   document.getElementById("sort-difficulty-down").classList.remove("selected");
@@ -170,38 +169,28 @@ document
   });
 
 document.getElementById("sort-alpha-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
+  const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
   if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
+    sortCriteria[idx].order = "desc";
   } else {
-    sortCriteria.push({ field: "alpha", order: "asc" });
+    sortCriteria.push({ field: "difficulty", order: "desc" });
   }
-  document.getElementById("sort-alpha-up").classList.add("selected");
-  document.getElementById("sort-alpha-down").classList.remove("selected");
-  document.getElementById("sort-alpha-checkbox").checked = true;
+  document.getElementById("sort-difficulty-down").classList.add("selected");
+  document.getElementById("sort-difficulty-up").classList.remove("selected");
+  document.getElementById("sort-difficulty-checkbox").checked = true;
 });
 
 document.getElementById("sort-alpha-down").addEventListener("click", () => {
   const idx = sortCriteria.findIndex((c) => c.field === "alpha");
   if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
+    sortCriteria[idx].order = "desc";
   } else {
-    sortCriteria.push({ field: "alpha", order: "asc" });
+    sortCriteria.push({ field: "alpha", order: "desc" });
   }
   document.getElementById("sort-alpha-down").classList.add("selected");
   document.getElementById("sort-alpha-up").classList.remove("selected");
   document.getElementById("sort-alpha-checkbox").checked = true;
 });
-
-document
-  .getElementById("sort-score-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("score", e.target.checked);
-    if (!e.target.checked) {
-      document.getElementById("sort-score-up").classList.remove("selected");
-      document.getElementById("sort-score-down").classList.remove("selected");
-    }
-  });
 
 document
   .getElementById("sort-difficulty-checkbox")
