@@ -211,8 +211,8 @@ ${message}
   }
   // POST /api/reviews → salvează un review
 if (req.method === 'POST' && url === '/api/reviews') {
-  const userData = requireAuth(req, res); // ✅ verifică tokenul
-  if (!userData) return;  // dacă nu e token valid → răspuns 401
+  const userData = requireAuth(req, res);
+  if (!userData) return;
 
   let body = '';
   req.on('data', c => body += c);
@@ -222,14 +222,18 @@ if (req.method === 'POST' && url === '/api/reviews') {
       if (!exerciseId || !rating || !comment) {
         return send(res, 400, { error: 'Missing fields.' });
       }
-      const r = await Review.create({
-        exerciseId,
-        rating,
-        comment,
-        userId: userData.id,        // ← poți salva cine a făcut review-ul
-        userEmail: userData.email   // ← util dacă vrei să-l afișezi în UI
-      });
-      return send(res, 201, r);
+
+      const existing = await Review.findOne({ exerciseId, userEmail: userData.email });
+      if (existing) {
+        existing.rating = rating;
+        existing.comment = comment;
+        existing.updatedAt = new Date();
+        await existing.save();
+        return send(res, 200, existing);
+      } else {
+        const newReview = await Review.create({ exerciseId, rating, comment, userEmail: userData.email });
+        return send(res, 201, newReview);
+      }
     } catch (err) {
       console.error(err);
       return send(res, 500, { error: 'Server error.' });
@@ -250,6 +254,27 @@ if (req.method === 'GET' && url.startsWith('/api/reviews')) {
   } catch (err) {
     console.error(err);
     return send(res, 500, { error: 'Server error.' });
+  }
+}
+// DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
+if (req.method === "DELETE" && url.startsWith("/api/reviews/")) {
+  const user = requireAuth(req, res);
+  if (!user) return;
+
+  const reviewId = url.split("/")[3];
+  try {
+    const review = await Review.findById(reviewId);
+    if (!review) return send(res, 404, { error: "Review not found" });
+
+    if (review.userEmail !== user.email) {
+      return send(res, 403, { error: "Forbidden" });
+    }
+
+    await Review.findByIdAndDelete(reviewId);
+    return send(res, 200, { message: "Review șters cu succes" });
+  } catch (err) {
+    console.error(err);
+    return send(res, 500, { error: "Server error" });
   }
 }
 

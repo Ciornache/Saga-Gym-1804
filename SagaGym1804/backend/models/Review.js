@@ -2,10 +2,12 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   exerciseId: String,
+  userEmail:  String,           
   rating: Number,
-  comment: String
+  comment: String,
+  likes: [String]              
 }, {
-  timestamps: true   // ⬅️ adaugă asta dacă lipsește!
+  timestamps: true
 });
 
 module.exports = mongoose.model("Review", schema);

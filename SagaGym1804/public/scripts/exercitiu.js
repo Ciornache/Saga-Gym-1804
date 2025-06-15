@@ -32,9 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tipsObj = allTips.find(t => t.name === ex.name);
     if (tipsObj) populateTips(tipsObj.description);
 
-    // setează ID exercițiu pentru review
     document.getElementById("exercise-title").dataset.id = ex._id;
-    incarcaReviewuriExercitiu();
+    await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);
     showError(err.message);
@@ -148,50 +147,89 @@ async function handleReviewSubmit() {
     return;
   }
 
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Trebuie să fii autentificat pentru a trimite un review.");
+    return;
+  }
+
   try {
     const res = await fetch("/api/reviews", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({
-  exerciseId,
-  rating,
-  comment: comentariu
-})
-
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ exerciseId, rating, comment: comentariu })
     });
+
     if (!res.ok) throw new Error(await res.text());
-    alert("✅ Review adăugat cu succes!");
+    await incarcaReviewuriExercitiu();
+    alert("✅ Review salvat (nou sau înlocuit)");
     document.getElementById("reviewuri-rating").value = "";
     document.getElementById("reviewuri-comentariu").value = "";
-    await incarcaReviewuriExercitiu();
   } catch (err) {
     alert("Eroare la trimitere: " + err.message);
   }
 }
 
 async function incarcaReviewuriExercitiu() {
-  const exerciseId = document.getElementById("exercise-title").dataset.id;
   const container = document.getElementById("reviews-list");
-  if (!exerciseId || !container) return;
+  const exerciseId = document.getElementById("exercise-title").dataset.id;
+  if (!container || !exerciseId) return;
+
+  let currentUserEmail = null;
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      currentUserEmail = payload.email;
+    } catch {}
+  }
 
   try {
     const res = await fetch(`/api/reviews?exerciseId=${exerciseId}`);
     const list = await res.json();
-
     container.innerHTML = "";
-   list.forEach(r => {
-  const div = document.createElement("div");
-  div.className = "review-item";
-  div.innerHTML = `
-    <div class="stars">
-      ${Array(5).fill().map((_, i) =>
-        `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#ccc'}"></i>`).join("")}
-    </div>
-    <p>${r.comment.replace(/\n/g, "<br>")}</p>
-    <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
-  `;
-  container.appendChild(div);
-});
+
+    list.forEach(r => {
+      const div = document.createElement("div");
+      div.className = "review-item";
+      const starHtml = Array(5).fill().map((_, i) =>
+        `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#ccc'}"></i>`).join("");
+
+      div.innerHTML = `
+        <div class="stars">${starHtml}</div>
+        <p class="review-meta">
+          <strong>${r.userEmail || 'Anonim'}</strong>
+          ${r.userEmail === currentUserEmail ? `<button class="btn-delete" data-id="${r._id}">🗑️</button>` : ""}
+        </p>
+        <p>${r.comment.replace(/\n/g, '<br>')}</p>
+        <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+      `;
+
+      const btn = div.querySelector(".btn-delete");
+      if (btn) {
+        btn.addEventListener("click", async () => {
+          if (!confirm("Sigur vrei să ștergi această recenzie?")) return;
+          try {
+            const res = await fetch(`/api/reviews/${r._id}`, {
+              method: "DELETE",
+              headers: {
+                "Authorization": `Bearer ${token}`
+              }
+            });
+            if (!res.ok) throw new Error();
+            await incarcaReviewuriExercitiu();
+            alert("Review șters!");
+          } catch {
+            alert("Eroare la ștergere.");
+          }
+        });
+      }
+
+      container.appendChild(div);
+    });
   } catch (err) {
     container.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
   }

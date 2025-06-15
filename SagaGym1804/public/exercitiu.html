@@ -195,27 +195,58 @@
 };
 
     async function loadReviews(exerciseId) {
+      
       try {
         const res = await fetch(`/api/reviews?exerciseId=${exerciseId}`);
         if (!res.ok) throw new Error();
         const list = await res.json();
         reviewsList.innerHTML = '';
+        const token = localStorage.getItem("token");
+let currentUser = null;
+if (token) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  currentUser = payload.email;
+}
         list.forEach(r => {
           const div = document.createElement('div');
           div.className = 'review-item';
           const starHtml = Array(5).fill().map((_, i) =>
             `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#bbb'}"></i>`).join('');
-          div.innerHTML = `
-            <div class="stars">${starHtml}</div>
-            <p>${r.comment.replace(/\n/g, '<br>')}</p>
-            <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
-          `;
+        div.innerHTML = `
+  <div class="stars">${starHtml}</div>
+  <p class="review-meta">
+    <strong>${r.userEmail || 'Anonim'}</strong>
+    ${r.userEmail === currentUser ? `<button class="delete-btn" data-id="${r._id}">🗑️</button>` : ""}
+  </p>
+  <p>${r.comment.replace(/\n/g, '<br>')}</p>
+  <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+`;
+
+if (r.userEmail === currentUser) {
+  const btn = div.querySelector(".delete-btn");
+  btn.addEventListener("click", async () => {
+    if (!confirm("Sigur vrei să ștergi această recenzie?")) return;
+    try {
+      const res = await fetch(`/api/reviews/${r._id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error();
+      await loadReviews(exerciseId);
+      alert("Review șters!");
+    } catch {
+      alert("Eroare la ștergere.");
+    }
+  });
+}
+
           reviewsList.appendChild(div);
         });
       } catch {
         reviewsList.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
       }
     }
+
 
     const exerciseId = document.getElementById("exercise-title").dataset.id;
     if (exerciseId) loadReviews(exerciseId);
