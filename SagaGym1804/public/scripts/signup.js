@@ -5,7 +5,8 @@ const workoutButton = document.querySelector(
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
     console.log("Access denied!");
     return;
@@ -17,7 +18,7 @@ workoutButton.addEventListener("click", async (e) => {
     },
   });
 
-   if (res.status === 200) {
+  if (res.status === 200) {
     const data = await res.json();
     window.location.href = `workout.html?id=${data.user_id}`;
   } else {

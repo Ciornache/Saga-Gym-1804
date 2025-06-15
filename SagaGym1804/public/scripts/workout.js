@@ -5,7 +5,8 @@ const workoutButton = document.querySelector(
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
     console.log("Access denied!");
     return;
@@ -183,7 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadAndRenderSavedWorkouts() {
     try {
-      const token = localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
       const res = await fetch(`/api/workouts/?id=${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -400,7 +402,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return sum + d;
         }, 0);
 
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         const payload = {
           id_exercitiu: exId,
           id_user: userId,

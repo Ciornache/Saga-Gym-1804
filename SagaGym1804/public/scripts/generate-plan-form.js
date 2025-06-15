@@ -98,7 +98,8 @@ document
   });
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) return;
 
   // ① Fetch the user info (now includes interval_varsta)

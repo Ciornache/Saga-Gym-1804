@@ -5,7 +5,8 @@ const workoutButton = document.querySelector(
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
     console.log("Access denied!");
     return;
@@ -105,6 +106,7 @@ const pageSize = 4;
 
 let currentSortField = null;
 let currentSortOrder = null;
+let favourites = [];
 
 const selectedFilters = {
   muscleGroups: [],
@@ -529,6 +531,27 @@ function render() {
   renderPagination(exercises.length);
 }
 
+function updateStars() {
+  const stars = Array.from(document.querySelectorAll(".fa-star"));
+  for (star of stars) star.classList.remove("star-selected");
+  console.log(favourites);
+  for (fav of favourites) {
+    console.log(exercises, fav.id_exercitiu);
+    const exName = exercises.find((e) => e.id.toString() === fav.id_exercitiu);
+    const exerciseNames = Array.from(document.querySelectorAll("h3"));
+    console.log("HAAA", exerciseNames, exName);
+    const exNode = exerciseNames.find((e) => {
+      return e.textContent.toLowerCase() === exName.name.toLowerCase();
+    });
+    console.log(exNode);
+    if (exNode) {
+      console.log("Sibling", exNode.previousSibling.previousSibling);
+      const icon = exNode.previousSibling.previousSibling.querySelector("i");
+      icon.classList.toggle("star-selected");
+    }
+  }
+}
+
 function renderFiltered() {
   const start = (currentPage - 1) * pageSize;
   cards.forEach((cardEl, idx) => {
@@ -541,6 +564,7 @@ function renderFiltered() {
     }
   });
   renderPagination(exercisesToDisplay.length);
+  updateStars();
 }
 
 let arrowIndex = 0;
@@ -660,24 +684,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     exercises = await resp.json();
     exercisesToDisplay = exercises;
+
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    console.log(token);
+    const res = await fetch("/favourites", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    favourites = data.favourites;
   } catch (err) {
     console.error("Nu am putut încărca exercițiile:", err);
   }
 
   const cardEls = document.querySelectorAll(".exercise-card");
-
-  function renderArrow() {
-    cardEls.forEach((cardEl, idx) => {
-      const ex = exercisesToDisplay[arrowIndex + idx];
-      if (ex) {
-        cardEl.style.display = "";
-        fillCard(cardEl, ex);
-      } else {
-        cardEl.style.display = "none";
-      }
-    });
-  }
-
   const btnLeft = document.querySelector(".slider-angles-left");
   const btnRight = document.querySelector(".slider-angles-right");
 
@@ -780,7 +804,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function authFetch(url, options = {}) {
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
     options.headers = {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -790,8 +816,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function toggleFavourite(star) {
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token) {
+      alert("You must have an account! Login or create an account");
       window.location.href = "login.html";
       return;
     }
@@ -806,15 +834,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Cannot find exercise name");
       return;
     }
-    console.log(name);
     const exer = exercises.find((e) => e.name === name);
     if (!exer) {
       console.error("Exercise not found in array:", name);
       return;
     }
-    console.log(exer);
-    console.log("HERE?");
-    const exercitiuId = exer._id;
+
+    const exercitiuId = exer.id;
     try {
       const resp = await authFetch("/api/favourites/toggle", {
         method: "POST",
@@ -828,13 +854,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
       alert("Eroare: " + err.message);
     }
+    return 1;
   }
 
   document.querySelectorAll(".fa-star").forEach((star) => {
     star.addEventListener("click", async (e) => {
       e.stopPropagation();
-      await toggleFavourite(star);
-      star.classList.toggle("star-selected");
+      const ok = await toggleFavourite(star);
+      if (ok) star.classList.toggle("star-selected");
     });
   });
 });

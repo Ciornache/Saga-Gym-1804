@@ -25,6 +25,7 @@ const models = {
   grupe: require("./models/Grupa"),
   corespondente: require("./models/Corespondenta"),
   tip: require("./models/Tip"),
+  favourites: require("./models/Favourites"),
 };
 
 mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
@@ -99,6 +100,22 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  if (req.method === "GET" && pathname === "/favourites") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const user = await models.users.findById(payload.id);
+    if (!user) {
+      return send(res, 404, { error: "User not found" });
+    }
+    console.log("User id", user._id.toString());
+    const favourites = await models.favourites.find({
+      id_user: user._id.toString(),
+    });
+    return send(res, 200, {
+      favourites: favourites,
+    });
+  }
+
   if (req.method === "GET" && pathname === "/api/workouts/") {
     const user = await requireAuth();
     if (!user) return;
@@ -124,7 +141,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "PUT" && pathname === "/api/activities") {
-    // 1️⃣ Authenticate
     const user = requireAuth();
 
     let body = "";
@@ -132,7 +148,7 @@ const server = http.createServer(async (req, res) => {
     req.on("end", async () => {
       try {
         const { id_exercitiu, activity_cnt, time } = JSON.parse(body);
-        const id_user = user.id; // from your JWT payload
+        const id_user = user.id;
 
         const filter = { id_exercitiu, id_user };
         const update = { $inc: { activity_cnt, time } };
@@ -144,7 +160,6 @@ const server = http.createServer(async (req, res) => {
           options
         );
 
-        // 4️⃣ Return the updated-or-created document
         return send(res, 200, { success: true, activity });
       } catch (err) {
         console.error("Activity upsert error:", err);
@@ -197,7 +212,7 @@ const server = http.createServer(async (req, res) => {
 
         const existing = await Favourites.findOne(filter);
         if (existing) {
-          await Favourites.deleteOne({ _id: existing._id });
+          await Favourites.deleteOne({ _id: existing.id });
           return send(res, 200, { msg: "Removed from favourites" });
         } else {
           await Favourites.create(filter);

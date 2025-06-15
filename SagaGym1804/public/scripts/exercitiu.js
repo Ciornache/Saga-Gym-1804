@@ -5,7 +5,8 @@ const workoutButton = document.querySelector(
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
     console.log("Access denied!");
     return;
