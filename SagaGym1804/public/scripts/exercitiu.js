@@ -1,8 +1,4 @@
-// public/scripts/exercitiu.js
-
-const workoutButton = document.querySelector(
-  ".navbar .navbar-button:nth-child(4)"
-);
+const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -19,7 +15,6 @@ workoutButton.addEventListener("click", async (e) => {
       Authorization: `Bearer ${token}`,
     },
   });
-
 
   if (res.status === 200) {
     const data = await res.json();
@@ -55,11 +50,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     populatePage(ex);
 
     const allInstr = await fetchJSON("data/instructions.json");
-    const instrObj = allInstr.find(i => i.name === ex.name);
+    const instrObj = allInstr.find((i) => i.name === ex.name);
     if (instrObj) populateInstructions(instrObj.description);
 
     const allTips = await fetchJSON("data/tips-and-tricks.json");
-    const tipsObj = allTips.find(t => t.name === ex.name);
+    const tipsObj = allTips.find((t) => t.name === ex.name);
     if (tipsObj) populateTips(tipsObj.description);
 
     document.getElementById("exercise-title").dataset.id = ex._id;
@@ -71,13 +66,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const viewMoreEl = document.getElementById("view-more");
-  const detailsEl  = document.querySelector(".exercise-details");
+  const detailsEl = document.querySelector(".exercise-details");
   viewMoreEl?.addEventListener("click", () => {
     const hidden = detailsEl.classList.toggle("hidden");
     viewMoreEl.textContent = hidden ? "View More" : "View Less";
   });
 
-  document.getElementById("submit-review")?.addEventListener("click", handleReviewSubmit);
+  document
+    .getElementById("submit-review")
+    ?.addEventListener("click", handleReviewSubmit);
 });
 
 function populatePage(data) {
@@ -164,13 +161,17 @@ function populateTips(tipsArr) {
 }
 
 function showError(msg) {
-  document.querySelector("main").innerHTML = `<p class="error">Eroare: ${msg}</p>`;
+  document.querySelector(
+    "main"
+  ).innerHTML = `<p class="error">Eroare: ${msg}</p>`;
 }
 
 async function handleReviewSubmit() {
   const exerciseId = document.getElementById("exercise-title").dataset.id;
   const rating = parseInt(document.getElementById("reviewuri-rating").value);
-  const comentariu = document.getElementById("reviewuri-comentariu").value.trim();
+  const comentariu = document
+    .getElementById("reviewuri-comentariu")
+    .value.trim();
 
   if (!exerciseId || !rating || !comentariu) {
     alert("Completează toate câmpurile!");
@@ -188,9 +189,9 @@ async function handleReviewSubmit() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ exerciseId, rating, comment: comentariu })
+      body: JSON.stringify({ exerciseId, rating, comment: comentariu }),
     });
 
     if (!res.ok) throw new Error(await res.text());
@@ -222,20 +223,34 @@ async function incarcaReviewuriExercitiu() {
     const list = await res.json();
     container.innerHTML = "";
 
-    list.forEach(r => {
+    list.forEach((r) => {
       const div = document.createElement("div");
       div.className = "review-item";
-      const starHtml = Array(5).fill().map((_, i) =>
-        `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#ccc'}"></i>`).join("");
+      const starHtml = Array(5)
+        .fill()
+        .map(
+          (_, i) =>
+            `<i class="fa-solid fa-medal" style="color:${
+              i < r.rating ? "#e76f66" : "#ccc"
+            }"></i>`
+        )
+        .join("");
 
       div.innerHTML = `
         <div class="stars">${starHtml}</div>
         <p class="review-meta">
-          <strong>${r.userEmail || 'Anonim'}</strong>
-          ${r.userEmail === currentUserEmail ? `<button class="btn-delete" data-id="${r._id}">🗑️</button>` : ""}
+          <strong>${r.userEmail || "Anonim"}</strong>
+          ${
+            r.userEmail === currentUserEmail
+              ? `<button class="btn-delete" data-id="${r._id}">🗑️</button>`
+              : ""
+          }
         </p>
-        <p>${r.comment.replace(/\n/g, '<br>')}</p>
-        <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+        <p>${r.comment.replace(/\n/g, "<br>")}</p>
+        <small>${new Date(r.createdAt).toLocaleString("ro-RO", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}</small>
       `;
 
       // 🔥 LIKE button pentru toate review-urile
@@ -248,7 +263,7 @@ async function incarcaReviewuriExercitiu() {
       (async () => {
         try {
           const likeRes = await fetch(`/api/review-likes/${r._id}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           const data = await likeRes.json();
           likeBtn.textContent = `👍 ${data.count}`;
@@ -262,7 +277,7 @@ async function incarcaReviewuriExercitiu() {
         try {
           const res = await fetch(`/api/review-likes/${r._id}`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           if (!res.ok) throw new Error("Like nereușit");
           await incarcaReviewuriExercitiu();
@@ -281,8 +296,8 @@ async function incarcaReviewuriExercitiu() {
             const res = await fetch(`/api/reviews/${r._id}`, {
               method: "DELETE",
               headers: {
-                "Authorization": `Bearer ${token}`
-              }
+                Authorization: `Bearer ${token}`,
+              },
             });
             if (!res.ok) throw new Error();
             await incarcaReviewuriExercitiu();
@@ -296,6 +311,7 @@ async function incarcaReviewuriExercitiu() {
       container.appendChild(div);
     });
   } catch (err) {
-    container.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
+    container.innerHTML =
+      "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
   }
 }

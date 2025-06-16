@@ -1,6 +1,4 @@
-const workoutButton = document.querySelector(
-  ".navbar .navbar-button:nth-child(4)"
-);
+const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -268,7 +266,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .map(
           (s, i) => `
         <div class="set-item" data-timings='${JSON.stringify(s.timings)}'>
-          <div class="set-duration">${Math.round(s.duration / 60)} min</div>
+          <div class="set-duration">${Number(s.duration / 60).toFixed(
+            2
+          )} min</div>
           <div class="set-reps">${s.repetitions.length} reps</div>
         </div>
       `
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
           console.warn("No matching exercise for", exName);
           continue;
         }
-        const exId = match._id;
+        const exId = match.id;
 
         const checkboxes = Array.from(
           card.querySelectorAll("input[type='checkbox']")

@@ -775,8 +775,6 @@ hr {
   pointer-events: none;
 }
 
-
-
 .modal-select-image {
   position: absolute;
   top: 0;
@@ -985,4 +983,23 @@ hr {
 
 .header-message p {
   font-size: clamp(0.5rem, 8vh, 1rem) !important;
+}
+
+.acc-icons {
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: fit-content;
+  position: relative;
+  top: 30%;
+  left: 15%;
+}
+
+.acc-icons button {
+  background-color: transparent;
+}
+.acc-icons button:hover {
+  background-color: transparent;
 }

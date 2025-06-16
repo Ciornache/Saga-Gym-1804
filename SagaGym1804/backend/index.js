@@ -32,12 +32,11 @@ function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
-// — configure nodemailer to send via Gmail
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "icmtproducts@gmail.com",
-    pass: "yjkdwkmiichjlslc", // ← your App Password
+    pass: "yjkdwkmiichjlslc",
   },
 });
 const CONTACT_EMAIL = "icmtproducts@gmail.com";
@@ -50,10 +49,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
 
 const server = http.createServer(async (req, res) => {
   const { pathname, query } = url.parse(req.url, true);
-
-  // ————————— EXISTING ROUTES —————————
-
-  // GET /exercise/getExerciseByName
 
   if (req.method === "GET" && pathname === "/exercise/getExerciseByName") {
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
@@ -178,7 +173,9 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && pathname === "/api/workouts/") {
     const user = await requireAuth();
-    if (!user) return;
+    if (!user) {
+      return;
+    }
     const filter = {};
     console.log(query);
     if (query.id) {
@@ -229,6 +226,63 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === "GET" && pathname === "/api/leaderboard") {
+    const { gender, workoutType, age, muscle, weight } = query;
+
+    const userFilter = {};
+    if (gender) {
+      userFilter.gender = String(gender[0]).toUpperCase() + gender.slice(1);
+    } else if (age) {
+      userFilter.interval_varsta = age;
+    } else if (weight) {
+      if (weight.endsWith("+")) {
+        let min = weight.split("-")[0];
+        userFilter.weight = { $gte: Number(min) };
+      } else if (weight.includes("-")) {
+        const [min, max] = weight.split("-").map(Number);
+        userFilter.weight = { $gte: min, $lt: max };
+      } else if (weight.startsWith("<")) {
+        userFilter.weight = { $lt: Number(weight.slice(1)) };
+      }
+    }
+
+    const users = await models.users.find(userFilter);
+    const userIds = users.map((u) => u._id.toString());
+    const activities = await Activity.find({ id_user: { $in: userIds } });
+
+    const exFilter = {};
+    if (workoutType) {
+      exFilter.type = workoutType;
+    }
+
+    let exList = await models.exercitii.find(exFilter);
+    if (muscle)
+      exList = exList.filter((e) =>
+        e.muscle_groups.includes(muscle.toLowerCase())
+      );
+    exList = exList.map((e) => e.id);
+    const exIds = exList.map((e) => String(e));
+    const board = users
+      .map((u) => {
+        const acts = activities.filter(
+          (a) =>
+            a.id_user === u._id.toString() && exIds.includes(a.id_exercitiu)
+        );
+        const totalCnt = acts.reduce((s, a) => s + a.activity_cnt, 0);
+        const totalTime = acts.reduce((s, a) => s + a.time, 0);
+        const score = 0.6 * totalCnt + 0.4 * totalTime;
+        return {
+          username: u.name,
+          score,
+          joinDate: u.createdAt,
+        };
+      })
+      .filter((e) => e.score > 0)
+      .sort((a, b) => b.score - a.score);
+
+    return send(res, 200, board);
+  }
+
   if (req.method === "PUT" && pathname === "/api/activities") {
     const user = requireAuth();
     let body = "";
@@ -257,7 +311,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // POST /api/auth/login
   if (req.method === "POST" && pathname === "/api/auth/login") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -309,7 +362,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // POST /api/register
   if (req.method === "POST" && pathname === "/api/register") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -326,7 +378,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ————— CONTACT FORM ENDPOINT —————
   if (req.method === "POST" && pathname === "/api/contact") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -342,12 +393,10 @@ const server = http.createServer(async (req, res) => {
         return send(res, 400, { error: "Missing required fields." });
       }
 
-      // save to MongoDB
       Contact.create({ firstName, lastName, email, phone, message }).catch(
         (err) => console.error("DB save error:", err)
       );
 
-      // send email
       const mailOptions = {
         from: `"Gym Saga Contact" <icmtproducts@gmail.com>`,
         to: CONTACT_EMAIL,
@@ -374,7 +423,6 @@ ${message}
     return;
   }
 
-  // ————— GET ALL CONTACTS —————
   if (req.method === "GET" && pathname === "/api/contacts") {
     try {
       const list = await Contact.find().sort({ createdAt: -1 });
@@ -383,7 +431,6 @@ ${message}
       return send(res, 500, { error: "Could not fetch contacts." });
     }
   }
-  // POST /api/reviews → salvează un review
   if (req.method === "POST" && pathname === "/api/reviews") {
     const userData = requireAuth();
     if (!userData) return;
@@ -422,7 +469,6 @@ ${message}
       }
     });
   }
-  // GET /api/reviews?exerciseId=xxx → aduce toate review-urile
   if (req.method === "GET" && pathname.startsWith("/api/reviews")) {
     const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
     const exerciseId = qs.get("exerciseId");
@@ -437,7 +483,6 @@ ${message}
       return send(res, 500, { error: "Server error." });
     }
   }
-  // DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
   if (req.method === "DELETE" && pathname.startsWith("/api/reviews/")) {
     const user = requireAuth();
     if (!user) return;
@@ -512,7 +557,6 @@ ${message}
     }
   }
 
-  // ————— EXISTING ADMIN & CRUD ROUTES —————
   const match = pathname.match(/^\/admin\/(\w+)(?:\/(.*))?$/);
   if (match) {
     const [, entity, id] = match;
@@ -554,7 +598,6 @@ ${message}
     return;
   }
 
-  // ————— STATIC FILES —————
   const filePath = path.join(
     __dirname,
     "../public",

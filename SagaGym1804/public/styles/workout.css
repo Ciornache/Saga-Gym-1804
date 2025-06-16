@@ -329,3 +329,12 @@ main {
   margin-top: 0.5rem;
   display: inline-block;
 }
+
+.navbar-button span {
+  color: black;
+}
+
+.dropdown-wrapper button {
+  position: inherit;
+  bottom: 4px;
+}

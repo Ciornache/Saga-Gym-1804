@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Contact – Saga Gym</title>
-  <link href="styles/index.css" rel="stylesheet">
-    <link href="styles/main.css" rel="stylesheet">
+
   <link href="styles/contact.css" rel="stylesheet">
+  <link href="styles/main.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -29,11 +29,7 @@
 
     <nav class="navbar">
       <button class="navbar-button" type="button">
-        <span>Home</span>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-      </button>
-      <button class="navbar-button" type="button">
-        <span>Exercises</span>
+        <a href="index.html">Exercises</a>
         <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
       </button>
       <div class="dropdown-wrapper">
@@ -51,14 +47,20 @@
           </a>
         </div>
       </div>
-      <button class="navbar-button" type="button">
-        <span>Contact</span>
+      <button class="navbar-button" type="button" id="workout-btn">
+        <a href="workout.html">Workouts</a>
         <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
       </button>
-    </nav>
-    <!-- ==== MAIN CONTENT: Contact Page ==== -->
+      <button class="navbar-button" type="button">
+        <a href="leaderboard.html">Leadearboard</a>
+        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+      </button>
+      <button class="navbar-button" type="button">
+        <a href="contact.html">Contact</a>
+        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+      </button>
+    </nav>  
     <main class="contact-page">
-      <!-- Left column: About us -->
       <aside class="contact-info">
         <h2>About us</h2>
         <p>
@@ -93,7 +95,6 @@
         </ul>
       </aside>
 
-      <!-- Right column: Contact form -->
       <section class="contact-form">
         <h2>Contact us</h2>
         <form action="/api/contact" method="POST">
@@ -138,7 +139,6 @@
     <footer></footer>
   </div>
 
-  <!-- your form-handling script -->
   <script src="scripts/contact.js" defer></script>
 </body>
 

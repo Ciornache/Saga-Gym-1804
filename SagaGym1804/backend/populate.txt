@@ -1,0 +1,71 @@
+db.activities.insertMany([
+  { id_exercitiu: "1",  id_user: users[0]._id.toString(),  activity_cnt: 20, time: 300 },
+  { id_exercitiu: "2",  id_user: users[1]._id.toString(),  activity_cnt: 35, time: 450 },
+  { id_exercitiu: "3",  id_user: users[2]._id.toString(),  activity_cnt: 15, time: 200 },
+  { id_exercitiu: "4",  id_user: users[3]._id.toString(),  activity_cnt: 10, time: 180 },
+  { id_exercitiu: "5",  id_user: users[4]._id.toString(),  activity_cnt: 22, time: 250 },
+  { id_exercitiu: "6",  id_user: users[5]._id.toString(),  activity_cnt: 28, time: 400 },
+  { id_exercitiu: "7",  id_user: users[6]._id.toString(),  activity_cnt: 30, time: 320 },
+  { id_exercitiu: "8",  id_user: users[7]._id.toString(),  activity_cnt: 25, time: 360 },
+  { id_exercitiu: "9",  id_user: users[8]._id.toString(),  activity_cnt: 18, time: 290 },
+  { id_exercitiu: "10", id_user: users[9]._id.toString(),  activity_cnt: 27, time: 330 },
+  { id_exercitiu: "11", id_user: users[10]._id.toString(), activity_cnt: 32, time: 410 },
+  { id_exercitiu: "12", id_user: users[11]._id.toString(), activity_cnt: 40, time: 480 },
+  { id_exercitiu: "1",  id_user: users[0]._id.toString(),  activity_cnt: 14, time: 190 },
+  { id_exercitiu: "2",  id_user: users[1]._id.toString(),  activity_cnt: 19, time: 260 },
+  { id_exercitiu: "3",  id_user: users[2]._id.toString(),  activity_cnt: 24, time: 340 }
+]);
+
+db.activities.insertMany([
+  { id_exercitiu: "4",  id_user: users[3]._id.toString(),  activity_cnt: 21, time: 280 },
+  { id_exercitiu: "5",  id_user: users[4]._id.toString(),  activity_cnt: 16, time: 220 },
+  { id_exercitiu: "6",  id_user: users[5]._id.toString(),  activity_cnt: 29, time: 360 },
+  { id_exercitiu: "7",  id_user: users[6]._id.toString(),  activity_cnt: 23, time: 310 },
+  { id_exercitiu: "8",  id_user: users[7]._id.toString(),  activity_cnt: 27, time: 330 },
+  { id_exercitiu: "9",  id_user: users[8]._id.toString(),  activity_cnt: 12, time: 200 },
+  { id_exercitiu: "10", id_user: users[9]._id.toString(),  activity_cnt: 34, time: 390 },
+  { id_exercitiu: "11", id_user: users[10]._id.toString(), activity_cnt: 38, time: 410 },
+  { id_exercitiu: "12", id_user: users[11]._id.toString(), activity_cnt: 26, time: 270 },
+  { id_exercitiu: "1",  id_user: users[0]._id.toString(),  activity_cnt: 18, time: 240 },
+  { id_exercitiu: "2",  id_user: users[1]._id.toString(),  activity_cnt: 20, time: 290 },
+  { id_exercitiu: "3",  id_user: users[2]._id.toString(),  activity_cnt: 22, time: 350 },
+  { id_exercitiu: "4",  id_user: users[3]._id.toString(),  activity_cnt: 17, time: 300 },
+  { id_exercitiu: "5",  id_user: users[4]._id.toString(),  activity_cnt: 31, time: 440 },
+  { id_exercitiu: "6",  id_user: users[5]._id.toString(),  activity_cnt: 25, time: 370 }
+]);
+
+db.activities.insertMany([
+  { id_exercitiu: "7",  id_user: users[6]._id.toString(),  activity_cnt: 19, time: 250 },
+  { id_exercitiu: "8",  id_user: users[7]._id.toString(),  activity_cnt: 33, time: 420 },
+  { id_exercitiu: "9",  id_user: users[8]._id.toString(),  activity_cnt: 16, time: 230 },
+  { id_exercitiu: "10", id_user: users[9]._id.toString(),  activity_cnt: 29, time: 310 },
+  { id_exercitiu: "11", id_user: users[10]._id.toString(), activity_cnt: 31, time: 390 },
+  { id_exercitiu: "12", id_user: users[11]._id.toString(), activity_cnt: 22, time: 260 },
+  { id_exercitiu: "1",  id_user: users[0]._id.toString(),  activity_cnt: 26, time: 370 },
+  { id_exercitiu: "2",  id_user: users[1]._id.toString(),  activity_cnt: 13, time: 180 },
+  { id_exercitiu: "3",  id_user: users[2]._id.toString(),  activity_cnt: 35, time: 450 },
+  { id_exercitiu: "4",  id_user: users[3]._id.toString(),  activity_cnt: 28, time: 330 },
+  { id_exercitiu: "5",  id_user: users[4]._id.toString(),  activity_cnt: 30, time: 400 },
+  { id_exercitiu: "6",  id_user: users[5]._id.toString(),  activity_cnt: 21, time: 310 },
+  { id_exercitiu: "7",  id_user: users[6]._id.toString(),  activity_cnt: 24, time: 290 },
+  { id_exercitiu: "8",  id_user: users[7]._id.toString(),  activity_cnt: 20, time: 240 },
+  { id_exercitiu: "9",  id_user: users[8]._id.toString(),  activity_cnt: 27, time: 300 }
+]);
+
+db.activities.insertMany([
+  { id_exercitiu: "10", id_user: users[9]._id.toString(),  activity_cnt: 38, time: 410 },
+  { id_exercitiu: "11", id_user: users[10]._id.toString(), activity_cnt: 29, time: 280 },
+  { id_exercitiu: "12", id_user: users[11]._id.toString(), activity_cnt: 34, time: 360 },
+  { id_exercitiu: "1",  id_user: users[0]._id.toString(),  activity_cnt: 17, time: 190 },
+  { id_exercitiu: "2",  id_user: users[1]._id.toString(),  activity_cnt: 26, time: 340 },
+  { id_exercitiu: "3",  id_user: users[2]._id.toString(),  activity_cnt: 23, time: 270 },
+  { id_exercitiu: "4",  id_user: users[3]._id.toString(),  activity_cnt: 22, time: 250 },
+  { id_exercitiu: "5",  id_user: users[4]._id.toString(),  activity_cnt: 36, time: 430 },
+  { id_exercitiu: "6",  id_user: users[5]._id.toString(),  activity_cnt: 18, time: 210 },
+  { id_exercitiu: "7",  id_user: users[6]._id.toString(),  activity_cnt: 39, time: 470 },
+  { id_exercitiu: "8",  id_user: users[7]._id.toString(),  activity_cnt: 31, time: 380 },
+  { id_exercitiu: "9",  id_user: users[8]._id.toString(),  activity_cnt: 19, time: 260 },
+  { id_exercitiu: "10", id_user: users[9]._id.toString(),  activity_cnt: 25, time: 300 },
+  { id_exercitiu: "11", id_user: users[10]._id.toString(), activity_cnt: 33, time: 440 },
+  { id_exercitiu: "12", id_user: users[11]._id.toString(), activity_cnt: 37, time: 390 }
+]);
