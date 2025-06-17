@@ -10,7 +10,6 @@ workoutButton.addEventListener("click", async (e) => {
     window.location.href = "login.html";
     return;
   }
-  console.log("AICI", token);
 
   const res = await fetch("/token/getuser", {
     headers: {
@@ -28,7 +27,7 @@ workoutButton.addEventListener("click", async (e) => {
 });
 
 const logoutButton = document.getElementById("logout-btn");
-  const userAccWindow = document.getElementById("user-win-btn");
+const userAccWindow = document.getElementById("user-win-btn");
 
 setInterval(() => {
   const token =
@@ -48,6 +47,13 @@ logoutButton.addEventListener("click", (e) => {
   sessionStorage.clear();
   e.target.classList.add("hidden");
   location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
 });
 
 document.querySelectorAll(".dual-slider").forEach((group) => {

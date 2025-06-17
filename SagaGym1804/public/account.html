@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>My Account</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/account.css">
+    <script src="https://kit.fontawesome.com/4f34f92427.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo-container">
+            <img src="assets/Web-Logo.png" alt="The logo of the application" class="logo">
+        </div>
+        <div class="header-message">
+            <h1>Your path to better health starts today</h1>
+            <p>Custom workouts. Real progress. Just for you</p>
+        </div>
+    </header>
+    
+    <nav class="navbar">
+        <button class="navbar-button" type="button">
+            <a href="index.html">Exercises</a>
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+        </button>
+        <div class="dropdown-wrapper">
+            <button class="navbar-button" type="button">
+                <span>My Account</span>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="login.html">
+                    <span>Login</span>
+                    <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+                </a>
+                <a class="dropdown-item" href="signup.html">
+                    <span>Sign Up</span>
+                    <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+                </a>
+            </div>
+        </div>
+        <button class="navbar-button" type="button" id="workout-btn">
+            <a href="workout.html">Workouts</a>
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+        </button>
+        <button class="navbar-button" type="button">
+            <a href="leaderboard.html">Leadearboard</a>
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+        </button>
+        <button class="navbar-button" type="button">
+            <a href="contact.html">Contact</a>
+            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+        </button>
+        <div class="acc-icons">
+            <button class="navbar-button hidden" type="button" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+            <button class="navbar-button hidden" type="button" id="user-win-btn">
+                <i class="fa-solid fa-user"></i>
+            </button>
+        </div>
+    
+        </nav>
+
+    <div class="account-container">
+
+        <section class="profile-top">
+            <label for="avatar-input" class="avatar-circle">Add Image</label>
+            <input type="file" id="avatar-input" accept="image/*" hidden>
+            <div id="username-display" class="username">Username</div>
+        </section>
+        <hr>
+
+        <section class="details-grid">
+            <div class="column column-left">
+                <div class="detail-row" data-field="email">
+                    <span class="label">Email:</span>
+                    <span id="email-value" class="value">loading...</span>
+                    <button id="edit-email" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="password">
+                    <span class="label">Password:</span>
+                    <span id="password-value" class="value">********</span>
+                    <button id="edit-password" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="phone_number">
+                    <span class="label">Phone Number:</span>
+                    <span id="phone-value" class="value">loading...</span>
+                    <button id="edit-phone" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="username">
+                    <span class="label">Username:</span>
+                    <span id="username-value" class="value">loading...</span>
+                    <button id="edit-username" class="btn edit">Edit</button>
+                </div>
+            </div>
+
+            <div class="column column-right">
+                <div class="detail-row" data-field="gender">
+                    <span class="label">Gender:</span>
+                    <span id="gender-value" class="value">loading...</span>
+                    <button id="edit-gender" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="weight">
+                    <span class="label">Weight:</span>
+                    <span id="weight-value" class="value">loading...</span>
+                    <button id="edit-weight" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="height">
+                    <span class="label">Height:</span>
+                    <span id="height-value" class="value">loading...</span>
+                    <button id="edit-height" class="btn edit">Edit</button>
+                </div>
+                <div class="detail-row" data-field="body_type">
+                    <span class="label">Body Type:</span>
+                    <div id="bodytype-img" class="value"><img class="body-img" src=""/></div>
+                    <button id="edit-bodytype" class="btn edit">Edit</button>
+                </div>
+            </div>
+        </section>
+        <hr>
+
+        <section class="stats-section">
+            <button id="view-stats" class="btn stats">View Stats</button>
+        </section>
+
+    </div>
+    <script src="scripts/account.js"></script>
+
+</body>
+
+</html>

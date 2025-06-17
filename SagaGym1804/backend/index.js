@@ -1,4 +1,5 @@
 require("dotenv").config();
+const formidable = require("formidable");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -11,7 +12,7 @@ const Activity = require("./models/Activity");
 const Grupa = require("./models/Grupa");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const Contact = require("./models/Contact"); // <— new
+const Contact = require("./models/Contact");
 const Review = require("./models/Review");
 const ReviewLike = require("./models/ReviewLike");
 
@@ -52,6 +53,7 @@ mongoose.connect(
 
 const server = http.createServer(async (req, res) => {
   const { pathname, query } = url.parse(req.url, true);
+  console.log(pathname);
 
   if (req.method === "GET" && pathname === "/exercise/getExerciseByName") {
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
@@ -65,7 +67,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // GET validation routes
   if (req.method === "GET" && pathname.startsWith("/validation/")) {
     let user, field, headerKey;
     if (pathname === "/validation/getUserByEmail") {
@@ -101,6 +102,39 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, {
       user_id: payload.id,
       interval_varsta: user.interval_varsta,
+    });
+  }
+
+  if (req.method === "POST" && pathname === "/api/upload/avatar") {
+    const payload = requireAuth();
+    if (!payload) return;
+
+    const uploadDir =
+      "F:/Saga-Gym-1804/SagaGym1804/public/assets/images/profile_pictures";
+    const form = new formidable.IncomingForm({
+      uploadDir:
+        "F:/Saga-Gym-1804/SagaGym1804/public/assets/images/profile_pictures",
+      keepExtensions: true,
+    });
+
+    return form.parse(req, async (err, fields, files) => {
+      if (err) {
+        console.error(err);
+        return send(res, 500, { error: "Upload error" });
+      }
+      const arr = files.avatar;
+      const file = Array.isArray(arr) ? arr[0] : arr;
+      if (!file) return send(res, 400, { error: "No file provided" });
+
+      const ext = path.extname(file.originalFilename);
+      const newName = `avatar-${payload.id}${ext}`;
+      const newPath = path.join(uploadDir, newName);
+      await fsp.rename(file.filepath, newPath);
+
+      const relUrl = `/assets/images/profile_pictures/${newName}`;
+      await models.users.findByIdAndUpdate(payload.id, { pfp_picture: relUrl });
+
+      return send(res, 200, { success: true, avatar_url: relUrl });
     });
   }
 
@@ -198,6 +232,66 @@ const server = http.createServer(async (req, res) => {
 
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify(workouts));
+  }
+
+  if (req.method === "PUT" && pathname === "/api/update/user/") {
+    const payload = requireAuth();
+    if (!payload) return; // requireAuth already sends 401 if missing/invalid
+
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const field = query.field;
+        const allowed = [
+          "email",
+          "name",
+          "phone_number",
+          "gender",
+          "weight",
+          "height",
+          "body_type",
+          "password",
+        ];
+        if (!allowed.includes(field)) {
+          return send(res, 400, { error: "Invalid field" });
+        }
+
+        const data = JSON.parse(body);
+        const newVal = data[field];
+        if (newVal == null || newVal === "") {
+          return send(res, 400, { error: "No value provided" });
+        }
+
+        // uniqueness check for email/name
+        if (["email", "name"].includes(field)) {
+          const existing = await models.users.findOne({ [field]: newVal });
+          if (existing && existing._id.toString() !== payload.id) {
+            return send(res, 409, { error: `${field} already in use` });
+          }
+        }
+
+        // prepare update
+        const update = {};
+        if (field === "password") {
+          update.password = hashPassword(newVal);
+        } else {
+          update[field] = newVal;
+        }
+
+        await models.users.findByIdAndUpdate(payload.id, update);
+
+        return send(res, 200, {
+          success: true,
+          [field]: field === "password" ? "********" : newVal,
+        });
+      } catch (err) {
+        console.error(err);
+        return send(res, 500, { error: "Server error" });
+      }
+    });
+
+    return;
   }
 
   if (req.method === "PUT" && pathname === "/api/activities") {
@@ -546,6 +640,7 @@ ${message}
 
   function requireAuth() {
     const auth = req.headers.authorization;
+    console.log("Auth", auth);
     if (!auth || !auth.startsWith("Bearer ")) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Unauthorized" }));
