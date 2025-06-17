@@ -1,0 +1,227 @@
+/* Reset & Font */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Orbitron', sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Sidebar */
+.sidebar {
+  background: #1f2937;
+  color: #fff;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .logo {
+  margin: 0 0 40px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background .2s;
+}
+.sidebar li.active a {
+  background: #374151;
+}
+.sidebar a:hover {
+  background: #4b5563;
+}
+
+/* Layout */
+.container {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  height: 100vh;
+}
+.main-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Favorites Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto 300px auto;
+  grid-template-areas:
+    "fav types list"
+    "muscle muscle list"
+    "muscle muscle difficulty";
+  gap: 20px;
+}
+.favorite-exercises { grid-area: fav; }
+.favorite-types     { grid-area: types; }
+.all-liked          { grid-area: list; overflow-y:auto; }
+.muscle-groups      { grid-area: muscle; }
+.avg-difficulty     { grid-area: difficulty; }
+
+/* Card Base */
+.card {
+  background: #d3d3d3;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display:flex;
+  flex-direction: column;
+}
+.card h2 {
+  margin: 0 0 15px;
+  font-size: 1.5rem;
+  padding-top: 5px;
+}
+
+/* Favorite Exercises */
+.favorite-exercises .icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 15px 0;
+}
+.favorite-exercises .fav-count,
+.favorite-exercises .icons i {
+  font-size: 2.5rem;
+  color: #6a0dad;
+}
+.favorite-exercises .view-link {
+  margin-top: auto;
+  color: #6a0dad;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  transition:opacity .2s;
+}
+.favorite-exercises .view-link:hover {
+  opacity:.8;
+}
+
+/* Favorite Types */
+.favorite-types .type-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.favorite-types .label {
+  flex: 0 0 120px;
+  font-size: 1rem;
+}
+.favorite-types .bar {
+  flex: 1;
+  height: 12px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0 10px;
+}
+.favorite-types .fill {
+  height: 100%;
+  background: #000;
+}
+.favorite-types .percent {
+  flex: 0 0 40px;
+  text-align: right;
+  font-size: 1rem;
+}
+
+/* All Liked Exercises */
+.all-liked h2 {
+  margin-bottom: 10px;
+}
+.all-liked hr {
+  border: none;
+  border-top: 2px solid #333;
+  margin: 10px 0 20px;
+}
+.all-liked ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+/* Favorite Muscle Groups */
+.muscle-groups h2 {
+  text-align:center;
+}
+.muscle-groups .chart-container {
+  width:300px;
+  height:300px;
+  margin:20px auto 15px;
+}
+.muscle-groups .legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  font-size:1.2rem;
+  justify-content:center;
+  margin-top:auto;
+}
+.muscle-groups .legend span {
+  display:flex;
+  align-items:center;
+  gap:.3rem;
+}
+
+/* Average Difficulty */
+.avg-difficulty {
+  align-items:center;
+}
+.avg-difficulty .dumbbells {
+  display:flex;
+  gap:.3rem;
+  font-size:1.8rem;
+  margin-bottom:10px;
+}
+.avg-difficulty hr {
+  width:80%;
+  border:none;
+  border-top:2px solid #333;
+  margin:10px auto;
+}
+.avg-difficulty .avg-score {
+  font-size:2rem;
+  text-align:center;
+}
+
+/* Reviews Grid */
+.reviews-grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+}
+.reviews-grid .card {
+  align-items:center;
+  text-align:center;
+}
+.reviews-grid .card h2 {
+  margin-bottom:15px;
+  font-size:1.3rem;
+}
+.reviews-grid .stat {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.6rem;
+}
+.reviews-grid .stat .value {
+  font-size:1.8rem;
+  font-weight:bold;
+}
+.reviews-grid .stat i {
+  font-size:1.8rem;
+  color:#6a0dad;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SagaGym – Statistics & Reviews</title>
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="styles/stats.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h1 class="logo">SagaGym</h1>
+      <ul>
+        <li class="active"><a href="#" data-tab="favorites">Favorites</a></li>
+        <li><a href="#" data-tab="reviews">Reviews</a></li>
+        <li><a href="#" data-tab="activity">Activity</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <!-- FAVORITES -->
+      <section id="favorites" class="tab-content">
+        <div class="stats-grid">
+          <div class="card favorite-exercises">
+            <h2>Favorite Exercises</h2>
+            <div class="icons">
+              <span class="fav-count">3</span>
+              <i class="fas fa-star"></i>
+            </div>
+            <a href="#" class="view-link">View them <i class="fas fa-arrow-right"></i></a>
+          </div>
+
+          <div class="card favorite-types">
+            <h2>Favorite Types</h2>
+            <div class="type-row">
+              <span class="label">Bodybuilding</span>
+              <div class="bar"><div class="fill" style="width:75%"></div></div>
+              <span class="percent">75%</span>
+            </div>
+            <div class="type-row">
+              <span class="label">Stretching</span>
+              <div class="bar"><div class="fill" style="width:45%"></div></div>
+              <span class="percent">45%</span>
+            </div>
+            <div class="type-row">
+              <span class="label">Cardio</span>
+              <div class="bar"><div class="fill" style="width:15%"></div></div>
+              <span class="percent">15%</span>
+            </div>
+          </div>
+
+          <div class="card all-liked">
+            <h2>All Liked Exercises</h2>
+            <hr />
+            <ol>
+              <li>Squats</li>
+              <li>Deadlift</li>
+              <li>Push-up</li>
+              <li>Pull-up</li>
+            </ol>
+          </div>
+
+          <div class="card muscle-groups">
+            <h2>Favorite Muscle Groups</h2>
+            <div class="chart-container">
+              <canvas id="muscleChart"></canvas>
+            </div>
+            <div class="legend">
+              <span><i class="fas fa-circle" style="color:#e63946"></i> Back 75%</span>
+              <span><i class="fas fa-circle" style="color:#2a9d8f"></i> Legs 25%</span>
+              <span><i class="fas fa-circle" style="color:#f06292"></i> Biceps 15%</span>
+              <span><i class="fas fa-circle" style="color:#6a4c93"></i> Triceps 5%</span>
+            </div>
+          </div>
+
+          <div class="card avg-difficulty">
+            <h2>Average Difficulty</h2>
+            <div class="dumbbells">
+              <i class="fas fa-dumbbell"></i>
+              <i class="fas fa-dumbbell"></i>
+              <i class="fas fa-dumbbell"></i>
+              <i class="fas fa-dumbbell"></i>
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <hr />
+            <div class="avg-score">3.5 <i class="fas fa-dumbbell"></i> / 5 <i class="fas fa-dumbbell"></i></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="reviews" class="tab-content" style="display:none">
+        <div class="reviews-grid">
+          <div class="card review-count">
+            <h2>Review Count</h2>
+            <div class="stat">
+              <i class="fas fa-comment-dots"></i>
+              <span class="value">124</span>
+            </div>
+          </div>
+          <div class="card review-average">
+            <h2>Average Rating</h2>
+            <div class="stat">
+              <i class="fas fa-star"></i>
+              <span class="value">4.3 / 5</span>
+            </div>
+          </div>
+          <div class="card total-likes">
+            <h2>Total Likes</h2>
+            <div class="stat">
+              <i class="fas fa-heart"></i>
+              <span class="value">342</span>
+            </div>
+          </div>
+          <div class="card likes-per-review">
+            <h2>Likes per Review</h2>
+            <div class="stat">
+              <i class="fas fa-heart"></i>
+              <span class="value">2.8</span>
+            </div>
+          </div>
+          <div class="card min-likes">
+            <h2>Min Likes</h2>
+            <div class="stat">
+              <i class="fas fa-arrow-down"></i>
+              <span class="value" id="minLikesVal">0</span>
+            </div>
+          </div>
+          <div class="card max-likes">
+            <h2>Max Likes</h2>
+            <div class="stat">
+              <i class="fas fa-arrow-up"></i>
+              <span class="value" id="maxLikesVal">100</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACTIVITY -->
+      <section id="activity" class="tab-content" style="display:none">
+        <p>The Activity section is under construction.</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Chart.js & Tabs Script -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // doughnut for muscle groups
+    const ctx = document.getElementById('muscleChart')?.getContext('2d');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels:['Back','Legs','Biceps','Triceps'],
+          datasets:[{ data:[75,25,15,5], backgroundColor:['#e63946','#2a9d8f','#f06292','#6a4c93'] }]
+        },
+        options:{ cutout:'70%', plugins:{legend:{display:false}}, responsive:true, maintainAspectRatio:false }
+      });
+    }
+
+    // tabs
+    document.querySelectorAll('.sidebar a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+        link.parentElement.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(sec => sec.style.display='none');
+        document.getElementById(link.dataset.tab).style.display='block';
+      });
+    });
+
+    // reflect min/max values
+    document.getElementById('minLikes')?.addEventListener('input', e => {
+      document.getElementById('minLikesVal').textContent = e.target.value;
+    });
+    document.getElementById('maxLikes')?.addEventListener('input', e => {
+      document.getElementById('maxLikesVal').textContent = e.target.value;
+    });
+  </script>
+</body>
+</html>
