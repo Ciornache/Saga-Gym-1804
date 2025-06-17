@@ -42,10 +42,13 @@ const transporter = nodemailer.createTransport({
 const CONTACT_EMAIL = "icmtproducts@gmail.com";
 const { MongoClient, ObjectId } = require("mongodb");
 
-mongoose.connect("mongodb://127.0.0.1:27017/sagagym", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://varunax424:RsiRPVBTxJItTu6c@sagacluster.ybauvs6.mongodb.net/sagaDB",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const server = http.createServer(async (req, res) => {
   const { pathname, query } = url.parse(req.url, true);
