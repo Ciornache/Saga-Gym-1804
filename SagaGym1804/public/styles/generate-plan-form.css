@@ -1,7 +1,6 @@
 form {
   background-color: #fff;
   max-width: 500px;
-  margin: 40px auto;
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -56,4 +55,10 @@ button:hover {
 
 #workout-name {
   margin-bottom: 1rem;
+}
+
+form {
+  /* keep your existing max-width/padding… */
+  max-height: 90vh; /* so it never grows past the screen */
+  overflow-y: auto; /* add a scrollbar when contents overflow */
 }

@@ -1,10 +1,10 @@
 const workoutButton = document.querySelector(
-  ".navbar .navbar-button:nth-child(4)"
+  ".navbar .navbar-button:nth-child(3)"
 );
 
+console.log(workoutButton);
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
-
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
@@ -25,6 +25,36 @@ workoutButton.addEventListener("click", async (e) => {
     console.error("Unauthorized access");
     window.location.href = "login.html";
   }
+});
+
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+setInterval(() => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    userAccWindow.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+}, 100);
+
+logoutButton.addEventListener("click", (e) => {
+  console.log("Clicked");
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
 });
 
 const form = document.querySelector("form");
@@ -61,8 +91,6 @@ form.addEventListener("submit", async (event) => {
     showErrorMessage(password_input, "Parola este greșită");
     return;
   }
-
-  console.log("HERE");
 
   const resp = await fetch("/api/auth/login", {
     method: "POST",

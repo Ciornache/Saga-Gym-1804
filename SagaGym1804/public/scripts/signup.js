@@ -25,6 +25,36 @@ workoutButton.addEventListener("click", async (e) => {
   }
 });
 
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+setInterval(() => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    userAccWindow.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+}, 100);
+
+logoutButton.addEventListener("click", (e) => {
+  console.log("Clicked");
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
+});
+
 const input_elements = [
   document.getElementById("email"),
   document.getElementById("password"),
@@ -280,11 +310,7 @@ function toggleCheckAttribute(group, value) {
 }
 
 function validateStep4Form(event) {
-  console.log(user);
-  console.log("Validating fourth step");
-
-  event.preventDefault(); // stop real submission for now
-
+  event.preventDefault();
   let valid = true;
 
   const isFt = document.getElementById("ft-radio").checked;
@@ -342,6 +368,7 @@ function validateStep4Form(event) {
       body: JSON.stringify(user),
     });
     alert("Form valid. Submitting!");
+    window.location.href = "login.html";
   }
 }
 

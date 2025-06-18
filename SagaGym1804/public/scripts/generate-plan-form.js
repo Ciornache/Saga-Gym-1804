@@ -102,7 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) return;
 
-  // ① Fetch the user info (now includes interval_varsta)
   const res = await fetch("/token/getuser", {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -110,7 +109,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { interval_varsta } = await res.json();
   console.log(interval_varsta);
 
-  // ② Map each age interval to a max difficulty
   const maxByInterval = {
     "18-25": 5,
     "26-35": 4.5,
@@ -119,7 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
   const maxDiff = maxByInterval[interval_varsta] ?? 5;
 
-  // ③ Clamp the slider’s max and current value
   const diffInput = document.getElementById("difficulty-level");
   const diffValueSpan = document.getElementById("difficulty-value");
   diffInput.max = maxDiff;
@@ -128,7 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     diffValueSpan.textContent = maxDiff;
   }
 
-  // ④ (Optional) show the user what their age bracket allows
   const label = document.querySelector('label[for="difficulty-level"]');
   label.insertAdjacentHTML(
     "beforeend",
@@ -136,16 +132,43 @@ document.addEventListener("DOMContentLoaded", async () => {
        Max difficulty for your age (${interval_varsta})
      </small>`
   );
+  async function workoutNameExists(name) {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    const res = await fetch(
+      `/api/check-workout-name?name=${encodeURIComponent(name)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    const data = await res.json();
+    return data.exists;
+  }
 
   const form = document.getElementById("training-form");
-  form.addEventListener("submit", onGenerate);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nameInput = document.querySelector("#workout-name");
+    const workoutName = nameInput?.value.trim();
+
+    if (!workoutName) {
+      alert("Please enter a workout name.");
+      return;
+    }
+    if (await workoutNameExists(workoutName)) {
+      alert(
+        "You already have a workout with that name. Please choose another."
+      );
+      return;
+    }
+    onGenerate(e);
+  });
   document.getElementById("difficulty-level").addEventListener("input", (e) => {
     document.getElementById("difficulty-value").textContent = e.target.value;
   });
 });
 
 async function onGenerate(e) {
-  e.preventDefault();
   const purpose = document.getElementById("training-type").value;
   const name = document.getElementById("workout-name").value;
   console.log(name);
@@ -210,7 +233,6 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
     mapping.some((m) => e.type === m.name && e.difficulty <= m.difficulty)
   );
 
-  // compute a weight for each exercise
   const scored = candidates.map((ex) => {
     const muscleScore = ex.muscle_groups.reduce(
       (sum, mg) => sum + (weightsMap[mg] || 0),
@@ -220,7 +242,6 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
     return { ex, weight: muscleScore * diffScore };
   });
 
-  // weighted random sampling without replacement
   function weightedSample(arr, k) {
     const copy = [...arr];
     const out = [];

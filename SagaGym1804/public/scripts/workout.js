@@ -33,6 +33,36 @@ if (!userId) {
   throw new Error("User ID missing from URL");
 }
 
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+setInterval(() => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    userAccWindow.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+}, 100);
+
+logoutButton.addEventListener("click", (e) => {
+  console.log("Clicked");
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector(".add-button-container button");
   const form = document.getElementById("training-form");
@@ -90,7 +120,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function showWorkoutPicker(workouts, purpose, name) {
+    if (!Array.isArray(workouts)) {
+      console.error("Invalid workouts payload", workouts);
+      return;
+    }
     workouts.forEach((wk) => {
+      if (!Array.isArray(wk)) {
+        console.warn("Invalid workout entry", wk);
+        return;
+      }
       wk.totalDuration = Math.round(
         wk.reduce((sum, ex) => sum + ex.duration, 0) / 60
       );
@@ -220,14 +258,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch("/admin/exercitii");
         const exercise_data = await res.json();
         let ex = wk.exercitii;
-        ex = ex.map((e) => {
-          const exercise = exercise_data.find((ee) => ee.id === e.exercise_id);
-          return {
-            ...e,
-            name: exercise?.name,
-            muscle_groups: exercise?.muscle_groups,
-          };
-        });
+        ex = ex
+          .map((e) => {
+            const exercise = exercise_data.find(
+              (ee) => ee.id === e.exercise_id
+            );
+            if (!exercise) {
+              console.warn("Missing exercise data for ID", e.exercise_id);
+              return null;
+            }
+            return {
+              ...e,
+              name: exercise.name,
+              muscle_groups: exercise.muscle_groups,
+            };
+          })
+          .filter(Boolean);
         currentWorkoutId = wk.id_antrenament;
         displayWorkout(ex);
       });
@@ -242,14 +288,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const res = await fetch("/admin/exercitii");
     const exercise_data = await res.json();
 
-    exercises = exercises.map((e) => {
-      const exercise = exercise_data.find((ee) => ee.id === e.exercise_id);
-      return {
-        ...e,
-        name: exercise?.name,
-        muscle_groups: exercise?.muscle_groups,
-      };
-    });
+    exercises = exercises
+      .map((e) => {
+        const exercise = exercise_data.find((ee) => ee.id === e.exercise_id);
+        if (!exercise) {
+          console.warn("Missing exercise data for ID", e.exercise_id);
+          return null;
+        }
+        return {
+          ...e,
+          name: exercise.name,
+          muscle_groups: exercise.muscle_groups,
+        };
+      })
+      .filter(Boolean);
 
     const section = document.querySelector(".workout-exercises-section");
     section.innerHTML = `<h2>Exercises</h2>`;

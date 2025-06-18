@@ -102,7 +102,6 @@ async function loadFavorites() {
   });
 }
 
-// 3) Încarcă și afișează secțiunea Reviews
 async function loadReviews() {
   headers.saga = "Saga";
   console.log(headers);
@@ -120,7 +119,6 @@ async function loadReviews() {
   document.getElementById("maxLikesVal").textContent = d.maxLikes;
 }
 
-// 4) Încarcă și afișează secțiunea Activity
 async function loadActivity() {
   const res = await fetch("/api/activity-summary", { headers });
   if (!res.ok) throw new Error("Could not fetch activity summary");

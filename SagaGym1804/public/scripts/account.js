@@ -1,3 +1,66 @@
+const workoutButton = document.getElementById("workout-btn");
+
+workoutButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (!token) {
+    console.error("Unauthorized access");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status === 200) {
+    const data = await res.json();
+    window.location.href = `workout.html?id=${data.user_id}`;
+  } else {
+    console.error("Unauthorized access");
+    window.location.href = "login.html";
+  }
+});
+
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+setInterval(() => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    userAccWindow.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+}, 100);
+
+logoutButton.addEventListener("click", (e) => {
+  console.log("Clicked");
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
+});
+
+const viewStatsBtn = document.getElementById("view-stats");
+viewStatsBtn.addEventListener("click", (e) => {
+  window.location.href = "stats.html";
+});
+
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
@@ -29,11 +92,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("gender-value").textContent = user.gender;
     document.getElementById("weight-value").textContent = `${user.weight} kg`;
     document.getElementById("height-value").textContent = `${user.height} cm`;
+    document.getElementById(
+      "age-value"
+    ).textContent = `${user.interval_varsta}`;
     document.getElementById("password-value").textContent = "********";
-    document
-      .getElementById("bodytype-img")
-      .querySelector("img")
-      .setAttribute("src", `assets/${user.body_type}.png`);
 
     function cancelEdit(row) {
       const input = row.querySelector("input");
@@ -54,7 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.querySelectorAll(".detail-row").forEach((row) => {
-      console.log(row, row.dataset.field);
       const field = row.dataset.field;
       const btn = row.querySelector(".btn.edit");
       const valEl = row.querySelector(".value");
@@ -100,8 +161,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
           });
           if (resp.status === 200) {
-            const data = await resp.json();
-            const userId = data.user_id;
             const body = { [field]: newVal };
             const res = await fetch(`/api/update/user/?field=${field}`, {
               method: "PUT",
@@ -131,8 +190,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       avatarCircle.style.backgroundImage = `url(${user.pfp_picture})`;
       avatarCircle.textContent = "";
     }
-
-    avatarCircle.addEventListener("click", () => avatarInput.click());
 
     avatarInput.addEventListener("change", async () => {
       const file = avatarInput.files[0];

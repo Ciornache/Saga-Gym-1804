@@ -25,6 +25,36 @@ workoutButton.addEventListener("click", async (e) => {
   }
 });
 
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+setInterval(() => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    userAccWindow.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+}, 100);
+
+logoutButton.addEventListener("click", (e) => {
+  console.log("Clicked");
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".contact-form form");
   const phoneInput = form.phone;
@@ -32,16 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // reset any previous custom validity on phone
     phoneInput.setCustomValidity("");
 
-    // 1) HTML5 native validation (required fields, email format)
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
 
-    // 2) Custom phone validation: exactly 10 digits, no letters or symbols
     const raw = phoneInput.value.trim();
     if (raw && !/^[0-9]{10}$/.test(raw)) {
       phoneInput.setCustomValidity(
@@ -51,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 3) All validation passed → gather data
     const data = {
       firstName: form.firstName.value.trim(),
       lastName: form.lastName.value.trim(),
@@ -60,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
       message: form.message.value.trim(),
     };
 
-    // 4) Send to server
     try {
       const res = await fetch(form.action, {
         method: form.method,

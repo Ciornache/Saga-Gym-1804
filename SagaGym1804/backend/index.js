@@ -54,7 +54,6 @@ mongoose.connect(
 );
 
 const server = http.createServer(async (req, res) => {
-  console.log(req.headers);
   const { pathname, query } = url.parse(req.url, true);
 
   if (req.method === "POST" && pathname === "/api/setinfo") {
@@ -260,9 +259,28 @@ const server = http.createServer(async (req, res) => {
     return res.end(JSON.stringify(workouts));
   }
 
+  if (req.method === "GET" && pathname === "/api/check-workout-name") {
+    const user = requireAuth();
+    if (!user) return;
+
+    const nameToCheck = query.name?.trim();
+    if (!nameToCheck) return send(res, 400, { error: "Workout name required" });
+
+    try {
+      const exists = await models.antrenamente.findOne({
+        id_user: user.id,
+        name: nameToCheck,
+      });
+      return send(res, 200, { exists: !!exists });
+    } catch (err) {
+      console.error("Workout name check failed", err);
+      return send(res, 500, { error: "Internal error" });
+    }
+  }
+
   if (req.method === "PUT" && pathname === "/api/update/user/") {
     const payload = requireAuth();
-    if (!payload) return; // requireAuth already sends 401 if missing/invalid
+    if (!payload) return;
 
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -278,7 +296,17 @@ const server = http.createServer(async (req, res) => {
           "height",
           "body_type",
           "password",
+          "interval_varsta",
         ];
+
+        const interval_varsta_mappings = [
+          { str: "<18", v: 18 },
+          { str: "18-25", v: 26 },
+          { str: "26-35", v: 36 },
+          { str: "36-45", v: 46 },
+          { str: "60+", v: 1000 },
+        ];
+
         if (!allowed.includes(field)) {
           return send(res, 400, { error: "Invalid field" });
         }
@@ -289,7 +317,6 @@ const server = http.createServer(async (req, res) => {
           return send(res, 400, { error: "No value provided" });
         }
 
-        // uniqueness check for email/name
         if (["email", "name"].includes(field)) {
           const existing = await models.users.findOne({ [field]: newVal });
           if (existing && existing._id.toString() !== payload.id) {
@@ -297,12 +324,20 @@ const server = http.createServer(async (req, res) => {
           }
         }
 
-        // prepare update
         const update = {};
         if (field === "password") {
           update.password = hashPassword(newVal);
         } else {
           update[field] = newVal;
+        }
+
+        if (field === "interval_varsta") {
+          for (mapping of interval_varsta_mappings) {
+            if (mapping.v > newVal) {
+              update.interval_varsta = mapping.str;
+              break;
+            }
+          }
         }
 
         await models.users.findByIdAndUpdate(payload.id, update);
@@ -740,8 +775,6 @@ ${message}
     });
     return;
   }
-  // Reviews summary
-  console.log(pathname);
   if (req.method === "GET" && pathname === "/api/reviews-summary") {
     const payload = requireAuth();
     console.log("AICI", payload);

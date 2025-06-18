@@ -340,3 +340,22 @@
   transform: translateY(-1px);
   opacity: 0.9;
 }
+
+.acc-icons {
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: fit-content;
+  position: relative;
+  top: 30%;
+  left: 15%;
+}
+
+.acc-icons button {
+  background-color: transparent;
+}
+.acc-icons button:hover {
+  background-color: transparent;
+}

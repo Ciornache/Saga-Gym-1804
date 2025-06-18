@@ -18,7 +18,6 @@
   color: #e76f66;
 }
 
-/* ==== Layout Contact Page ==== */
 .contact-page {
   display: grid;
   grid-template-columns: 35% 65%;
@@ -26,7 +25,6 @@
   padding: 2rem;
 }
 
-/* ==== Coloana Stângă: Card Despre noi ==== */
 .contact-info {
   background: #e0e0e0;
   padding: 2rem;
@@ -62,7 +60,6 @@
   margin-right: 0.5rem;
 }
 
-/* ==== Coloana Dreaptă: Formular ==== */
 .contact-form {
   background: #d9d9d9;
   padding: 2rem;
@@ -111,7 +108,6 @@
   background: #d65c56;
 }
 
-/* ==== Responsiv ==== */
 @media (max-width: 768px) {
   .contact-page {
     grid-template-columns: 1fr;
