@@ -33,14 +33,10 @@ body {
   font-size: 1.1rem;
   padding: 8px 12px;
   border-radius: 6px;
-  transition: background .2s;
+  transition: background 0.2s;
 }
-.sidebar li.active a {
-  background: #374151;
-}
-.sidebar a:hover {
-  background: #4b5563;
-}
+.sidebar li.active a { background: #374151; }
+.sidebar a:hover        { background: #4b5563; }
 
 /* Layout */
 .container {
@@ -66,7 +62,7 @@ body {
 }
 .favorite-exercises { grid-area: fav; }
 .favorite-types     { grid-area: types; }
-.all-liked          { grid-area: list; overflow-y:auto; }
+.all-liked          { grid-area: list; overflow-y: auto; }
 .muscle-groups      { grid-area: muscle; }
 .avg-difficulty     { grid-area: difficulty; }
 
@@ -76,7 +72,7 @@ body {
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  display:flex;
+  display: flex;
   flex-direction: column;
 }
 .card h2 {
@@ -102,13 +98,13 @@ body {
   color: #6a0dad;
   text-decoration: none;
   font-size: 1.1rem;
-  display:inline-flex;
-  align-items:center;
-  gap:.4rem;
-  transition:opacity .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: opacity 0.2s;
 }
 .favorite-exercises .view-link:hover {
-  opacity:.8;
+  opacity: 0.8;
 }
 
 /* Favorite Types */
@@ -155,73 +151,169 @@ body {
 
 /* Favorite Muscle Groups */
 .muscle-groups h2 {
-  text-align:center;
+  text-align: center;
 }
 .muscle-groups .chart-container {
-  width:300px;
-  height:300px;
-  margin:20px auto 15px;
+  width: 300px;
+  height: 300px;
+  margin: 20px auto 15px;
 }
 .muscle-groups .legend {
-  display:flex;
-  flex-wrap:wrap;
-  gap:1rem;
-  font-size:1.2rem;
-  justify-content:center;
-  margin-top:auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 1.2rem;
+  justify-content: center;
+  margin-top: auto;
 }
 .muscle-groups .legend span {
-  display:flex;
-  align-items:center;
-  gap:.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 /* Average Difficulty */
 .avg-difficulty {
-  align-items:center;
+  align-items: center;
 }
 .avg-difficulty .dumbbells {
-  display:flex;
-  gap:.3rem;
-  font-size:1.8rem;
-  margin-bottom:10px;
+  display: flex;
+  gap: 0.3rem;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
 }
 .avg-difficulty hr {
-  width:80%;
-  border:none;
-  border-top:2px solid #333;
-  margin:10px auto;
+  width: 80%;
+  border: none;
+  border-top: 2px solid #333;
+  margin: 10px auto;
 }
 .avg-difficulty .avg-score {
-  font-size:2rem;
-  text-align:center;
+  font-size: 2rem;
+  text-align: center;
 }
 
 /* Reviews Grid */
 .reviews-grid {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 .reviews-grid .card {
-  align-items:center;
-  text-align:center;
+  align-items: center;
+  text-align: center;
 }
 .reviews-grid .card h2 {
-  margin-bottom:15px;
-  font-size:1.3rem;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
 }
 .reviews-grid .stat {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
 }
 .reviews-grid .stat .value {
-  font-size:1.8rem;
-  font-weight:bold;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 .reviews-grid .stat i {
-  font-size:1.8rem;
-  color:#6a0dad;
+  font-size: 1.8rem;
+  color: #6a0dad;
+}
+
+/* Activity Grid */
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: min-content;
+  gap: 20px;
+}
+.activity-grid .card {
+  background: #d3d3d3;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.activity-grid .card h2 {
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+.activity-grid .stat {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.activity-grid .stat .value {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.activity-grid .stat i {
+  font-size: 1.8rem;
+  color: #6a0dad;
+}
+/* Weekly Comparison (table) */
+.activity-grid .weekly-summary {
+  grid-column: 1 / span 2;
+  padding: 20px;
+}
+.activity-grid .weekly-summary h2 {
+  margin-bottom: 12px;
+}
+.week-comparison {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.1rem;
+}
+.week-comparison th,
+.week-comparison td {
+  padding: 8px;
+  border-bottom: 1px solid #bbb;
+  text-align: center;
+}
+.week-comparison th {
+  font-weight: 600;
+}
+.week-comparison td.positive {
+  color: #2a9d8f;
+}
+.week-comparison td.negative {
+  color: #e63946;
+}
+/* Progress Chart */
+.activity-grid .progress-chart {
+  grid-column: 3 / span 2;
+  padding: 10px;
+  height: 250px;
+}
+.activity-grid .progress-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+/* highlight pentru All Liked Exercises */
+.all-liked.highlight {
+  box-shadow: inset 0 0 0 4px #6a0dad;
+  transition: box-shadow 0.3s ease;
+}
+/* default “empty” state */
+.avg-difficulty .dumbbells i {
+  color: #bbb;
+  opacity: 1;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+/* fully “filled” state */
+.avg-difficulty .dumbbells i.filled {
+  color: #6a0dad;
+  opacity: 1;
+}
+
+/* half-filled state */
+.avg-difficulty .dumbbells i.half {
+  color: #6a0dad;
+  opacity: 0.5;
 }
