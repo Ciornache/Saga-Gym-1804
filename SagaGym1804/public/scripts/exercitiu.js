@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tipsObj = allTips.find((t) => t.name === ex.name);
     if (tipsObj) populateTips(tipsObj.description);
 
-    document.getElementById("exercise-title").dataset.id = ex._id;
+    document.getElementById("exercise-title").dataset.id = ex.id;
     await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);

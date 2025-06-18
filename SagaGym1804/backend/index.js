@@ -54,6 +54,7 @@ mongoose.connect(
 );
 
 const server = http.createServer(async (req, res) => {
+  console.log(req.headers);
   const { pathname, query } = url.parse(req.url, true);
 
   if (req.method === "POST" && pathname === "/api/setinfo") {
@@ -583,6 +584,7 @@ ${message}
       return send(res, 500, { error: "Could not fetch contacts." });
     }
   }
+  // POST /api/reviews → salvează un review
   if (req.method === "POST" && pathname === "/api/reviews") {
     const userData = requireAuth();
     if (!userData) return;
@@ -621,20 +623,8 @@ ${message}
       }
     });
   }
-  if (req.method === "GET" && pathname.startsWith("/api/reviews")) {
-    const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
-    const exerciseId = qs.get("exerciseId");
-    if (!exerciseId) {
-      return send(res, 400, { error: "exerciseId required" });
-    }
-    try {
-      const list = await Review.find({ exerciseId }).sort({ createdAt: -1 });
-      return send(res, 200, list);
-    } catch (err) {
-      console.error(err);
-      return send(res, 500, { error: "Server error." });
-    }
-  }
+
+  // DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
   if (req.method === "DELETE" && pathname.startsWith("/api/reviews/")) {
     const user = requireAuth();
     if (!user) return;
@@ -694,6 +684,7 @@ ${message}
   }
 
   function requireAuth() {
+    console.log("URL", req.url);
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith("Bearer ")) {
       res.writeHead(401, { "Content-Type": "application/json" });
@@ -749,7 +740,179 @@ ${message}
     });
     return;
   }
+  // Reviews summary
+  console.log(pathname);
+  if (req.method === "GET" && pathname === "/api/reviews-summary") {
+    const payload = requireAuth();
+    console.log("AICI", payload);
 
+    if (!payload) return;
+    const reviews = await Review.find({ userEmail: payload.email });
+    const reviewCount = reviews.length;
+    const avgRating = reviewCount
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviewCount
+      : 0;
+    const likeCounts = await Promise.all(
+      reviews.map((r) => ReviewLike.countDocuments({ reviewId: r._id }))
+    );
+    console.log("hERE");
+    const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
+    const likesPerReview = reviewCount ? totalLikes / reviewCount : 0;
+    const minLikes = likeCounts.length ? Math.min(...likeCounts) : 0;
+    const maxLikes = likeCounts.length ? Math.max(...likeCounts) : 0;
+    return send(res, 200, {
+      reviewCount,
+      avgRating,
+      totalLikes,
+      likesPerReview,
+      minLikes,
+      maxLikes,
+    });
+    return;
+  }
+
+  // ─── API: Reviews, Review-Likes & Summaries ─────────────────────────────────
+  // NOTE: Place this block immediately before your "static files" code, and delete any duplicate handlers.
+
+  // Reviews CRUD
+  if (pathname.startsWith("/api/reviews")) {
+    console.log("AICI2?");
+    if (req.method === "GET") {
+      const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
+      const exerciseId = Number(qs.get("exerciseId"));
+      if (!exerciseId) return send(res, 400, { error: "exerciseId required" });
+      const list = await Review.find({ exerciseId }).sort({ createdAt: -1 });
+      return send(res, 200, list);
+    }
+    if (req.method === "POST") {
+      const payload = requireAuth();
+      if (!payload) return;
+      let body = "";
+      req.on("data", (c) => (body += c));
+      req.on("end", async () => {
+        const { exerciseId, rating, comment } = JSON.parse(body);
+        if (!Number.isInteger(exerciseId) || !rating || !comment) {
+          return send(res, 400, { error: "Missing or invalid fields." });
+        }
+        let review = await Review.findOne({
+          exerciseId,
+          userEmail: payload.email,
+        });
+        if (review) {
+          review.rating = rating;
+          review.comment = comment;
+          review.updatedAt = new Date();
+          await review.save();
+          return send(res, 200, review);
+        } else {
+          const newR = await Review.create({
+            exerciseId,
+            rating,
+            comment,
+            userEmail: payload.email,
+          });
+          return send(res, 201, newR);
+        }
+      });
+      return;
+    }
+  }
+
+  // Review-likes
+  if (pathname.startsWith("/api/review-likes/")) {
+    const payload = requireAuth();
+    if (!payload) return;
+    const reviewId = pathname.split("/")[3];
+    if (req.method === "GET") {
+      const count = await ReviewLike.countDocuments({ reviewId });
+      const liked = await ReviewLike.exists({
+        reviewId,
+        userEmail: payload.email,
+      });
+      return send(res, 200, { count, liked: !!liked });
+    }
+    if (req.method === "POST") {
+      const exists = await ReviewLike.findOne({
+        reviewId,
+        userEmail: payload.email,
+      });
+      if (exists) {
+        await ReviewLike.deleteOne({ _id: exists._id });
+        return send(res, 200, { liked: false });
+      } else {
+        await ReviewLike.create({ reviewId, userEmail: payload.email });
+        return send(res, 201, { liked: true });
+      }
+    }
+  }
+
+  // Favorites summary
+  if (req.method === "GET" && pathname === "/api/favorites-summary") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const favs = await Favourites.find({ id_user: payload.id });
+    const favCount = favs.length;
+    const ids = favs.map((f) => Number(f.id_exercitiu));
+    const exs = await Exercitiu.find({ id: { $in: ids } });
+    const typeCounts = {},
+      mgCounts = {};
+    exs.forEach((e) => {
+      typeCounts[e.type] = (typeCounts[e.type] || 0) + 1;
+      e.muscle_groups.forEach((m) => (mgCounts[m] = (mgCounts[m] || 0) + 1));
+    });
+    const favTypes = Object.entries(typeCounts).map(([l, v]) => ({
+      label: l,
+      value: v,
+    }));
+    const muscleGroups = Object.entries(mgCounts).map(([l, v]) => ({
+      label: l,
+      value: v,
+    }));
+    const avgDifficulty = favCount
+      ? exs.reduce((s, e) => s + e.difficulty, 0) / favCount
+      : 0;
+    return send(res, 200, {
+      favCount,
+      favTypes,
+      likedExercises: exs.map((e) => e.name),
+      muscleGroups,
+      avgDifficulty,
+    });
+  }
+
+  // Activity summary
+  if (req.method === "GET" && pathname === "/api/activity-summary") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const acts = await Activity.find({ id_user: payload.id });
+    const totalWorkouts = acts.length;
+    const totalSets = acts.reduce((s, a) => s + (a.activity_cnt || 0), 0);
+    const totalTimeNum = acts.reduce((s, a) => s + (a.time || 0), 0);
+    const hours = Math.floor(totalTimeNum / 60),
+      mins = totalTimeNum % 60;
+    const totalTime = `${hours} h ${mins} m`;
+    const avgDuration = totalWorkouts
+      ? Math.round(totalTimeNum / totalWorkouts)
+      : 0;
+    return send(res, 200, {
+      totalWorkouts,
+      totalSets,
+      totalExercises: acts.length,
+      totalWeight: 12500,
+      totalKm: 85,
+      totalTime,
+      avgDuration: `${avgDuration} m`,
+      totalStretching: 40,
+      weekly: {
+        thisWeek: 5,
+        lastWeek: 3,
+        kmThisWeek: 20,
+        kmLastWeek: 10,
+        dailyWorkouts: [1, 1, 1, 1, 1, 0, 0],
+      },
+    });
+  }
+  // ————— STATIC FILES —————
   const filePath = path.join(
     __dirname,
     "../public",
@@ -794,7 +957,6 @@ async function updateDb() {
   const muscles_array = JSON.parse(data);
   await Grupa.insertMany(muscles_array);
 }
-
 server.listen(3000, () => {
   updateDb();
   console.log("✅ Serverul rulează pe http://localhost:3000");
