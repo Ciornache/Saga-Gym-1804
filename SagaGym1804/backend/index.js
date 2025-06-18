@@ -15,6 +15,8 @@ const nodemailer = require("nodemailer");
 const Contact = require("./models/Contact");
 const Review = require("./models/Review");
 const ReviewLike = require("./models/ReviewLike");
+const SetInfo = require("./models/SetInfo");
+const WorkoutActivity = require("./models/WorkoutActivity");
 
 const models = {
   users: require("./models/User"),
@@ -53,7 +55,30 @@ mongoose.connect(
 
 const server = http.createServer(async (req, res) => {
   const { pathname, query } = url.parse(req.url, true);
-  console.log(pathname);
+
+  if (req.method === "POST" && pathname === "/api/setinfo") {
+    const user = requireAuth();
+    if (!user) return;
+
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const arr = JSON.parse(body);
+        const docs = arr.map((item) => ({
+          ...item,
+          id_user: user.id,
+        }));
+        console.log(docs);
+        await SetInfo.insertMany(docs);
+        return send(res, 200, { success: true });
+      } catch (err) {
+        console.error("SetInfo save error:", err);
+        return send(res, 500, { error: "Could not save set info" });
+      }
+    });
+    return;
+  }
 
   if (req.method === "GET" && pathname === "/exercise/getExerciseByName") {
     const exercise = await models.exercitii.findOne({ name: req.headers.name });
@@ -380,6 +405,36 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, board);
   }
 
+  if (req.method === "PUT" && pathname === "/api/workout-activities") {
+    const user = requireAuth();
+    if (!user) return;
+
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { id_workout, wk_cnt, duration } = JSON.parse(body);
+        const id_user = user.id;
+
+        // upsert so you don’t double-insert if you rerun the same workout
+        const filter = { id_user, id_workout };
+        const update = { wk_cnt, duration };
+        const options = { new: true, upsert: true, setDefaultsOnInsert: true };
+
+        const rec = await WorkoutActivity.findOneAndUpdate(
+          filter,
+          update,
+          options
+        );
+        return send(res, 200, { success: true, workoutActivity: rec });
+      } catch (err) {
+        console.error("WorkoutActivity error:", err);
+        return send(res, 500, { error: "Could not save workout activity" });
+      }
+    });
+    return;
+  }
+
   if (req.method === "PUT" && pathname === "/api/activities") {
     const user = requireAuth();
     let body = "";
@@ -640,7 +695,6 @@ ${message}
 
   function requireAuth() {
     const auth = req.headers.authorization;
-    console.log("Auth", auth);
     if (!auth || !auth.startsWith("Bearer ")) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Unauthorized" }));

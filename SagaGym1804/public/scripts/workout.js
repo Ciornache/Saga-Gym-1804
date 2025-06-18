@@ -201,6 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  let currentWorkoutId = null;
+
   function renderWorkoutTags(workouts) {
     const container = document.querySelector(".workout-tag-container");
     container.innerHTML = "";
@@ -226,8 +228,12 @@ document.addEventListener("DOMContentLoaded", () => {
             muscle_groups: exercise?.muscle_groups,
           };
         });
+        currentWorkoutId = wk.id_antrenament;
         displayWorkout(ex);
       });
+      if (workouts.length) {
+        currentWorkoutId = workouts[0].id_antrenament;
+      }
       container.appendChild(tag);
     });
   }
@@ -265,11 +271,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const setsGrid = ex.sets
         .map(
           (s, i) => `
-        <div class="set-item" data-timings='${JSON.stringify(s.timings)}'>
-          <div class="set-duration">${Number(s.duration / 60).toFixed(
-            2
-          )} min</div>
+        <div class="set-item" data-timings='${JSON.stringify(
+          s.timings
+        )}' data-set-index="${i}">
+          <div class="set-duration">${(s.duration / 60).toFixed(2)} min</div>
           <div class="set-reps">${s.repetitions.length} reps</div>
+          <div class="set-weight">
+            <select class="weight-type">
+              <option value="kg">Kg</option>
+              <option value="body_x">Body-weight ×</option>
+            </select>
+            <input class="weight-kicker" 
+                   type="number" 
+                   min="0" 
+                   step="0.1" 
+                   placeholder="e.g. 50 or 1.2" />
+          </div>
         </div>
       `
         )
@@ -346,7 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(section);
     const startBtn = document.getElementById("start-workout");
     const endBtn = document.getElementById("end-workout");
-    console.log(startBtn, endBtn);
     startBtn.addEventListener("click", () => {
       section.querySelectorAll(".set-item").forEach((item) => {
         if (item.querySelector(".set-checkbox")) return;
@@ -358,7 +374,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.className = "set-checkbox";
-        cb.addEventListener("change", () => (cb.disabled = true));
+        cb.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+        cb.addEventListener("change", () => {
+          cb.disabled = true;
+          const sel = item.querySelector(".weight-type");
+          const kick = item.querySelector(".weight-kicker");
+          if (sel) sel.disabled = true;
+          if (kick) kick.disabled = true;
+        });
         item.appendChild(sp);
         item.appendChild(cb);
       });
@@ -429,11 +454,112 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
           console.error("Network error:", err);
         }
+
+        const allSetInfos = [];
+        document.querySelectorAll(".exercise-card").forEach((card) => {
+          const exName = card.querySelector("h3").textContent.trim();
+          const ex = exercitii.find((e) => e.name === exName);
+          if (!ex) return;
+          const exId = ex.id;
+
+          card.querySelectorAll(".set-item").forEach((item) => {
+            const cb = item.querySelector("input[type=checkbox]");
+            if (!cb || !cb.checked) return; // only for checked sets
+
+            const weightType = item.querySelector(".weight-type")?.value;
+            const kickerRaw = item.querySelector(".weight-kicker")?.value;
+            const weightKicker = kickerRaw ? parseFloat(kickerRaw) : 0;
+
+            allSetInfos.push({
+              id_exercitiu: exId,
+              weight_type: weightType,
+              weight_kicker: weightKicker,
+            });
+          });
+        });
+
+        if (allSetInfos.length) {
+          const token =
+            localStorage.getItem("token") || sessionStorage.getItem("token");
+          await fetch("/api/setinfo", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(allSetInfos),
+          });
+          console.log("✓ Set weights saved");
+        }
       }
 
+      const allSets = Array.from(document.querySelectorAll(".set-item"));
+
+      const completed = allSets.filter(
+        (item) => item.querySelector("input[type='checkbox']")?.checked
+      );
+
+      const wk_cnt = completed.length;
+      const duration = completed.reduce((sum, item) => {
+        const dd = parseFloat(
+          item.querySelector(".set-duration").textContent.slice(0, -4)
+        );
+        return sum + dd;
+      }, 0);
+
+      if (currentWorkoutId != null) {
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
+        fetch("/api/workout-activities", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            id_workout: currentWorkoutId,
+            wk_cnt: 1,
+            duration,
+          }),
+        })
+          .then((r) => r.ok || console.error("WorkoutActivity failed", r))
+          .then(() =>
+            console.log("✓ WorkoutActivity saved", { wk_cnt, duration })
+          );
+      }
+
+      section
+        .querySelectorAll(".weight-type")
+        .forEach((t) => (t.disabled = false));
+      section
+        .querySelectorAll(".weight-kicker")
+        .forEach((k) => (k.disabled = false));
       section.querySelectorAll(".set-checkbox").forEach((cb) => cb.remove());
       section.querySelectorAll(".set-info").forEach((info) => info.remove());
       section.querySelectorAll("span").forEach((sp) => sp.remove());
     });
   }
 });
+
+setTimeout(() => {
+  const weightKickers = document.querySelectorAll(".weight-kicker");
+  for (kicker of weightKickers) {
+    kicker.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  const weightSets = document.querySelectorAll(".set-weight");
+  for (set of weightSets) {
+    set.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  const weightTypes = document.querySelectorAll(".weight-type");
+  for (type of weightTypes) {
+    type.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+}, 500);
