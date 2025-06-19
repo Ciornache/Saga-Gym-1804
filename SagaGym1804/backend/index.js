@@ -664,11 +664,13 @@ ${message}
       return send(res, 500, { error: "Server error" });
     }
   }
+  console.log(pathname);
   if (req.method === "GET" && pathname.startsWith("/api/review-likes/")) {
     const user = requireAuth();
     if (!user) return;
 
     const reviewId = pathname.split("/")[3];
+    console.log('Super', reviewId);
     try {
       const count = await ReviewLike.countDocuments({ reviewId });
       const alreadyLiked = await ReviewLike.exists({
@@ -848,6 +850,7 @@ ${message}
     if (!payload) return;
     const reviewId = pathname.split("/")[3];
     if (req.method === "GET") {
+      console.log('Review', reviewId);
       const count = await ReviewLike.countDocuments({ reviewId });
       const liked = await ReviewLike.exists({
         reviewId,

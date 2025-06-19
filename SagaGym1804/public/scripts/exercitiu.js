@@ -104,6 +104,24 @@ function populatePage(data) {
     };
   }
 
+   const imgModeBtn = document.querySelector(".image-toggle");
+  const vidModeBtn = document.querySelector(".video-toggle");
+  const videoWrapper = document.querySelector(".video-mode");
+
+  imgModeBtn.addEventListener("click", () => {
+    imageWrapper.classList.add("active");
+    videoWrapper.classList.remove("active");
+    imgModeBtn.classList.add("active");
+    vidModeBtn.classList.remove("active");
+  });
+
+  vidModeBtn.addEventListener("click", () => {
+    videoWrapper.classList.add("active");
+    imageWrapper.classList.remove("active");
+    vidModeBtn.classList.add("active");
+    imgModeBtn.classList.remove("active");
+  });
+
   const iframeEl = document.getElementById("exercise-iframe");
   if (/youtu(?:\.be|be\.com)\/.+/.test(data.video)) {
     let videoId = data.video.split("v=")[1] || data.video.split("/").pop();
@@ -185,11 +203,11 @@ async function incarcaReviewuriExercitiu() {
       likeBtn.style.marginLeft = "1rem";
       likeBtn.title = "Apreciază recenzia";
 
-      console.log('AICII');
-
       (async () => {
         try {
-          const likeRes = await fetch(`/api/review-likes/${r._id}`, {
+          console.log('Here', r, r._id); 
+          const token = sessionStorage.getItem("token") || localStoage.getItem("token");
+          const likeRes = await fetch(`/api/review-likes/${r._id.toString()}`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
           const data = await likeRes.json();
@@ -202,7 +220,7 @@ async function incarcaReviewuriExercitiu() {
 
       likeBtn.addEventListener("click", async () => {
         try {
-          const res = await fetch(`/api/review-likes/${r._id}`, {
+          const res = await fetch(`/api/review-likes/${r._id.toString()}`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` }
           });

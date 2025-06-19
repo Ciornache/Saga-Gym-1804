@@ -114,7 +114,7 @@ function fillCard(cardEl, data) {
   imgDiv.style.backgroundPosition = "center";
   cardEl.querySelector("h3").textContent = data.name;
   const stats = cardEl.querySelectorAll(".stats div");
-  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${data.rating.toFixed(
+  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${Number(data.rating).toFixed(
     1
   )}</span>`;
   stats[1].innerHTML = `<i class="fa-solid fa-dumbbell"></i><span>${data.difficulty.toFixed(
@@ -553,10 +553,10 @@ async function render() {
   let reviews = await res.json();
   reviews = reviews.reviews;
   const exercisesWithRatings = exercises.map((ex) => {
-    const ratings = reviews.filter((r) => r.id_exercitiu === ex.id);
+    const ratings = reviews.filter((r) => r.exerciseId === ex.id);
     const sum = ratings.reduce((a, b) => a + b.rating, 0);
     const avg = ratings.length ? (sum / ratings.length).toFixed(2) : 0;
-    return { ...ex, rating: avg };
+    return { ...ex, rating: Number(avg) };
   });
   exercises = exercisesToDisplay = exercisesWithRatings;
   const start = (currentPage - 1) * pageSize;
