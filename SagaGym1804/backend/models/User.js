@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     nivel_fitness: String,
     pfp_picture: {
       type: String,
-      default: "", // stores "/assets/images/profile_pictures/avatar-<id>.ext"
+      default: "", 
     },
   },
   { timestamps: true }

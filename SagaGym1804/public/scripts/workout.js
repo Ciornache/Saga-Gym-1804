@@ -188,6 +188,9 @@ document.addEventListener("DOMContentLoaded", () => {
         `
           )
           .join("")}
+          <div class="picker-actions">
+          <button id="regenerate-btn">Regenerate</button>
+        </div>
       </div>
     `;
 
@@ -199,6 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "";
         alert("Workout saved!");
       });
+    });
+    ov.querySelector("#regenerate-btn")?.addEventListener("click", () => {
+      document.body.removeChild(ov);
+      document.body.style.overflow = "";
+      if (typeof onGenerate === "function") onGenerate();
     });
   }
 

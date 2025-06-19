@@ -94,10 +94,7 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
 });
 
 document.querySelectorAll(".exercise-card").forEach((c) => {
-  console.log("Do I even attack the event?");
   c.addEventListener("click", () => {
-    console.log("Clicked on this shit");
-    console.log(c);
     let title = c.querySelector("h3");
     console.log(title.textContent);
     window.location.href = `exercitiu.html?exercise-name=${title.textContent}`;
@@ -251,7 +248,6 @@ function sortCurrentArray() {
   if (exercisesToDisplay.length === 0) return;
   let arr = exercisesToDisplay;
   const sorted = [...arr];
-  console.log(arr);
   if (sortCriteria.length === 0) {
     if (exercisesToDisplay.length > 0) {
       renderFiltered();
@@ -546,7 +542,23 @@ function makeBtn(text, disabled, onClick, isActive = false) {
   return b;
 }
 
-function render() {
+async function render() {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const res = await fetch("/api/reviews", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  let reviews = await res.json();
+  reviews = reviews.reviews;
+  const exercisesWithRatings = exercises.map((ex) => {
+    const ratings = reviews.filter((r) => r.id_exercitiu === ex.id);
+    const sum = ratings.reduce((a, b) => a + b.rating, 0);
+    const avg = ratings.length ? (sum / ratings.length).toFixed(2) : 0;
+    return { ...ex, rating: avg };
+  });
+  exercises = exercisesToDisplay = exercisesWithRatings;
   const start = (currentPage - 1) * pageSize;
   cards.forEach((cardEl, idx) => {
     const ex = exercises[start + idx];
@@ -563,16 +575,12 @@ function render() {
 function updateStars() {
   const stars = Array.from(document.querySelectorAll(".fa-star"));
   for (star of stars) star.classList.remove("star-selected");
-  console.log(favourites);
   for (fav of favourites) {
-    console.log(exercises, fav.id_exercitiu);
     const exName = exercises.find((e) => e.id.toString() === fav.id_exercitiu);
     const exerciseNames = Array.from(document.querySelectorAll("h3"));
-    console.log("HAAA", exerciseNames, exName);
     const exNode = exerciseNames.find((e) => {
       return e.textContent.toLowerCase() === exName.name.toLowerCase();
     });
-    console.log(exNode);
     if (exNode) {
       console.log("Sibling", exNode.previousSibling.previousSibling);
       const icon = exNode.previousSibling.previousSibling.querySelector("i");
@@ -687,21 +695,16 @@ function applySearch() {
   const searchInput = document.getElementById("search-input");
   const term = searchInput.value.trim().toLowerCase();
   if (term === "") {
-    console.log(exercisesToDisplay);
     currentPage = 1;
     renderFiltered();
     return;
   }
-  console.log(term);
   const filtered = exercisesToDisplay.filter((ex) => {
     return (
       ex.name.toLowerCase().includes(term) ||
       (ex.description && ex.description.toLowerCase().includes(term))
     );
   });
-
-  console.log("After Search Bar", filtered);
-
   exercisesToDisplay = [...filtered];
   currentPage = 1;
   renderFiltered();
@@ -717,7 +720,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
 
-    console.log(token);
     const res = await fetch("/favourites", {
       method: "GET",
       headers: {
@@ -725,7 +727,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     });
     const data = await res.json();
-    favourites = data.favourites;
+    favourites = Array.isArray(data.favourites) ? data.favourites : [];
   } catch (err) {
     console.error("Nu am putut încărca exercițiile:", err);
   }

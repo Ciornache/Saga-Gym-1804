@@ -429,3 +429,66 @@ main {
   cursor: not-allowed;
   border-color: #ccc;
 }
+
+.picker-card-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.workout-total-duration {
+  background: #2b2d42;
+  color: #edf2f4;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  text-align: center;
+}
+.exercise-item {
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.exercise-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.exercise-item h4 {
+  margin: 0 0 0.25rem;
+  color: #2b2d42;
+  font-size: 1rem;
+}
+
+.exercise-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.picker-actions {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.picker-actions button {
+  padding: 0.6rem 1rem;
+  background: #ef233c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.picker-actions button:hover {
+  background: #d62828;
+}

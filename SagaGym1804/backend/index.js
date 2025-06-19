@@ -452,7 +452,6 @@ const server = http.createServer(async (req, res) => {
         const { id_workout, wk_cnt, duration } = JSON.parse(body);
         const id_user = user.id;
 
-        // upsert so you don’t double-insert if you rerun the same workout
         const filter = { id_user, id_workout };
         const update = { wk_cnt, duration };
         const options = { new: true, upsert: true, setDefaultsOnInsert: true };
@@ -619,7 +618,7 @@ ${message}
       return send(res, 500, { error: "Could not fetch contacts." });
     }
   }
-  // POST /api/reviews → salvează un review
+
   if (req.method === "POST" && pathname === "/api/reviews") {
     const userData = requireAuth();
     if (!userData) return;
@@ -659,7 +658,6 @@ ${message}
     });
   }
 
-  // DELETE /api/reviews/:id → doar dacă review-ul aparține utilizatorului
   if (req.method === "DELETE" && pathname.startsWith("/api/reviews/")) {
     const user = requireAuth();
     if (!user) return;
@@ -719,7 +717,6 @@ ${message}
   }
 
   function requireAuth() {
-    console.log("URL", req.url);
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith("Bearer ")) {
       res.writeHead(401, { "Content-Type": "application/json" });
@@ -777,8 +774,6 @@ ${message}
   }
   if (req.method === "GET" && pathname === "/api/reviews-summary") {
     const payload = requireAuth();
-    console.log("AICI", payload);
-
     if (!payload) return;
     const reviews = await Review.find({ userEmail: payload.email });
     const reviewCount = reviews.length;
@@ -788,7 +783,6 @@ ${message}
     const likeCounts = await Promise.all(
       reviews.map((r) => ReviewLike.countDocuments({ reviewId: r._id }))
     );
-    console.log("hERE");
     const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
     const likesPerReview = reviewCount ? totalLikes / reviewCount : 0;
     const minLikes = likeCounts.length ? Math.min(...likeCounts) : 0;
@@ -804,12 +798,22 @@ ${message}
     return;
   }
 
-  // ─── API: Reviews, Review-Likes & Summaries ─────────────────────────────────
-  // NOTE: Place this block immediately before your "static files" code, and delete any duplicate handlers.
+  if (req.method === "GET" && pathname === "/api/reviews") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const reviews = await Review.find({});
+    if (!reviews) {
+      return send(res, 400, {
+        Error: 'Couldn"t fetch the exercises',
+      });
+    } else {
+      return send(res, 200, {
+        reviews: reviews,
+      });
+    }
+  }
 
-  // Reviews CRUD
   if (pathname.startsWith("/api/reviews")) {
-    console.log("AICI2?");
     if (req.method === "GET") {
       const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;
       const exerciseId = Number(qs.get("exerciseId"));
