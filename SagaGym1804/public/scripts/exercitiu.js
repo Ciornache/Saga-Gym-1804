@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (tipsObj) populateTips(tipsObj.description);
 
     document.getElementById("exercise-title").dataset.id = ex.id;
+    console.log('EXX');
     await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);
@@ -143,7 +144,7 @@ async function incarcaReviewuriExercitiu() {
   if (!container || !exerciseId) return;
 
   let currentUserEmail = null;
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
@@ -159,6 +160,7 @@ async function incarcaReviewuriExercitiu() {
       }
     });
     const list = await res.json();
+    console.log('Lista', list);
     container.innerHTML = "";
 
     list.forEach(r => {
@@ -182,6 +184,8 @@ async function incarcaReviewuriExercitiu() {
       likeBtn.textContent = "👍";
       likeBtn.style.marginLeft = "1rem";
       likeBtn.title = "Apreciază recenzia";
+
+      console.log('AICII');
 
       (async () => {
         try {
@@ -234,6 +238,7 @@ async function incarcaReviewuriExercitiu() {
       container.appendChild(div);
     });
   } catch (err) {
+    console.log(err);
     container.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
   }
 }

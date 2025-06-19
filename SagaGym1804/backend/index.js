@@ -783,8 +783,9 @@ ${message}
     });
     return;
   }
+  console.log(query);
 
-  if (req.method === "GET" && pathname === "/api/reviews") {
+  if (req.method === "GET" && pathname === "/api/reviews" && !query.exerciseId) {
     const payload = requireAuth();
     if (!payload) return;
     const reviews = await Review.find({});
