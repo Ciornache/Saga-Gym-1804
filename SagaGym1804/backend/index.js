@@ -163,21 +163,7 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
-  if (req.method === "GET" && pathname === "/favourites") {
-    const payload = requireAuth();
-    if (!payload) return;
-    const user = await models.users.findById(payload.id);
-    if (!user) {
-      return send(res, 404, { error: "User not found" });
-    }
-    console.log("User id", user._id.toString());
-    const favourites = await models.favourites.find({
-      id_user: user._id.toString(),
-    });
-    return send(res, 200, {
-      favourites: favourites,
-    });
-  }
+ 
 
   if (req.method === "GET" && pathname === "/api/workouts/") {
     const user = await requireAuth();
