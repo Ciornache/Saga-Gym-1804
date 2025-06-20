@@ -160,3 +160,10 @@ function togglePasswordVisibility(element_id) {
   passwordInput.setAttribute("type", passwordType);
   passwordToggle.classList.toggle("toggle-password-visible");
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
+});

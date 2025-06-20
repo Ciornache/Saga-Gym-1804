@@ -518,3 +518,10 @@ function toggleCheckAttribute(radio_button_name, radio_button_value) {
     }
   }
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
+});

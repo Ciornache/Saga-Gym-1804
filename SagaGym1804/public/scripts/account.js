@@ -216,3 +216,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(err);
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
+});

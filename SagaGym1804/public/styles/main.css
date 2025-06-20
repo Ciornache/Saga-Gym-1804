@@ -896,7 +896,6 @@ i.fa-wrong {
   }
 }
 
-/* ==== HEADER HEIGHT RESPONSIVE TIERS === */
 @media (max-height: 600px) {
   .header {
     padding: 0.5rem 1rem;
@@ -933,9 +932,7 @@ i.fa-wrong {
   }
 }
 
-/* ==== GLOBAL SUBTITLE SCALE ==== */
 .header-message p {
-  /* mai agresiv scalat în funcție de înălțime */
   font-size: clamp(0.5rem, 8vh, 1rem) !important;
 }
 
@@ -956,4 +953,245 @@ i.fa-wrong {
 }
 .acc-icons button:hover {
   background-color: transparent;
+}
+@media (max-width: 1024px) {
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    max-width: 140px;
+  }
+
+  .header-message h1 {
+    font-size: 1.6rem;
+  }
+
+  .header-message p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0.5rem 1rem;
+  }
+
+  .logo {
+    max-width: 100px;
+  }
+
+  .header-message h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-message p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo {
+    max-width: 80px;
+  }
+
+  .header-message {
+    text-align: right;
+    width: 100%;
+  }
+
+  .header-message h1 {
+    font-size: 1.1rem;
+  }
+
+  .header-message p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .header {
+    padding: 0.5rem 1rem;
+  }
+  .header-message h1 {
+    font-size: 1rem;
+  }
+  .header-message p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 500px) {
+  .header {
+    padding: 0.4rem 0.8rem;
+  }
+  .header-message h1 {
+    font-size: 0.9rem;
+  }
+  .header-message p {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-height: 400px) {
+  .header {
+    padding: 0.3rem 0.6rem;
+  }
+  .header-message h1 {
+    font-size: 0.8rem;
+  }
+  .header-message p {
+    font-size: 0.6rem;
+  }
+}
+
+.hamburger {
+  display: none;
+}
+.navbar-menu {
+  display: flex;
+  position: static;
+  transform: none;
+  opacity: 1;
+  width: auto;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  transition: none;
+}
+
+nav.navbar {
+  --navbar-height: 3.5rem;
+}
+
+@media (max-width: 768px) {
+  nav.navbar {
+    position: relative;
+    background: var(--bg-light);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .hamburger {
+    display: block !important;
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    font-size: 1.6rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .navbar-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 220px;
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+    background: var(--bg-light);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  .navbar.open .navbar-menu {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .navbar-menu .navbar-button {
+    flex: none;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-dark);
+  }
+  .navbar-menu .navbar-button > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+  .navbar-menu .navbar-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  .hamburger:focus,
+  .hamburger:active {
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+header.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+header.header .logo-container {
+  flex: 0 0 auto;
+}
+header.header .logo {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  transition: max-width 0.3s ease;
+}
+header.header .header-message {
+  flex: 1 1 auto;
+  text-align: right;
+}
+header.header .header-message h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  line-height: 1.2;
+}
+header.header .header-message p {
+  margin: 0;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  header.header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.75rem;
+  }
+  header.header .logo {
+    max-width: 140px;
+    margin-bottom: 0.5rem;
+  }
+  header.header .header-message {
+    width: 100%;
+  }
+  header.header .header-message h1 {
+    font-size: clamp(1.4rem, 6vw, 1.8rem);
+  }
+  header.header .header-message p {
+    font-size: clamp(0.9rem, 3vw, 1rem);
+  }
 }

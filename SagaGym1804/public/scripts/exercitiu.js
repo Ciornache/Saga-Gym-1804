@@ -25,15 +25,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     populatePage(ex);
 
     const allInstr = await fetchJSON("data/instructions.json");
-    const instrObj = allInstr.find(i => i.name === ex.name);
+    const instrObj = allInstr.find((i) => i.name === ex.name);
     if (instrObj) populateInstructions(instrObj.description);
 
     const allTips = await fetchJSON("data/tips-and-tricks.json");
-    const tipsObj = allTips.find(t => t.name === ex.name);
+    const tipsObj = allTips.find((t) => t.name === ex.name);
     if (tipsObj) populateTips(tipsObj.description);
 
     document.getElementById("exercise-title").dataset.id = ex.id;
-    console.log('EXX');
+    console.log("EXX");
     await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);
@@ -42,12 +42,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const viewMoreEl = document.getElementById("view-more");
-  const detailsEl  = document.querySelector(".exercise-details");
+  const detailsEl = document.querySelector(".exercise-details");
   viewMoreEl?.addEventListener("click", () => {
     const hidden = detailsEl.classList.toggle("hidden");
     viewMoreEl.textContent = hidden ? "View More" : "View Less";
   });
-
 });
 
 function populatePage(data) {
@@ -104,7 +103,7 @@ function populatePage(data) {
     };
   }
 
-   const imgModeBtn = document.querySelector(".image-toggle");
+  const imgModeBtn = document.querySelector(".image-toggle");
   const vidModeBtn = document.querySelector(".video-toggle");
   const videoWrapper = document.querySelector(".video-mode");
 
@@ -152,9 +151,10 @@ function populateTips(tipsArr) {
 }
 
 function showError(msg) {
-  document.querySelector("main").innerHTML = `<p class="error">Eroare: ${msg}</p>`;
+  document.querySelector(
+    "main"
+  ).innerHTML = `<p class="error">Eroare: ${msg}</p>`;
 }
-
 
 async function incarcaReviewuriExercitiu() {
   const container = document.getElementById("reviews-list");
@@ -162,7 +162,8 @@ async function incarcaReviewuriExercitiu() {
   if (!container || !exerciseId) return;
 
   let currentUserEmail = null;
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
@@ -171,30 +172,45 @@ async function incarcaReviewuriExercitiu() {
   }
 
   try {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     const res = await fetch(`/api/reviews?exerciseId=${exerciseId}`, {
       headers: {
-        Authorization:`Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     const list = await res.json();
-    console.log('Lista', list);
+    console.log("Lista", list);
     container.innerHTML = "";
 
-    list.forEach(r => {
+    list.forEach((r) => {
       const div = document.createElement("div");
       div.className = "review-item";
-      const starHtml = Array(5).fill().map((_, i) =>
-        `<i class="fa-solid fa-medal" style="color:${i < r.rating ? '#e76f66' : '#ccc'}"></i>`).join("");
+      const starHtml = Array(5)
+        .fill()
+        .map(
+          (_, i) =>
+            `<i class="fa-solid fa-medal" style="color:${
+              i < r.rating ? "#e76f66" : "#ccc"
+            }"></i>`
+        )
+        .join("");
 
       div.innerHTML = `
         <div class="stars">${starHtml}</div>
         <p class="review-meta">
-          <strong>${r.userEmail || 'Anonim'}</strong>
-          ${r.userEmail === currentUserEmail ? `<button class="btn-delete" data-id="${r._id}">🗑️</button>` : ""}
+          <strong>${r.userEmail || "Anonim"}</strong>
+          ${
+            r.userEmail === currentUserEmail
+              ? `<button class="btn-delete" data-id="${r._id}">🗑️</button>`
+              : ""
+          }
         </p>
-        <p>${r.comment.replace(/\n/g, '<br>')}</p>
-        <small>${new Date(r.createdAt).toLocaleString("ro-RO", { dateStyle: "medium", timeStyle: "short" })}</small>
+        <p>${r.comment.replace(/\n/g, "<br>")}</p>
+        <small>${new Date(r.createdAt).toLocaleString("ro-RO", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        })}</small>
       `;
 
       const likeBtn = document.createElement("button");
@@ -205,10 +221,11 @@ async function incarcaReviewuriExercitiu() {
 
       (async () => {
         try {
-          console.log('Here', r, r._id); 
-          const token = sessionStorage.getItem("token") || localStoage.getItem("token");
+          console.log("Here", r, r._id);
+          const token =
+            sessionStorage.getItem("token") || localStoage.getItem("token");
           const likeRes = await fetch(`/api/review-likes/${r._id.toString()}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           const data = await likeRes.json();
           likeBtn.textContent = `👍 ${data.count}`;
@@ -222,7 +239,7 @@ async function incarcaReviewuriExercitiu() {
         try {
           const res = await fetch(`/api/review-likes/${r._id.toString()}`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           });
           if (!res.ok) throw new Error("Like nereușit");
           await incarcaReviewuriExercitiu();
@@ -241,8 +258,8 @@ async function incarcaReviewuriExercitiu() {
             const res = await fetch(`/api/reviews/${r._id}`, {
               method: "DELETE",
               headers: {
-                "Authorization": `Bearer ${token}`
-              }
+                Authorization: `Bearer ${token}`,
+              },
             });
             if (!res.ok) throw new Error();
             await incarcaReviewuriExercitiu();
@@ -257,6 +274,14 @@ async function incarcaReviewuriExercitiu() {
     });
   } catch (err) {
     console.log(err);
-    container.innerHTML = "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
+    container.innerHTML =
+      "<p style='color:red'>Eroare la încărcarea recenziilor</p>";
   }
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
+});

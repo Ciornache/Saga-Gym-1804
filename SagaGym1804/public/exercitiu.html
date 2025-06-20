@@ -28,38 +28,28 @@
     </header>
 
     <nav class="navbar">
-      <button class="navbar-button" type="button">
-        <a href="index.html">Exercises</a>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
+      <button class="navbar-button hamburger" type="button" aria-label="Open menu">
+        <i class="fa-solid fa-bars"></i>
       </button>
-      <div class="dropdown-wrapper">
+      <div class="navbar-menu">
         <button class="navbar-button" type="button">
-          <span>My Account</span>
+          <a href="index.html">Exercises</a>
         </button>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="login.html">
-            <span>Login</span>
-            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-          </a>
-          <a class="dropdown-item" href="signup.html">
-            <span>Sign Up</span>
-            <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-          </a>
-        </div>
-      </div>
-      <button class="navbar-button" type="button" id="workout-btn">
-        <a href="workout.html">Workouts</a>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-      </button>
-      <button class="navbar-button" type="button">
-        <a href="leaderboard.html">Leadearboard</a>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-      </button>
-      <button class="navbar-button" type="button">
-        <a href="contact.html">Contact</a>
-        <img class="button-arrow" src="assets/bullish-arrow.png" alt="Bullish Hover Icon">
-      </button>
-      <div class="acc-icons">
+        <button class="navbar-button" id="login-btn">
+          <a href="login.html">Login</a>
+        </button>
+        <button class="navbar-button" id="signup-btn">
+          <a href="signup.html">Sign Up</a>
+        </button>
+        <button class="navbar-button" type="button" id="workout-btn">
+          <a href="workout.html">Workouts</a>
+        </button>
+        <button class="navbar-button" type="button">
+          <a href="leaderboard.html">Leadearboard</a>
+        </button>
+        <button class="navbar-button" type="button">
+          <a href="contact.html">Contact</a>
+        </button>
         <button class="navbar-button hidden" type="button" id="logout-btn">
           <i class="fa-solid fa-right-from-bracket"></i>
         </button>
@@ -67,6 +57,7 @@
           <i class="fa-solid fa-user"></i>
         </button>
       </div>
+    
     </nav>
 
     <main>

@@ -114,9 +114,9 @@ function fillCard(cardEl, data) {
   imgDiv.style.backgroundPosition = "center";
   cardEl.querySelector("h3").textContent = data.name;
   const stats = cardEl.querySelectorAll(".stats div");
-  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${Number(data.rating).toFixed(
-    1
-  )}</span>`;
+  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${Number(
+    data.rating
+  ).toFixed(1)}</span>`;
   stats[1].innerHTML = `<i class="fa-solid fa-dumbbell"></i><span>${data.difficulty.toFixed(
     1
   )}</span>`;
@@ -894,5 +894,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const ok = await toggleFavourite(star);
       if (ok) star.classList.toggle("star-selected");
     });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
   });
 });

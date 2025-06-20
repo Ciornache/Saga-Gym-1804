@@ -18,13 +18,12 @@
 .main-presentation {
   display: flex;
   flex-direction: column;
+  align-items: center; /* center contents horizontally */
   gap: 1rem;
   background: var(--bg-light);
-  padding: 1rem;
-  align-items: center;
-  height: 80%;
-  max-height: 80%;
-  padding-top: 30px;
+  padding: 1rem 0; /* vertical padding only */
+  width: 100%; /* span full viewport */
+  /* remove height/max-height so it can grow with its content */
 }
 
 .search-bar-area {
@@ -141,16 +140,13 @@
 .btn:hover {
   background: var(--bg-filter-dark);
 }
-
 .cards-area {
-  grid-column: 2;
-  grid-row: 2;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 3rem;
-  align-content: start;
+  /* 4 columns at full width, each at least 250px, then auto-fit to fewer */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
   background-color: var(--cards-area-bg);
-  padding: 20px 50px;
+  padding: 1rem 2rem;
 }
 .exercise-card {
   background: var(--bg-card);
@@ -885,102 +881,6 @@ hr {
   color: var(--text-dark);
 }
 
-@media (max-width: 1024px) {
-  .header {
-    padding: 0.75rem 1rem;
-  }
-
-  .logo {
-    max-width: 140px;
-  }
-
-  .header-message h1 {
-    font-size: 1.6rem;
-  }
-
-  .header-message p {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    padding: 0.5rem 1rem;
-  }
-
-  .logo {
-    max-width: 100px;
-  }
-
-  .header-message h1 {
-    font-size: 1.3rem;
-  }
-
-  .header-message p {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .logo {
-    max-width: 80px;
-  }
-
-  .header-message {
-    text-align: right;
-    width: 100%;
-  }
-
-  .header-message h1 {
-    font-size: 1.1rem;
-  }
-
-  .header-message p {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-height: 600px) {
-  .header {
-    padding: 0.5rem 1rem;
-  }
-  .header-message h1 {
-    font-size: 1rem;
-  }
-  .header-message p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-height: 500px) {
-  .header {
-    padding: 0.4rem 0.8rem;
-  }
-  .header-message h1 {
-    font-size: 0.9rem;
-  }
-  .header-message p {
-    font-size: 0.7rem;
-  }
-}
-
-@media (max-height: 400px) {
-  .header {
-    padding: 0.3rem 0.6rem;
-  }
-  .header-message h1 {
-    font-size: 0.8rem;
-  }
-  .header-message p {
-    font-size: 0.6rem;
-  }
-}
-
 .header-message p {
   font-size: clamp(0.5rem, 8vh, 1rem) !important;
 }
@@ -1002,4 +902,83 @@ hr {
 }
 .acc-icons button:hover {
   background-color: transparent;
+}
+@media (max-width: 480px) {
+  .cards-area {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-presentation {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .sidebar {
+    grid-row: 1;
+    width: 100%;
+    max-width: none;
+    margin-bottom: 1rem;
+  }
+  .cards-area {
+    grid-row: 2;
+  }
+}
+@media (max-width: 820px) {
+  .presentation-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .sidebar {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .cards-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .exercise-card {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .exercise-card .img {
+    aspect-ratio: 16 / 9;
+    height: auto !important;
+  }
+
+  .slider-angles-left,
+  .slider-angles-right {
+    display: none !important;
+  }
+  #toggle-search-btn {
+    font-size: 1.25rem;
+    top: 0.75rem;
+    right: 1rem;
+  }
+  .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
 }
