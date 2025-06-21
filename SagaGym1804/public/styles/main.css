@@ -836,102 +836,6 @@ i.fa-wrong {
   color: black;
 }
 
-@media (max-width: 1024px) {
-  .header {
-    padding: 0.75rem 1rem;
-  }
-
-  .logo {
-    max-width: 140px;
-  }
-
-  .header-message h1 {
-    font-size: 1.6rem;
-  }
-
-  .header-message p {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    padding: 0.5rem 1rem;
-  }
-
-  .logo {
-    max-width: 100px;
-  }
-
-  .header-message h1 {
-    font-size: 1.3rem;
-  }
-
-  .header-message p {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .logo {
-    max-width: 80px;
-  }
-
-  .header-message {
-    text-align: right;
-    width: 100%;
-  }
-
-  .header-message h1 {
-    font-size: 1.1rem;
-  }
-
-  .header-message p {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-height: 600px) {
-  .header {
-    padding: 0.5rem 1rem;
-  }
-  .header-message h1 {
-    font-size: 1rem;
-  }
-  .header-message p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-height: 500px) {
-  .header {
-    padding: 0.4rem 0.8rem;
-  }
-  .header-message h1 {
-    font-size: 0.9rem;
-  }
-  .header-message p {
-    font-size: 0.7rem;
-  }
-}
-
-@media (max-height: 400px) {
-  .header {
-    padding: 0.3rem 0.6rem;
-  }
-  .header-message h1 {
-    font-size: 0.8rem;
-  }
-  .header-message p {
-    font-size: 0.6rem;
-  }
-}
-
 .header-message p {
   font-size: clamp(0.5rem, 8vh, 1rem) !important;
 }
@@ -1100,7 +1004,7 @@ nav.navbar {
     width: 220px;
     max-height: calc(100vh - 3.5rem);
     overflow-y: auto;
-    background: var(--bg-light);
+    background: white;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     transform: translateX(-100%);
     opacity: 0;
@@ -1111,6 +1015,15 @@ nav.navbar {
   .navbar.open .navbar-menu {
     transform: translateX(0);
     opacity: 1;
+  }
+
+  .fa-user {
+    position: relative;
+    right: 23%;
+  }
+  .fa-right-from-bracket {
+    position: relative;
+    right: 23%;
   }
 
   .navbar-menu .navbar-button {
@@ -1140,59 +1053,6 @@ nav.navbar {
     background: transparent !important;
     outline: none !important;
     box-shadow: none !important;
-  }
-}
-
-header.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 1rem;
-}
-header.header .logo-container {
-  flex: 0 0 auto;
-}
-header.header .logo {
-  max-width: 200px;
-  width: 100%;
-  height: auto;
-  transition: max-width 0.3s ease;
-}
-header.header .header-message {
-  flex: 1 1 auto;
-  text-align: right;
-}
-header.header .header-message h1 {
-  margin: 0;
-  font-size: clamp(1.8rem, 5vw, 2.4rem);
-  line-height: 1.2;
-}
-header.header .header-message p {
-  margin: 0;
-  font-size: clamp(1rem, 2.5vw, 1.2rem);
-  opacity: 0.85;
-}
-
-@media (max-width: 768px) {
-  header.header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0.75rem;
-  }
-  header.header .logo {
-    max-width: 140px;
-    margin-bottom: 0.5rem;
-  }
-  header.header .header-message {
-    width: 100%;
-  }
-  header.header .header-message h1 {
-    font-size: clamp(1.4rem, 6vw, 1.8rem);
-  }
-  header.header .header-message p {
-    font-size: clamp(0.9rem, 3vw, 1rem);
   }
 }
 

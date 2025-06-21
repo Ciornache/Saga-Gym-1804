@@ -6,7 +6,8 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.log("Access denied!");
+    alert("Access denied! Please log in to continue.");
+    window.location.href = "login.html";
     return;
   }
 
@@ -28,10 +29,10 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-
-async () => {
-  const res = await fetch("/user/gettoken", {
+document.addEventListener("DOMContentLoaded", async () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const res = await fetch("/token/getuser", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -43,7 +44,7 @@ async () => {
     logoutButton.classList.add("hidden");
     userAccWindow.classList.add("hidden");
   }
-};
+});
 
 logoutButton.addEventListener("click", (e) => {
   localStorage.clear();

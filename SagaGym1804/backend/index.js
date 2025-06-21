@@ -163,7 +163,6 @@ const server = http.createServer(async (req, res) => {
     const user = await requireAuth();
     if (!user) return;
     const filter = {};
-    console.log(query);
     if (query.id) {
       filter.id_user = query.id;
     }
@@ -197,7 +196,6 @@ const server = http.createServer(async (req, res) => {
     req.headers.exercise
   ) {
     let favs = await models.favourites.find({});
-    console.log("Favourites", favs);
     if (favs) {
       favs = favs.filter((fav) => fav.id_exercitiu === req.headers.exercise);
       return send(res, 200, {
@@ -396,14 +394,13 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && pathname === "/api/leaderboard") {
     const { gender, workoutType, age, muscle, weight } = query || {};
-    console.log(gender, workoutType, age, muscle, weight);
     const userFilter = {};
     if (gender) {
       userFilter.gender = String(gender[0]).toUpperCase() + gender.slice(1);
-    } 
-     if (age) {
+    }
+    if (age) {
       userFilter.interval_varsta = age;
-    } 
+    }
     if (weight) {
       if (weight.endsWith("+")) {
         let min = weight.split("-")[0];
@@ -415,8 +412,6 @@ const server = http.createServer(async (req, res) => {
         userFilter.weight = { $lt: Number(weight.slice(1)) };
       }
     }
-
-    console.log("userFilter", userFilter);
 
     const users = await models.users.find(userFilter);
     const userIds = users.map((u) => u._id.toString());
@@ -688,7 +683,6 @@ ${message}
       return send(res, 500, { error: "Server error" });
     }
   }
-  console.log(pathname);
   if (req.method === "GET" && pathname.startsWith("/api/review-likes/")) {
     const user = requireAuth();
     if (!user) return;
@@ -872,7 +866,6 @@ ${message}
     if (!payload) return;
     const reviewId = pathname.split("/")[3];
     if (req.method === "GET") {
-      console.log("Review", reviewId);
       const count = await ReviewLike.countDocuments({ reviewId });
       const liked = await ReviewLike.exists({
         reviewId,

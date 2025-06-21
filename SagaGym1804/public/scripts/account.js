@@ -6,7 +6,7 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.error("Unauthorized access");
+    alert("Access denied! Please log in to continue.");
     window.location.href = "login.html";
     return;
   }

@@ -1,3 +1,5 @@
+/* Repetitive code for workout button, logout button, and user account window */
+
 const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
@@ -6,7 +8,7 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.error("Unauthorized access");
+    alert("Access denied! Please log in to continue.");
     window.location.href = "login.html";
     return;
   }
@@ -37,9 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res);
   if (res.status === 200) {
-    console.log("HERE");
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
@@ -61,6 +61,40 @@ userAccWindow.addEventListener("click", () => {
   if (token) window.location.href = "Account.html";
   else window.location.href = "login.html";
 });
+
+let exercises = [];
+let exercisesToDisplay = [];
+
+let currentPage = 1;
+const pageSize = 4;
+
+let currentSortField = null;
+let currentSortOrder = null;
+let favourites = [];
+
+const selectedFilters = {
+  muscleGroups: [],
+  types: [],
+};
+
+let groups = [];
+let types = [];
+const sortCriteria = [];
+
+let loadStuff = async () => {
+  let resp = await fetch("/admin/grupe");
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  groups = await resp.json();
+
+  resp = await fetch("/admin/tip");
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  types = await resp.json();
+};
+
+loadStuff();
+
+/* Dual Slider Functionality */
+/* The code checks that the range between the two sliders is valid. If not, it adjusts the min / max. It also updates the highlighted range on the screen */
 
 document.querySelectorAll(".dual-slider").forEach((group) => {
   const minInput = group.querySelector(".thumb--left");
@@ -99,10 +133,11 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
   updateRange.call(minInput);
 });
 
+/* Redirect to the exercise page when clicking an exercise card */
+
 document.querySelectorAll(".exercise-card").forEach((c) => {
   c.addEventListener("click", () => {
     let title = c.querySelector("h3");
-    console.log(title.textContent);
     window.location.href = `exercitiu.html?exercise-name=${title.textContent}`;
   });
 });
@@ -121,7 +156,7 @@ function fillCard(cardEl, data) {
   cardEl.querySelector("h3").textContent = data.name;
   const star = cardEl.querySelector(".fa-star");
   const stats = cardEl.querySelectorAll(".stats div");
-  const count = getStarCounter(star).then((count) => {
+  const _ = getStarCounter(star).then((count) => {
     stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${
       count || 0
     }</span>`;
@@ -154,28 +189,8 @@ async function getStarCounter(star) {
     console.error("Failed to fetch favourites:", data.error);
     return;
   }
-  const stats = cardEl.querySelectorAll(".stats div")[0];
-  const starCount = data.count;
-  const starSpan = stats.querySelector("span");
-  return starCount;
+  return data.count;
 }
-
-let exercises = [];
-let exercisesToDisplay = [];
-
-let currentPage = 1;
-const pageSize = 4;
-
-let currentSortField = null;
-let currentSortOrder = null;
-let favourites = [];
-
-const selectedFilters = {
-  muscleGroups: [],
-  types: [],
-};
-
-const sortCriteria = [];
 
 function updateSortCriteria(fieldName, isChecked) {
   const idx = sortCriteria.findIndex((c) => c.field === fieldName);
@@ -188,97 +203,56 @@ function updateSortCriteria(fieldName, isChecked) {
   }
 }
 
-document.getElementById("sort-score-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "score");
-  if (idx !== -1) sortCriteria[idx].order = "asc";
-  else sortCriteria.push({ field: "score", order: "asc" });
-  document.getElementById("sort-score-up").classList.add("selected");
-  document.getElementById("sort-score-down").classList.remove("selected");
-  document.getElementById("sort-score-checkbox").checked = true;
-});
+const sortFields = ["score", "difficulty", "alpha"];
+for (const field of sortFields) {
+  const element1 = document.getElementById(`sort-${field}-up`);
+  const element2 = document.getElementById(`sort-${field}-down`);
+  const elements = [element1, element2];
+  for (const element of elements) {
+    if (!element) continue;
 
-document.getElementById("sort-score-down").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "score");
-  if (idx !== -1) sortCriteria[idx].order = "desc";
-  else sortCriteria.push({ field: "score", order: "desc" });
-  document.getElementById("sort-score-down").classList.add("selected");
-  document.getElementById("sort-score-up").classList.remove("selected");
-  document.getElementById("sort-score-checkbox").checked = true;
-});
-
-document.getElementById("sort-difficulty-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
-  } else {
-    sortCriteria.push({ field: "difficulty", order: "asc" });
+    element.addEventListener(
+      "click",
+      ((fieldCopy, elementCopy) => {
+        return () => {
+          const idx = sortCriteria.findIndex((c) => c.field === fieldCopy);
+          if (idx !== -1) {
+            sortCriteria[idx].order = elementCopy.id.includes("up")
+              ? "asc"
+              : "desc";
+          } else {
+            sortCriteria.push({
+              field: fieldCopy,
+              order: elementCopy.id.includes("up") ? "asc" : "desc",
+            });
+          }
+          elements.forEach((el) => el.classList.remove("selected"));
+          elementCopy.classList.add("selected");
+          document.getElementById(`sort-${fieldCopy}-checkbox`).checked = true;
+          sortCurrentArray();
+        };
+      })(field, element)
+    );
   }
-  document.getElementById("sort-difficulty-up").classList.add("selected");
-  document.getElementById("sort-difficulty-down").classList.remove("selected");
-  document.getElementById("sort-difficulty-checkbox").checked = true;
-});
 
-document
-  .getElementById("sort-difficulty-down")
-  .addEventListener("click", () => {
-    const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
-    if (idx !== -1) {
-      sortCriteria[idx].order = "desc";
-    } else {
-      sortCriteria.push({ field: "difficulty", order: "desc" });
-    }
-    document.getElementById("sort-difficulty-down").classList.add("selected");
-    document.getElementById("sort-difficulty-up").classList.remove("selected");
-    document.getElementById("sort-difficulty-checkbox").checked = true;
-  });
-
-document.getElementById("sort-alpha-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
-  } else {
-    sortCriteria.push({ field: "alpha", order: "asc" });
-  }
-  document.getElementById("sort-alpha-up").classList.add("selected");
-  document.getElementById("sort-alpha-down").classList.remove("selected");
-  document.getElementById("sort-alpha-checkbox").checked = true;
-});
-
-document.getElementById("sort-alpha-down").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "desc";
-  } else {
-    sortCriteria.push({ field: "alpha", order: "desc" });
-  }
-  document.getElementById("sort-alpha-down").classList.add("selected");
-  document.getElementById("sort-alpha-up").classList.remove("selected");
-  document.getElementById("sort-alpha-checkbox").checked = true;
-});
-
-document
-  .getElementById("sort-difficulty-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("difficulty", e.target.checked);
-    if (!e.target.checked) {
-      document
-        .getElementById("sort-difficulty-up")
-        .classList.remove("selected");
-      document
-        .getElementById("sort-difficulty-down")
-        .classList.remove("selected");
-    }
-  });
-
-document
-  .getElementById("sort-score-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("score", e.target.checked);
-    if (!e.target.checked) {
-      document.getElementById("sort-score-up").classList.remove("selected");
-      document.getElementById("sort-score-down").classList.remove("selected");
-    }
-  });
+  const checkbox = document.getElementById(`sort-${field}-checkbox`);
+  checkbox.addEventListener(
+    "change",
+    ((fieldCopy) => {
+      return () => {
+        updateSortCriteria(fieldCopy, e.target.checked);
+        if (!e.target.checked) {
+          document
+            .getElementById(`sort-${fieldCopy}-up`)
+            .classList.remove("selected");
+          document
+            .getElementById(`sort-${fieldCopy}-down`)
+            .classList.remove("selected");
+        }
+      };
+    })(field)
+  );
+}
 
 function sortCurrentArray() {
   if (exercisesToDisplay.length === 0) return;
@@ -287,7 +261,7 @@ function sortCurrentArray() {
   if (sortCriteria.length === 0) {
     if (exercisesToDisplay.length > 0) {
       renderFiltered();
-    } else {
+    } else if (exercises.length === 0) {
       render();
     }
     return;
@@ -324,16 +298,6 @@ function sortCurrentArray() {
   }
 }
 
-document
-  .getElementById("sort-alpha-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("alpha", e.target.checked);
-    if (!e.target.checked) {
-      document.getElementById("sort-alpha-up").classList.remove("selected");
-      document.getElementById("sort-alpha-down").classList.remove("selected");
-    }
-  });
-
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -348,15 +312,11 @@ function closeModal(modalId) {
   document.body.style.overflow = "";
 }
 
-async function populateMuscleGroupsModal() {
+async function populateMuscleGroupsModal(groups) {
+  console.log(groups);
   const container = document.getElementById("modal-list-muscle-groups");
   container.innerHTML = "";
-
   try {
-    const resp = await fetch("/admin/grupe");
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const groups = await resp.json();
-
     const grid = document.createElement("div");
     grid.classList.add("modal-image-grid");
     container.appendChild(grid);
@@ -383,9 +343,6 @@ async function populateMuscleGroupsModal() {
       const overlay = document.createElement("div");
       overlay.classList.add("checkmark-overlay");
       overlay.innerHTML = "✔";
-      if (cb.checked) {
-        overlay.classList.add("selected");
-      }
       wrapper.appendChild(overlay);
 
       cb.addEventListener("change", (e) => {
@@ -403,11 +360,7 @@ async function populateMuscleGroupsModal() {
         }
       });
 
-      img.addEventListener("click", (e) => {
-        cb.checked = !cb.checked;
-        cb.dispatchEvent(new Event("change")); // manually fire "change"
-      });
-      overlay.addEventListener("click", (e) => {
+      img.addEventListener("click", () => {
         cb.checked = !cb.checked;
         cb.dispatchEvent(new Event("change"));
       });
@@ -415,7 +368,6 @@ async function populateMuscleGroupsModal() {
       grid.appendChild(wrapper);
     });
   } catch (err) {
-    console.error("Failed to load muscle‐groups:", err);
     container.innerHTML = `<p style="color:red;">Error loading muscle groups</p>`;
   }
 }
@@ -425,10 +377,6 @@ async function populateTypesModal() {
   container.innerHTML = "";
 
   try {
-    const resp = await fetch("/admin/tip");
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const types = await resp.json();
-
     const grid = document.createElement("div");
     grid.classList.add("modal-image-grid");
     container.appendChild(grid);
@@ -487,7 +435,6 @@ async function populateTypesModal() {
       grid.appendChild(wrapper);
     });
   } catch (err) {
-    console.error("Failed to load types:", err);
     container.innerHTML = `<p style="color:red;">Error loading types</p>`;
   }
 }
@@ -557,10 +504,11 @@ function applyAllFilters() {
     );
   });
 
-  console.log("After filter", baseArray);
-
   exercisesToDisplay = [...baseArray];
   currentPage = 1;
+
+  applySearch();
+  sortCurrentArray();
   renderFiltered();
 }
 
@@ -604,18 +552,8 @@ async function render() {
     }
   });
   renderPagination(exercises.length);
+  updateStars();
 }
-
-// async function renderStarFavouritesCounter() {
-//   const favWithDetails = await fetch("/favourites");
-//   const res = await fetch("/token/getuser", {
-//     method: "GET",
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-//   if(res.status)
-// }
 
 async function updateStars() {
   const stars = Array.from(document.querySelectorAll(".fa-star"));
@@ -652,34 +590,33 @@ let arrowIndex = 0;
 
 function renderPagination(totalItems) {
   const totalPages = Math.ceil(totalItems / pageSize);
+  console.log(currentPage);
   pagination.innerHTML = "";
 
   const prevBtn = makeBtn("«", currentPage === 1, () => {
     if (currentPage > 1) {
       currentPage--;
       if (exercisesToDisplay.length > 0) renderFiltered();
-      else render();
+      else if (exercises.length === 0) render();
     }
   });
-  pagination.appendChild(prevBtn);
 
+  pagination.appendChild(prevBtn);
   let startPage = Math.max(1, currentPage - 2);
-  let endPage = Math.min(totalPages, startPage + 4);
-  if (endPage - startPage < 4) {
-    startPage = Math.max(1, endPage - 4);
+  let endPage = Math.min(totalPages, startPage + 5);
+  if (endPage - startPage <= 4) {
+    startPage = Math.max(1, endPage - 5);
   }
+  if (endPage - startPage >= 5) endPage--;
+
+  const func = (p) => {
+    currentPage = p;
+    if (exercisesToDisplay.length > 0) renderFiltered();
+    else if (exercises.length === 0) render();
+  };
 
   if (startPage > 1) {
-    const firstBtn = makeBtn(
-      "1",
-      false,
-      () => {
-        currentPage = 1;
-        if (exercisesToDisplay.length > 0) renderFiltered();
-        else render();
-      },
-      currentPage === 1
-    );
+    const firstBtn = makeBtn("1", false, () => func(1), currentPage === 1);
     pagination.appendChild(firstBtn);
 
     if (startPage > 2) {
@@ -691,18 +628,7 @@ function renderPagination(totalItems) {
   }
 
   for (let p = startPage; p <= endPage; p++) {
-    pagination.appendChild(
-      makeBtn(
-        p,
-        false,
-        () => {
-          currentPage = p;
-          if (exercisesToDisplay.length > 0) renderFiltered();
-          else render();
-        },
-        p === currentPage
-      )
-    );
+    pagination.appendChild(makeBtn(p, false, () => func(p), p === currentPage));
   }
 
   if (endPage < totalPages) {
@@ -715,11 +641,7 @@ function renderPagination(totalItems) {
     const lastBtn = makeBtn(
       totalPages,
       false,
-      () => {
-        currentPage = totalPages;
-        if (exercisesToDisplay.length > 0) renderFiltered();
-        else render();
-      },
+      () => func(totalPages),
       currentPage === totalPages
     );
     pagination.appendChild(lastBtn);
@@ -729,7 +651,7 @@ function renderPagination(totalItems) {
     if (currentPage < totalPages) {
       currentPage++;
       if (exercisesToDisplay.length > 0) renderFiltered();
-      else render();
+      else if (exercises.length === 0) render();
     }
   });
   pagination.appendChild(nextBtn);
@@ -755,6 +677,11 @@ function applySearch() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
   try {
     const resp = await fetch("/admin/exercitii");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -776,6 +703,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Nu am putut încărca exercițiile:", err);
   }
 
+  render();
+
   const btnLeft = document.querySelector(".slider-angles-left");
   const btnRight = document.querySelector(".slider-angles-right");
 
@@ -785,7 +714,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentPage < totalPages) {
         currentPage++;
         renderFiltered();
-        renderPagination(exercisesToDisplay.length);
       }
     });
   }
@@ -795,24 +723,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentPage > 1) {
         currentPage--;
         renderFiltered();
-        renderPagination(exercisesToDisplay.length);
       }
     });
   }
-
-  renderFiltered();
-  renderPagination(exercisesToDisplay.length);
 
   const btnOpenMuscle = document.getElementById("btn-open-muscle-modal");
   const btnCloseMuscle = document.getElementById("btn-close-muscle-modal");
   const btnApplyMuscle = document.getElementById("btn-apply-muscle-modal");
   btnOpenMuscle.addEventListener("click", async () => {
-    await populateMuscleGroupsModal();
+    populateMuscleGroupsModal(groups);
     openModal("modal-muscle-groups");
   });
-  btnCloseMuscle.addEventListener("click", () =>
-    closeModal("modal-muscle-groups")
-  );
+  btnCloseMuscle.addEventListener("click", () => {
+    populateTypesModal(types);
+    closeModal("modal-muscle-groups");
+  });
   btnApplyMuscle.addEventListener("click", () => {
     closeModal("modal-muscle-groups");
     applyAllFilters();
@@ -822,7 +747,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnCloseType = document.getElementById("btn-close-type-modal");
   const btnApplyType = document.getElementById("btn-apply-type-modal");
   btnOpenType.addEventListener("click", async () => {
-    await populateTypesModal();
+    await populateTypesModal(types);
     openModal("modal-types");
   });
   btnCloseType.addEventListener("click", () => closeModal("modal-types"));
@@ -843,20 +768,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     sortCurrentArray();
   });
   const searchInput = document.getElementById("search-input");
-  console.log(searchInput);
   if (searchInput) {
     searchInput.addEventListener("input", () => {
       applyAllFilters();
-      applySearch();
-      sortCurrentArray();
     });
     searchInput.addEventListener("keyup", (e) => {
       applyAllFilters();
-      applySearch();
-      sortCurrentArray();
     });
   }
-  render();
 
   const toggleBtn = document.getElementById("toggle-search-btn");
   const searchContainer = document.getElementById("search-container");
@@ -979,13 +898,5 @@ document.addEventListener("DOMContentLoaded", async () => {
           });
       }
     });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const navbar = document.querySelector(".navbar");
-  const btn = document.querySelector(".hamburger");
-  btn.addEventListener("click", () => {
-    navbar.classList.toggle("open");
   });
 });

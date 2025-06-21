@@ -154,6 +154,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  cursor: pointer;
 }
 
 .exercise-card .img {
@@ -338,12 +339,12 @@ hr {
 }
 
 .slider-angles-right {
-  left: 97%;
+  left: 97.5%;
   top: 47.5%;
 }
 
 .slider-angles-left {
-  left: 20.5%;
+  left: 20%;
   top: 47.5%;
 }
 
@@ -762,11 +763,11 @@ hr {
   cursor: pointer;
 }
 
-.modal-image-checkbox {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
+  .modal-image-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
 
 .modal-select-image {
   position: absolute;
@@ -796,7 +797,7 @@ hr {
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
-  opacity: 0; /* hidden by default */
+  opacity: 0;
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
@@ -978,4 +979,11 @@ hr {
     gap: 0.5rem;
     margin: 1rem 0;
   }
+}
+div[class="img"] > .fa-star {
+  text-shadow: 0 0 3px black, 0 0 6px transparent;
+}
+
+.fa-magnifying-glass {
+  cursor: pointer;
 }

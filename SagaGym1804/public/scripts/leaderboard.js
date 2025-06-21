@@ -6,7 +6,8 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.log("Access denied!");
+    alert("Access denied! Please log in to continue.");
+    window.location.href = "login.html";
     return;
   }
 
@@ -281,17 +282,19 @@ userAccWindow.addEventListener("click", () => {
         const slice = document.createElement("canvas");
         slice.width = fullCanvas.width;
         slice.height = thisSliceH;
-        slice.getContext("2d").drawImage(
-          fullCanvas,
-          0,
-          page * slicePx, 
-          fullCanvas.width,
-          thisSliceH,
-          0,
-          0,
-          fullCanvas.width,
-          thisSliceH
-        );
+        slice
+          .getContext("2d")
+          .drawImage(
+            fullCanvas,
+            0,
+            page * slicePx,
+            fullCanvas.width,
+            thisSliceH,
+            0,
+            0,
+            fullCanvas.width,
+            thisSliceH
+          );
 
         const imgData = slice.toDataURL("image/png");
         const imgH = thisSliceH / pxPerPt;
@@ -305,7 +308,6 @@ userAccWindow.addEventListener("click", () => {
 
       pdf.save("leaderboard.pdf");
     });
-
 })();
 document.addEventListener("DOMContentLoaded", () => {
   const navbar = document.querySelector(".navbar");
