@@ -80,6 +80,7 @@ const selectedFilters = {
 let groups = [];
 let types = [];
 const sortCriteria = [];
+let isLoggedIn = false;
 
 let loadStuff = async () => {
   let resp = await fetch("/admin/grupe");
@@ -89,6 +90,20 @@ let loadStuff = async () => {
   resp = await fetch("/admin/tip");
   if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
   types = await resp.json();
+
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    res = await fetch("/token/getuser", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      isLoggedIn = true;
+    }
+  }
 };
 
 loadStuff();
@@ -148,6 +163,14 @@ document.querySelectorAll(".dual-slider").forEach((s) => {
   });
 });
 
+function counterToString(counter) {
+  if (counter < 1000) return counter.toString();
+  if (counter < 1000000) return (counter / 1000).toFixed(1) + "K";
+  return (counter / 1000000).toFixed(1) + "M";
+}
+
+/* Fills the exercise card with data every time a change is happening, like filtering, sorting or pagination */
+
 function fillCard(cardEl, data) {
   const imgDiv = cardEl.querySelector(".img");
   imgDiv.style.backgroundImage = `url(${data.cover_image})`;
@@ -156,9 +179,9 @@ function fillCard(cardEl, data) {
   cardEl.querySelector("h3").textContent = data.name;
   const star = cardEl.querySelector(".fa-star");
   const stats = cardEl.querySelectorAll(".stats div");
-  const _ = getStarCounter(star).then((count) => {
+  getStarCounter(star).then((count) => {
     stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${
-      count || 0
+      counterToString(count) || 0
     }</span>`;
   });
   stats[1].innerHTML = `<i class="fa-solid fa-dumbbell"></i><span>${data.difficulty.toFixed(
@@ -169,6 +192,8 @@ function fillCard(cardEl, data) {
   )}</span>`;
 }
 
+/* Utility function to get for an exercise how many times it has been likes by users */
+
 async function getStarCounter(star) {
   const cardEl = star.closest(".exercise-card");
   if (!cardEl) {
@@ -178,18 +203,10 @@ async function getStarCounter(star) {
   const nameEl = cardEl.querySelector("h3");
   const name = nameEl?.textContent.trim().toLowerCase();
   const id_exercitiu = exercises.find((e) => e.name.toLowerCase() === name)?.id;
-  const res = await fetch("/favourites", {
-    method: "GET",
-    headers: {
-      Exercise: `${id_exercitiu}`,
-    },
-  });
-  const data = await res.json();
-  if (res.status !== 200) {
-    console.error("Failed to fetch favourites:", data.error);
-    return;
-  }
-  return data.count;
+  const cnt = favourites.filter(
+    (f) => f.id_exercitiu === id_exercitiu.toString()
+  ).length;
+  return cnt;
 }
 
 function updateSortCriteria(fieldName, isChecked) {
@@ -203,6 +220,8 @@ function updateSortCriteria(fieldName, isChecked) {
   }
 }
 
+/* Event Listeners for sorting buttons and checkboxed */
+
 const sortFields = ["score", "difficulty", "alpha"];
 for (const field of sortFields) {
   const element1 = document.getElementById(`sort-${field}-up`);
@@ -210,7 +229,6 @@ for (const field of sortFields) {
   const elements = [element1, element2];
   for (const element of elements) {
     if (!element) continue;
-
     element.addEventListener(
       "click",
       ((fieldCopy, elementCopy) => {
@@ -229,7 +247,6 @@ for (const field of sortFields) {
           elements.forEach((el) => el.classList.remove("selected"));
           elementCopy.classList.add("selected");
           document.getElementById(`sort-${fieldCopy}-checkbox`).checked = true;
-          sortCurrentArray();
         };
       })(field, element)
     );
@@ -239,7 +256,7 @@ for (const field of sortFields) {
   checkbox.addEventListener(
     "change",
     ((fieldCopy) => {
-      return () => {
+      return (e) => {
         updateSortCriteria(fieldCopy, e.target.checked);
         if (!e.target.checked) {
           document
@@ -253,6 +270,8 @@ for (const field of sortFields) {
     })(field)
   );
 }
+
+/* Sorts the exercisesToDisplay array everytime apply sort is pressed */
 
 function sortCurrentArray() {
   if (exercisesToDisplay.length === 0) return;
@@ -298,6 +317,8 @@ function sortCurrentArray() {
   }
 }
 
+/* Utility functions to open and close filtering modals */
+
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -312,8 +333,9 @@ function closeModal(modalId) {
   document.body.style.overflow = "";
 }
 
+/* Function that populates the muscle groups modal. It insert data dynmically such as images, checkboxes and overlays */
+
 async function populateMuscleGroupsModal(groups) {
-  console.log(groups);
   const container = document.getElementById("modal-list-muscle-groups");
   container.innerHTML = "";
   try {
@@ -465,6 +487,8 @@ function populateSummaryModal() {
   }
 }
 
+/* ApplyAllFilters is called whenever a new filter is selected */
+
 function applyAllFilters() {
   let baseArray = exercises;
   if (selectedFilters.muscleGroups.length > 0) {
@@ -487,15 +511,15 @@ function applyAllFilters() {
   const scoreSlider = sliders[0];
   const difficultySlider = sliders[1];
 
-  const minScore = scoreSlider.querySelector(".thumb--left").value;
-  const maxScore = scoreSlider.querySelector(".thumb--right").value;
+  // const minScore = scoreSlider.querySelector(".thumb--left").value;
+  // const maxScore = scoreSlider.querySelector(".thumb--right").value;
 
   const minDiff = difficultySlider.querySelector(".thumb--left").value;
   const maxDiff = difficultySlider.querySelector(".thumb--right").value;
 
-  baseArray = baseArray.filter((ex) => {
-    ex.score >= minScore && ex.score <= maxScore;
-  });
+  // baseArray = baseArray.filter((ex) => {
+  //   ex.score >= minScore && ex.score <= maxScore;
+  // });
 
   baseArray = baseArray.filter((ex) => {
     return (
@@ -523,6 +547,8 @@ function makeBtn(text, disabled, onClick, isActive = false) {
   b.addEventListener("click", onClick);
   return b;
 }
+
+/* Is called only one time when the page is loaded. Intial fetching */
 
 async function render() {
   const token =
@@ -555,7 +581,11 @@ async function render() {
   updateStars();
 }
 
+/* Updates the stars. If the user is not logged in, it does nothing. */
+
 async function updateStars() {
+  if (!isLoggedIn) return;
+
   const stars = Array.from(document.querySelectorAll(".fa-star"));
   for (star of stars) star.classList.remove("star-selected");
   for (fav of favourites) {
@@ -570,6 +600,8 @@ async function updateStars() {
     }
   }
 }
+
+/* Same as render, but is rendering from exercisesToDisplay array */
 
 function renderFiltered() {
   const start = (currentPage - 1) * pageSize;
@@ -586,11 +618,8 @@ function renderFiltered() {
   updateStars();
 }
 
-let arrowIndex = 0;
-
 function renderPagination(totalItems) {
   const totalPages = Math.ceil(totalItems / pageSize);
-  console.log(currentPage);
   pagination.innerHTML = "";
 
   const prevBtn = makeBtn("«", currentPage === 1, () => {
@@ -657,6 +686,8 @@ function renderPagination(totalItems) {
   pagination.appendChild(nextBtn);
 }
 
+/* Filters the content based on the search bar */
+
 function applySearch() {
   const searchInput = document.getElementById("search-input");
   const term = searchInput.value.trim().toLowerCase();
@@ -688,14 +719,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     exercises = await resp.json();
     exercisesToDisplay = exercises;
 
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
     const res = await fetch("/favourites", {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const data = await res.json();
     favourites = Array.isArray(data.favourites) ? data.favourites : [];
@@ -808,6 +833,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fetch(url, options);
   }
 
+  /* Every time the star is clicked, the function toggleFavourite is called. */
+
   async function toggleFavourite(star) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -855,33 +882,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Cannot find exercise card");
       return;
     }
-    const nameEl = cardEl.querySelector("h3");
-    const name = nameEl?.textContent.trim().toLowerCase();
-    const id_exercitiu = exercises.find(
-      (e) => e.name.toLowerCase() === name
-    )?.id;
-    const res = await fetch("/favourites", {
-      method: "GET",
-      headers: {
-        Exercise: `${id_exercitiu}`,
-      },
-    });
-    const data = await res.json();
-    if (res.status !== 200) {
-      console.error("Failed to fetch favourites:", data.error);
-      return;
-    }
+    const count = getStarCounter(star);
     const stats = cardEl.querySelectorAll(".stats div")[0];
-    const starCount = data.count;
+    const starCount = count;
     const starSpan = stats.querySelector("span");
     starSpan.textContent = starCount ? counterToString(starCount) : "0";
   }
 
-  function counterToString(counter) {
-    if (counter < 1000) return counter.toString();
-    if (counter < 1000000) return (counter / 1000).toFixed(1) + "K";
-    return (counter / 1000000).toFixed(1) + "M";
-  }
+  /* Toggles and updates ui after if toggle was succesful */
 
   document.querySelectorAll(".fa-star").forEach((star) => {
     star.addEventListener("click", async (e) => {

@@ -209,8 +209,7 @@ const server = http.createServer(async (req, res) => {
 
   if (
     req.method === "GET" &&
-    pathname === "/favourites" &&
-    !req.headers.authorization
+    pathname === "/favourites"
   ) {
     const favs = await models.favourites.find();
     if (favs) {
