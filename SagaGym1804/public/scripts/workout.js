@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="set-item" data-timings='${JSON.stringify(
           s.timings
         )}' data-set-index="${i}">
-          <div class="set-duration">${(s.duration / 60).toFixed(2)} min</div>
+          <div class="set-duration">${s.duration} s</div>
           <div class="set-reps">${s.repetitions.length} reps</div>
           <div class="set-weight">
             <select class="weight-type">
