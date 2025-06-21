@@ -1,3 +1,4 @@
+<!-- public/stats.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +45,6 @@
           <!-- Favorite Types -->
           <div class="card favorite-types">
             <h2>Favorite Types</h2>
-            <!-- will be populated dynamically -->
             <div class="types-container"></div>
           </div>
           <!-- All Liked Exercises -->
@@ -82,45 +82,27 @@
         <div class="reviews-grid">
           <div class="card review-count">
             <h2>Review Count</h2>
-            <div class="stat">
-              <i class="fas fa-comment-dots"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-comment-dots"></i><span class="value">0</span></div>
           </div>
           <div class="card review-average">
             <h2>Average Rating</h2>
-            <div class="stat">
-              <i class="fas fa-star"></i>
-              <span class="value">0 / 5</span>
-            </div>
+            <div class="stat"><i class="fas fa-star"></i><span class="value">0 / 5</span></div>
           </div>
           <div class="card total-likes">
             <h2>Total Likes</h2>
-            <div class="stat">
-              <i class="fas fa-heart"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-heart"></i><span class="value">0</span></div>
           </div>
           <div class="card likes-per-review">
             <h2>Likes per Review</h2>
-            <div class="stat">
-              <i class="fas fa-heart"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-heart"></i><span class="value">0</span></div>
           </div>
           <div class="card min-likes">
             <h2>Min Likes</h2>
-            <div class="stat">
-              <i class="fas fa-arrow-down"></i>
-              <span class="value" id="minLikesVal">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-arrow-down"></i><span id="minLikesVal" class="value">0</span></div>
           </div>
           <div class="card max-likes">
             <h2>Max Likes</h2>
-            <div class="stat">
-              <i class="fas fa-arrow-up"></i>
-              <span class="value" id="maxLikesVal">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-arrow-up"></i><span id="maxLikesVal" class="value">0</span></div>
           </div>
         </div>
       </section>
@@ -130,70 +112,43 @@
         <div class="activity-grid">
           <div class="card total-workouts">
             <h2>Total Workouts</h2>
-            <div class="stat">
-              <i class="fas fa-calendar-check"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-calendar-check"></i><span class="value">0</span></div>
           </div>
           <div class="card total-sets">
             <h2>Total Sets</h2>
-            <div class="stat">
-              <i class="fas fa-layer-group"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-layer-group"></i><span class="value">0</span></div>
           </div>
           <div class="card total-exercises">
             <h2>Total Exercises</h2>
-            <div class="stat">
-              <i class="fas fa-dumbbell"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-dumbbell"></i><span class="value">0</span></div>
           </div>
           <div class="card total-weight">
             <h2>Total Weight Lifted</h2>
-            <div class="stat">
-              <i class="fas fa-weight-hanging"></i>
-              <span class="value">0 kg</span>
-            </div>
+            <div class="stat"><i class="fas fa-weight-hanging"></i><span class="value">0 kg</span></div>
           </div>
-          <div class="card total-km">
-            <h2>Total km Ran</h2>
-            <div class="stat">
-              <i class="fas fa-route"></i>
-              <span class="value">0 km</span>
-            </div>
+          <!-- NEW: Unique Exercises -->
+          <div class="card unique-exercises">
+            <h2>Unique Exercises</h2>
+            <div class="stat"><i class="fas fa-th-large"></i><span class="value">0</span></div>
+          </div>
+          <!-- NEW: Avg Weight/Set -->
+          <div class="card avg-weight-set">
+            <h2>Avg Weight/Set</h2>
+            <div class="stat"><i class="fas fa-weight"></i><span class="value">0 kg</span></div>
           </div>
           <div class="card total-time">
             <h2>Total Workout Time</h2>
-            <div class="stat">
-              <i class="fas fa-stopwatch"></i>
-              <span class="value">0 h 0 m</span>
-            </div>
+            <div class="stat"><i class="fas fa-stopwatch"></i><span class="value">0 h 0 m</span></div>
           </div>
           <div class="card avg-duration">
             <h2>Avg Duration/Workout</h2>
-            <div class="stat">
-              <i class="fas fa-hourglass-half"></i>
-              <span class="value">0 m</span>
-            </div>
-          </div>
-          <div class="card total-stretching">
-            <h2>Total Stretching</h2>
-            <div class="stat">
-              <i class="fas fa-walking"></i>
-              <span class="value">0</span>
-            </div>
+            <div class="stat"><i class="fas fa-hourglass-half"></i><span class="value">0 m</span></div>
           </div>
           <div class="card weekly-summary">
             <h2>Weekly Comparison</h2>
             <table class="week-comparison">
               <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>This Week</th>
-                  <th>Last Week</th>
-                  <th>Change</th>
-                </tr>
+                <tr><th>Metric</th><th>This Week</th><th>Last Week</th><th>Change</th></tr>
               </thead>
               <tbody></tbody>
             </table>
