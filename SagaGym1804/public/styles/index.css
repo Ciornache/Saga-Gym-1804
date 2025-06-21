@@ -18,12 +18,11 @@
 .main-presentation {
   display: flex;
   flex-direction: column;
-  align-items: center; /* center contents horizontally */
+  align-items: center;
   gap: 1rem;
   background: var(--bg-light);
-  padding: 1rem 0; /* vertical padding only */
-  width: 100%; /* span full viewport */
-  /* remove height/max-height so it can grow with its content */
+  padding: 1rem 0;
+  width: 100%;
 }
 
 .search-bar-area {
@@ -142,7 +141,6 @@
 }
 .cards-area {
   display: grid;
-  /* 4 columns at full width, each at least 250px, then auto-fit to fewer */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   background-color: var(--cards-area-bg);
@@ -156,6 +154,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  cursor: pointer;
 }
 
 .exercise-card .img {
@@ -340,12 +339,12 @@ hr {
 }
 
 .slider-angles-right {
-  left: 97%;
+  left: 97.5%;
   top: 47.5%;
 }
 
 .slider-angles-left {
-  left: 20.5%;
+  left: 20%;
   top: 47.5%;
 }
 
@@ -661,7 +660,6 @@ hr {
   }
 }
 
-/* ——— Sort panel & săgeți ——— */
 .sort-panel {
   margin-top: 1rem;
   background: #a56461;
@@ -765,11 +763,11 @@ hr {
   cursor: pointer;
 }
 
-.modal-image-checkbox {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
+  .modal-image-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
 
 .modal-select-image {
   position: absolute;
@@ -799,7 +797,7 @@ hr {
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
-  opacity: 0; /* hidden by default */
+  opacity: 0;
   transition: opacity 0.15s ease;
   pointer-events: none;
 }
@@ -981,4 +979,11 @@ hr {
     gap: 0.5rem;
     margin: 1rem 0;
   }
+}
+div[class="img"] > .fa-star {
+  text-shadow: 0 0 3px black, 0 0 6px transparent;
+}
+
+.fa-magnifying-glass {
+  cursor: pointer;
 }

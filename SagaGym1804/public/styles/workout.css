@@ -492,3 +492,9 @@ main {
 .picker-actions button:hover {
   background: #d62828;
 }
+
+.fa-user,
+.fa-right-from-bracket {
+  color: black;
+  cursor: pointer;
+}

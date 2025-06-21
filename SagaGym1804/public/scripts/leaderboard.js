@@ -6,7 +6,8 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.log("Access denied!");
+    alert("Access denied! Please log in to continue.");
+    window.location.href = "login.html";
     return;
   }
 
@@ -28,20 +29,24 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
-    userAccWindow.classList.add("hidden");
     logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
   }
-}, 100);
+});
 
 logoutButton.addEventListener("click", (e) => {
-  console.log("Clicked");
   localStorage.clear();
   sessionStorage.clear();
   e.target.classList.add("hidden");
@@ -111,6 +116,7 @@ userAccWindow.addEventListener("click", () => {
 
   const menuSpans = document.querySelectorAll(".lead-criterias span");
   const optionsContainer = document.querySelector(".criteria-options");
+  let isFirst = true;
 
   function renderOptions(key) {
     optionsContainer.innerHTML = "";
@@ -126,14 +132,27 @@ userAccWindow.addEventListener("click", () => {
       }
       btn.append(item.label);
       btn.dataset.value = item.value;
-      if (item.value === "female") btn.classList.add("selected");
+      if (isFirst && item.value === "female") {
+        btn.classList.add("selected");
+        isFirst = false;
+      }
       btn.addEventListener("click", () => {
-        if (key !== "muscle") selected[key] = item.value;
-        else selected[key] = item.label;
+        const isAlreadySelected = btn.classList.contains("selected");
+
         optionsContainer
           .querySelectorAll(".option")
           .forEach((o) => o.classList.remove("selected"));
-        btn.classList.add("selected");
+
+        if (isAlreadySelected) {
+          btn.classList.remove("selected");
+          selected[key] = undefined;
+        } else {
+          btn.classList.add("selected");
+
+          if (key !== "muscle") selected[key] = item.value;
+          else selected[key] = item.label;
+        }
+        console.log("Rendering");
         renderLeaderboard();
       });
       optionsContainer.append(btn);
@@ -151,29 +170,35 @@ userAccWindow.addEventListener("click", () => {
     });
   });
 
-  console.log(selected);
   renderLeaderboard();
 
   if (menuSpans[0]) menuSpans[0].click();
 
   async function renderLeaderboard() {
-    const active = document.querySelector(".lead-criterias .active");
-    if (!active) return;
-    const key = active.dataset.key;
-    const value = selected[key];
-    if (!value) return;
-
     const params = new URLSearchParams();
-    params.set(key, value);
-
-    const token = localStorage.getItem("token");
-    const res = await fetch(`/api/leaderboard?${params.toString()}`, {
-      headers: { Authorization: `Bearer ${token}` },
+    Object.entries(selected).forEach(([key, value]) => {
+      if (value) params.set(key, value);
     });
+
+    const res = await fetch(`/api/leaderboard?${params.toString()}`);
     const rows = await res.json();
-    console.log("🏆 leaderboard rows for", key, value, rows);
 
     const table = document.querySelector(".leaderboard");
+    const filterInfo = document.getElementById("filter-info");
+    const filterCriterias = Object.entries(selected)
+      .filter(([key, value]) => value)
+      .map(([key, value]) => {
+        if (value)
+          return (
+            String(key).charAt(0).toUpperCase() +
+            String(key).slice(1) +
+            ": " +
+            value
+          );
+      })
+      .join(", ");
+    filterInfo.textContent = `Filtered by: ${filterCriterias || "None"}`;
+
     table.innerHTML =
       "<tr><th>Username</th><th>Score</th><th>Join Date</th></tr>";
     rows.forEach((u) => {
@@ -186,6 +211,11 @@ userAccWindow.addEventListener("click", () => {
       table.appendChild(tr);
     });
   }
+
+  document.getElementById("download-json").style.fontFamily =
+    "Goldman, sans-serif";
+  document.getElementById("download-pdf").style.fontFamily =
+    "Goldman, sans-serif";
 
   document.getElementById("download-json").addEventListener("click", () => {
     const data = Array.from(
@@ -213,59 +243,67 @@ userAccWindow.addEventListener("click", () => {
     .getElementById("download-pdf")
     .addEventListener("click", async () => {
       const { jsPDF } = window.jspdf;
+      const container = document.querySelector(".table-container");
 
-      const tableEl = document.querySelector(".leaderboard");
-      const prevHeight = tableEl.style.height;
-      tableEl.style.height = "auto";
-
-      const canvas = await html2canvas(tableEl, {
+      const prevHeight = container.style.height;
+      const fullCanvas = await html2canvas(container, {
         scale: 2,
         useCORS: true,
         allowTaint: false,
-        logging: false,
       });
 
-      tableEl.style.height = prevHeight;
+      container.style.height = prevHeight;
 
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "pt",
         format: "a4",
       });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
       const margin = 20;
-      const titleY = 30;
 
       pdf.setFontSize(18);
-      pdf.text("Leaderboard", margin, titleY);
 
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const yStart = margin + 30;
+      const availH = ph - yStart - margin;
+      const availW = pw - margin * 2;
 
-      let remainingHeight = imgHeight;
-      let positionY = margin + 20; // leave space under title
+      const pxPerPt = fullCanvas.width / availW;
+      const slicePx = Math.floor(availH * pxPerPt);
 
-      pdf.addImage(imgData, "PNG", margin, positionY, imgWidth, imgHeight);
-      remainingHeight -= pageHeight - positionY - margin;
-
-      while (remainingHeight > 0) {
-        pdf.addPage();
-        positionY = margin;
-        pdf.addImage(
-          imgData,
-          "PNG",
-          margin,
-          positionY,
-          imgWidth,
-          imgHeight,
-          undefined,
-          "FAST",
-          0,
-          -(imgHeight - remainingHeight)
+      let page = 0;
+      while (page * slicePx < fullCanvas.height) {
+        const thisSliceH = Math.min(
+          slicePx,
+          fullCanvas.height - page * slicePx
         );
-        remainingHeight -= pageHeight - margin * 2;
+
+        const slice = document.createElement("canvas");
+        slice.width = fullCanvas.width;
+        slice.height = thisSliceH;
+        slice
+          .getContext("2d")
+          .drawImage(
+            fullCanvas,
+            0,
+            page * slicePx,
+            fullCanvas.width,
+            thisSliceH,
+            0,
+            0,
+            fullCanvas.width,
+            thisSliceH
+          );
+
+        const imgData = slice.toDataURL("image/png");
+        const imgH = thisSliceH / pxPerPt;
+        const posY = page === 0 ? yStart : margin;
+
+        if (page > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", margin, posY, availW, imgH);
+
+        page++;
       }
 
       pdf.save("leaderboard.pdf");

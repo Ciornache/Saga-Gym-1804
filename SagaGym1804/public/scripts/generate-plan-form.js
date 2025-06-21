@@ -266,6 +266,7 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
     let totalExDur = 0;
 
     const sets = Array.from({ length: setsCount }, (_, si) => {
+      totalExDur = 0;
       const reps = getRandomInt(12, 15);
       let setDur = 0;
       const repetitions = [];
@@ -274,13 +275,14 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
         setDur += ex.rep_duration;
         repetitions.push({ id: ri + 1, duration: ex.rep_duration, timings });
       }
-      const pause = getRandomInt(30, 45);
+      const pause = getRandomInt(60, 75);
       totalExDur += (setDur + pause) * setsCount - pause;
       const timingArray = [
         { name: "isolated", time: repetitions[0].timings[0] },
         { name: "excentric", time: repetitions[0].timings[1] },
         { name: "concentric", time: repetitions[0].timings[2] },
       ];
+      console.log("Set duration", setDur);
       return {
         id: si + 1,
         repetitions,
@@ -289,6 +291,7 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
         timings: timingArray,
       };
     });
+    console.log(sets);
     return {
       id: idx + 1,
       exercise_id: ex.id,

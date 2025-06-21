@@ -130,3 +130,13 @@
   background: #f8d7da;
   color: #721c24;
 }
+
+.btn-submit {
+  font-family: "Goldman", sans-serif;
+}
+textarea::placeholder {
+  font-family: "Goldman", sans-serif;
+}
+input::placeholder {
+  font-family: "Goldman", sans-serif;
+}

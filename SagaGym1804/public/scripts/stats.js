@@ -9,17 +9,14 @@ const headers = {
   Authorization: `Bearer ${token}`,
 };
 
-// 2) Încarcă și afișează secțiunea Favorites
 async function loadFavorites() {
   const res = await fetch("/api/favorites-summary", { headers });
   if (!res.ok) throw new Error("Could not fetch favorites summary");
   const data = await res.json();
 
-  // A) Favorite Exercises count
   document.querySelector(".favorite-exercises .fav-count").textContent =
     data.favCount;
 
-  // B) Favorite Types — construire dinamică
   const typesContainer = document.querySelector(
     ".favorite-types .types-container"
   );
@@ -36,11 +33,9 @@ async function loadFavorites() {
     typesContainer.appendChild(div);
   });
 
-  // C) All Liked Exercises — dinamic
   const ol = document.querySelector(".all-liked ol");
   ol.innerHTML = data.likedExercises.map((name) => `<li>${name}</li>`).join("");
 
-  // D) Favorite Muscle Groups — doughnut chart + legend
   const mCtx = document.getElementById("muscleChart").getContext("2d");
   const labels = data.muscleGroups.map((m) => m.label);
   const values = data.muscleGroups.map((m) => m.value);
@@ -62,7 +57,6 @@ async function loadFavorites() {
       responsive: true,
     },
   });
-  // legend text
   const legend = document.querySelector(".muscle-groups .legend");
   legend.innerHTML = data.muscleGroups
     .map(
@@ -79,17 +73,13 @@ async function loadFavorites() {
     )
     .join("");
 
-  // E) Average Difficulty
   document.querySelector(".avg-difficulty .avg-score").firstChild.textContent =
     data.avgDifficulty.toFixed(1) + " ";
-  // —— dynamically colour the dumbbells —— //
   const score = data.avgDifficulty;
   const icons = document.querySelectorAll(".avg-difficulty .dumbbells i");
 
-  // reset
   icons.forEach((i) => i.classList.remove("filled", "half"));
 
-  // fill in
   const full = Math.floor(score);
   const frac = score - full;
 
@@ -170,7 +160,6 @@ async function loadActivity() {
   document.querySelector(".avg-duration .value").textContent     = avgDuration;
 }
 
-// 5) Tab switching
 document.querySelectorAll(".sidebar a").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
@@ -185,7 +174,6 @@ document.querySelectorAll(".sidebar a").forEach((link) => {
   });
 });
 
-// 6) Highlight on "View them"
 const viewLink = document.querySelector(".favorite-exercises .view-link");
 if (viewLink) {
   viewLink.addEventListener("click", (e) => {
@@ -239,50 +227,6 @@ async function loadProgressChart() {
     },
   });
 }
-async function debugWorkoutActivities() {
-  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-  const res = await fetch("/api/workout-activities-debug", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await res.json();
-  console.log("📋 WorkoutActivity records:", data);
-}
-async function loadWeeklySummary() {
-  const res = await fetch("/api/activity/weekly-summary", { headers });
-  const data = await res.json();
-
-  const rows = [
-    ["Workouts", data.workouts],
-    ["Time (min)", data.duration],
-    ["Weight (kg)", data.weight],
-    ["Sets", data.sets],
-  ];
-
-  const table = document.querySelector(".week-comparison tbody");
-  table.innerHTML = "";
-
- rows.forEach(([label, obj]) => {
-  const { thisWeek, lastWeek } = obj;
-  const diff = thisWeek - lastWeek;
-  const sign = diff >= 0 ? "+" : "";
-  const percent = lastWeek === 0 ? "∞%" : ((diff / lastWeek) * 100).toFixed(0) + "%";
-
-  const row = `
-    <tr>
-      <td>${label}</td>
-      <td>${thisWeek}</td>
-      <td>${lastWeek}</td>
-      <td>${sign}${percent}</td>
-    </tr>
-  `;
-  table.innerHTML += row;
-});
-
-}
-
-
-debugWorkoutActivities();
-
 // 7) La load, rulează toate funcțiile
 window.addEventListener("DOMContentLoaded", () => {
   loadFavorites().catch((err) => console.error(err));

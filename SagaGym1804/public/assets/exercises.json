@@ -16,7 +16,7 @@
     "risk": "medium",
     "description": "The Bench Press is a foundational upper-body exercise that targets the chest, triceps and shoulders by pressing a barbell while lying flat. It builds strength and power in the pectorals and stabilizers. Maintain a controlled descent and keep your shoulder blades retracted to protect your joints.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 4
+    "rep_duration": 5
   },
   {
     "id": 2,
@@ -36,7 +36,7 @@
     "risk": "high",
     "description": "The Deadlift is a full-body powerhouse exercise that engages the hamstrings, glutes, lower back and core by lifting a loaded barbell from the floor. It develops posterior chain strength and stability. Use a neutral spine and hinge at the hips to minimize lumbar stress and avoid rounding.",
     "video": "https://www.youtube.com/watch?v=V5MYD2EiqYY&ab_channel=TrofinGYM",
-    "rep_duration": 5
+    "rep_duration": 6
   },
   {
     "id": 3,
@@ -55,7 +55,7 @@
     "risk": "medium",
     "description": "Squats are a foundational lower-body movement that works the quadriceps, glutes and hamstrings by bending at the hips and knees. This exercise builds leg strength and functional mobility. Keep your knees aligned over your toes, chest up, and back neutral to protect your joints and maintain balance.",
     "video": "https://www.youtube.com/watch?v=HIiocb2FSKg&ab_channel=TrofinGYM",
-    "rep_duration": 5
+    "rep_duration": 6
   },
   {
     "id": 4,
@@ -74,7 +74,7 @@
     "risk": "high",
     "description": "The Overhead Press focuses on the deltoids and triceps by pressing a barbell or dumbbells straight overhead. It enhances shoulder stability and upper-body pressing strength. Engage your core, avoid excessive lumbar arch, and press in a straight line to prevent shoulder impingement and lower-back strain.",
     "video": "https://www.youtube.com/watch?v=ms-zZE4ZHmY&ab_channel=TrofinGYM",
-    "rep_duration": 4
+    "rep_duration": 5
   },
   {
     "id": 5,
@@ -93,7 +93,7 @@
     "risk": "medium",
     "description": "Pull-ups are a challenging upper-body exercise that target the lats, biceps and upper back by pulling your body weight up to a bar. They improve grip strength and pulling power. Retract your shoulders, keep your core tight, and lower yourself slowly to maximize muscle engagement and protect your elbows.",
     "video": "https://www.youtube.com/watch?v=nreNhFJL3oU&ab_channel=TrofinGYM",
-    "rep_duration": 3
+    "rep_duration": 4
   },
   {
     "id": 6,
@@ -111,7 +111,7 @@
     "risk": "low",
     "description": "Lateral Raises isolate the medial deltoids by lifting dumbbells out to your sides with a slight bend in the elbow. This exercise sculpts shoulder width and stability. Keep movements smooth and controlled, avoid lifting above shoulder height, and maintain a neutral spine to reduce stress on the rotator cuff.",
     "video": "https://www.youtube.com/watch?v=Bxrjua4zxeM&ab_channel=TrofinGYM",
-    "rep_duration": 4
+    "rep_duration": 5
   },
   {
     "id": 7,
@@ -130,7 +130,7 @@
     "risk": "low",
     "description": "Hip Thrusts are a powerful glute-focused exercise performed by driving the hips upward against resistance while your upper back rests on a bench. They build hip extension strength and improve athletic performance. Keep your chin tucked, drive through your heels, and squeeze your glutes at the top for maximum benefit.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 5
+    "rep_duration": 6
   },
   {
     "id": 8,
@@ -148,7 +148,7 @@
     "risk": "medium",
     "description": "Dumbbell Rows strengthen the upper and middle back, targeting the lats and rhomboids by pulling weights toward your torso in a bent-over position. They enhance posture and pulling strength. Maintain a flat back, brace your core, and pull your elbow straight back to engage the proper muscles and protect your spine.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 4
+    "rep_duration": 5
   },
   {
     "id": 9,
@@ -166,7 +166,7 @@
     "risk": "low",
     "description": "Leg Curls isolate the hamstrings by flexing your knees against resistance on a lying or seated machine. This exercise improves knee stability and muscle balance. Control the motion on both concentric and eccentric phases, avoid arching your lower back, and perform each rep with full range to prevent strain.",
     "video": "https://www.youtube.com/watch?v=XwyKrBqOobQ&ab_channel=TrofinGYM",
-    "rep_duration": 3
+    "rep_duration": 4
   },
   {
     "id": 10,
@@ -185,7 +185,7 @@
     "risk": "low",
     "description": "The Plank is a core stabilization exercise that engages the abdominals, lower back and shoulders by holding a rigid, face-down position on your forearms and toes. It builds endurance and postural strength. Keep your body in a straight line, avoid sagging hips, and breathe steadily throughout the hold.",
     "video": "https://www.youtube.com/watch?v=ee1iGgLGTys&ab_channel=TrofinGYM",
-    "rep_duration": 0
+    "rep_duration": 1
   },
   {
     "id": 11,
@@ -204,7 +204,7 @@
     "risk": "low",
     "description": "Wall Slides are a rehabilitation exercise that target shoulder mobility and upper-back alignment by sliding your arms up and down a wall while maintaining contact. They improve posture and rotator cuff health. Keep your back and arms flush against the wall, move slowly, and avoid pain or pinching sensations.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 12,
@@ -222,7 +222,7 @@
     "risk": "low",
     "description": "Ankle Circles are a gentle mobility exercise that improve ankle flexibility and joint health by rotating the foot in circular motions. They aid in injury prevention and rehabilitation. Sit or lie comfortably, keep the leg still, rotate the ankle slowly through full range, and repeat in both directions.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 3
+    "rep_duration": 4
   },
   {
     "id": 13,
@@ -241,7 +241,7 @@
     "risk": "low",
     "description": "Heel Slides are a knee rehabilitation exercise that strengthen and mobilize the quadriceps and hamstrings by sliding the heel toward the buttocks while lying down. They support post-surgical recovery and joint health. Keep your leg in contact with the surface, move with control, and stop if you feel pain.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 14,
@@ -259,7 +259,7 @@
     "risk": "low",
     "description": "The Shoulder Pendulum is a gentle mobility drill for the shoulder joint performed by leaning forward and swinging the arm in small circles. It relieves stiffness and promotes synovial fluid circulation. Keep your torso still, let gravity assist the motion, and maintain a relaxed grip to avoid muscle tension.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 15,
@@ -278,7 +278,7 @@
     "risk": "medium",
     "description": "The Bridge Exercise engages the glutes, hamstrings and core by lifting the hips off the ground while lying on your back with knees bent. It strengthens posterior chain muscles and improves spinal stability. Press through your heels, keep your ribs down, and avoid overarching the lower back.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 3
+    "rep_duration": 4
   },
   {
     "id": 16,
@@ -297,7 +297,7 @@
     "risk-vel": "low",
     "description": "Arm Circles are a warm-up exercise that targets the shoulders and upper arms by rotating the arms in forward and backward circles. They increase blood flow and improve joint mobility. Perform the movement slowly with straight arms, gradually increasing circle size, and avoid shrugging your shoulders.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 17,
@@ -316,7 +316,7 @@
     "risk": "low",
     "description": "The Bird Dog is a core and lumbar stabilization move that involves extending opposite arm and leg while on hands and knees. It enhances balance, spinal alignment and core strength. Keep your hips level, engage your abdominals, and move slowly to maintain control and avoid lower-back sag.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 18,
@@ -334,7 +334,7 @@
     "risk": "low",
     "description": "Side-Lying Leg Lifts target the hip abductors and outer thighs by lifting the top leg while lying on your side. They improve hip stability and glute activation. Keep your body aligned, toes pointed forward, and lift with control. Avoid rotating your hips or letting your torso sag.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 19,
@@ -352,7 +352,7 @@
     "risk": "low",
     "description": "Toe Raises, also known as calf raises, strengthen the gastrocnemius and soleus muscles by rising up onto the balls of your feet. They improve ankle stability and lower-leg endurance. Perform with a full range of motion, pause at the top, and lower slowly to maximize muscle engagement and protect the Achilles tendon.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 2
+    "rep_duration": 3
   },
   {
     "id": 20,
@@ -370,7 +370,7 @@
     "risk": "low",
     "description": "The Cat–Cow Stretch is a dynamic spinal mobility exercise performed on hands and knees by alternately arching and rounding the back. It increases flexibility and relieves tension in the spine. Move smoothly between positions, coordinate with your breath, and avoid forcing any range beyond comfortable limits.",
     "video": "https://www.youtube.com/watch?v=7FQzWEZ3u4k&ab_channel=TrofinGYM",
-    "rep_duration": 3
+    "rep_duration": 4
   },
   {
     "name": "Jumping Jacks",
@@ -387,7 +387,7 @@
     "risk": "low",
     "description": "Jumping Jacks are a full-body aerobic exercise that improves cardiovascular endurance and coordination by repeatedly jumping while raising arms and legs. Maintain a steady rhythm and soft knee landing to reduce impact.",
     "video": "https://www.youtube.com/watch?v=c4DAnQ6DtF8",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 21
   },
   {
@@ -407,7 +407,7 @@
     "risk": "medium",
     "description": "Mountain Climbers are a dynamic movement that boosts heart rate and targets core, shoulder and leg muscles. Keep your core tight and hips level to maximize the effect and reduce injury risk.",
     "video": "https://www.youtube.com/watch?v=nmwgirgXLYM",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 22
   },
   {
@@ -427,7 +427,7 @@
     "risk": "low",
     "description": "Push-ups are a bodyweight exercise that develops upper-body and core strength by pressing from the ground. Maintain a straight line from head to heels and keep elbows close to the body.",
     "video": "https://www.youtube.com/watch?v=IODxDxX7oi4",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 23
   },
   {
@@ -447,7 +447,7 @@
     "risk": "medium",
     "description": "Lunges work the lower body by stepping forward and lowering the hips. They improve balance, coordination and leg strength. Keep your front knee above the ankle and torso upright.",
     "video": "https://www.youtube.com/watch?v=QOVaHwm-Q6U",
-    "rep_duration": 3,
+    "rep_duration": 5,
     "id": 24
   },
   {
@@ -465,7 +465,7 @@
     "risk": "medium",
     "description": "Burpees are a high-intensity cardio exercise that work your entire body. They improve conditioning, agility, and strength. Perform them with controlled movements to avoid injury.",
     "video": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 25
   },
   {
@@ -484,7 +484,7 @@
     "risk": "low",
     "description": "High Knees are a cardio move performed by running in place while lifting the knees high. They improve speed, endurance, and coordination.",
     "video": "https://www.youtube.com/watch?v=8opcQdC-V-U",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 26
   },
   {
@@ -503,7 +503,7 @@
     "risk": "medium",
     "description": "The Barbell Row builds upper and middle back thickness by pulling a loaded bar toward the torso. Maintain a strong hinge and braced core.",
     "video": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    "rep_duration": 4,
+    "rep_duration": 5,
     "id": 27
   },
   {
@@ -523,7 +523,7 @@
     "risk": "medium",
     "description": "Leg Press strengthens the lower body by pushing weight with your legs on a sled. Control depth and avoid locking knees.",
     "video": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    "rep_duration": 4,
+    "rep_duration": 5,
     "id": 28
   },
   {
@@ -542,7 +542,7 @@
     "risk": "medium",
     "description": "Dips are a bodyweight movement focusing on the triceps and shoulders. Keep elbows close and avoid shoulder strain.",
     "video": "https://www.youtube.com/watch?v=0326dy_-CzM",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 29
   },
   {
@@ -561,7 +561,7 @@
     "risk": "low",
     "description": "The Wall Sit builds endurance in the lower body. Hold a seated position against a wall with knees at 90 degrees.",
     "video": "https://www.youtube.com/watch?v=y-wV4Venusw",
-    "rep_duration": 0,
+    "rep_duration": 1,
     "id": 30
   },
   {
@@ -579,7 +579,7 @@
     "risk": "low",
     "description": "Neck Retractions improve posture and relieve neck strain. Performed by drawing the head straight back without tilting.",
     "video": "https://www.youtube.com/watch?v=a7E5b5og6i4",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 31
   },
   {
@@ -597,7 +597,7 @@
     "risk": "low",
     "description": "Heel Raises help restore ankle strength and balance by slowly lifting the heels off the floor while standing.",
     "video": "https://www.youtube.com/watch?v=ym5pWKlUxjA",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 32
   },
   {
@@ -615,7 +615,7 @@
     "risk": "medium",
     "description": "Burpees are a high-intensity cardio exercise that work your entire body. They improve conditioning, agility, and strength. Perform them with controlled movements to avoid injury.",
     "video": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 33
   },
   {
@@ -634,7 +634,7 @@
     "risk": "low",
     "description": "High Knees are a cardio move performed by running in place while lifting the knees high. They improve speed, endurance, and coordination.",
     "video": "https://www.youtube.com/watch?v=8opcQdC-V-U",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 34
   },
   {
@@ -653,7 +653,7 @@
     "risk": "medium",
     "description": "The Barbell Row builds upper and middle back thickness by pulling a loaded bar toward the torso. Maintain a strong hinge and braced core.",
     "video": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    "rep_duration": 4,
+    "rep_duration": 5,
     "id": 35
   },
   {
@@ -673,7 +673,7 @@
     "risk": "medium",
     "description": "Leg Press strengthens the lower body by pushing weight with your legs on a sled. Control depth and avoid locking knees.",
     "video": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    "rep_duration": 4,
+    "rep_duration": 5,
     "id": 36
   },
   {
@@ -692,7 +692,7 @@
     "risk": "medium",
     "description": "Dips are a bodyweight movement focusing on the triceps and shoulders. Keep elbows close and avoid shoulder strain.",
     "video": "https://www.youtube.com/watch?v=0326dy_-CzM",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 37
   },
   {
@@ -711,7 +711,7 @@
     "risk": "low",
     "description": "The Wall Sit builds endurance in the lower body. Hold a seated position against a wall with knees at 90 degrees.",
     "video": "https://www.youtube.com/watch?v=y-wV4Venusw",
-    "rep_duration": 0,
+    "rep_duration": 1,
     "id": 38
   },
   {
@@ -729,7 +729,7 @@
     "risk": "low",
     "description": "Neck Retractions improve posture and relieve neck strain. Performed by drawing the head straight back without tilting.",
     "video": "https://www.youtube.com/watch?v=a7E5b5og6i4",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 39
   },
   {
@@ -747,7 +747,7 @@
     "risk": "low",
     "description": "Heel Raises help restore ankle strength and balance by slowly lifting the heels off the floor while standing.",
     "video": "https://www.youtube.com/watch?v=ym5pWKlUxjA",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 40
   },
   {
@@ -765,7 +765,7 @@
     "risk": "medium",
     "description": "Burpees are a high-intensity cardio exercise that work your entire body. They improve conditioning, agility, and strength. Perform them with controlled movements to avoid injury.",
     "video": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "rep_duration": 3,
+    "rep_duration": 4,
     "id": 41
   },
   {
@@ -784,7 +784,7 @@
     "risk": "low",
     "description": "High Knees are a cardio move performed by running in place while lifting the knees high. They improve speed, endurance, and coordination.",
     "video": "https://www.youtube.com/watch?v=8opcQdC-V-U",
-    "rep_duration": 2,
+    "rep_duration": 3,
     "id": 42
   },
   {
@@ -803,7 +803,7 @@
     "risk": "medium",
     "description": "The Barbell Row builds upper and middle back thickness by pulling a loaded bar toward the torso. Maintain a strong hinge and braced core.",
     "video": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    "rep_duration": 4,
+    "rep_duration": 5,
     "id": 43
   },
   {
@@ -823,7 +823,7 @@
     "risk": "medium",
     "description": "Leg Press strengthens the lower body by pushing weight with your legs on a sled. Control depth and avoid locking knees.",
     "video": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    "rep_duration": 4,
+    "rep_duration": 5 ,
     "id": 44
   }
 ]

@@ -6,7 +6,8 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.log("Access denied!");
+    alert("Access denied! Please log in to continue.");
+    window.location.href = "login.html";
     return;
   }
 
@@ -28,20 +29,24 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
-    userAccWindow.classList.add("hidden");
     logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
   }
-}, 100);
+});
 
 logoutButton.addEventListener("click", (e) => {
-  console.log("Clicked");
   localStorage.clear();
   sessionStorage.clear();
   e.target.classList.add("hidden");

@@ -1,3 +1,5 @@
+/* Repetitive code for workout button, logout button, and user account window */
+
 const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
@@ -6,7 +8,7 @@ workoutButton.addEventListener("click", async (e) => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) {
-    console.error("Unauthorized access");
+    alert("Access denied! Please log in to continue.");
     window.location.href = "login.html";
     return;
   }
@@ -29,20 +31,24 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
-    userAccWindow.classList.add("hidden");
     logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
   }
-}, 100);
+});
 
 logoutButton.addEventListener("click", (e) => {
-  console.log("Clicked");
   localStorage.clear();
   sessionStorage.clear();
   e.target.classList.add("hidden");
@@ -55,6 +61,55 @@ userAccWindow.addEventListener("click", () => {
   if (token) window.location.href = "Account.html";
   else window.location.href = "login.html";
 });
+
+let exercises = [];
+let exercisesToDisplay = [];
+
+let currentPage = 1;
+const pageSize = 4;
+
+let currentSortField = null;
+let currentSortOrder = null;
+let favourites = [];
+
+const selectedFilters = {
+  muscleGroups: [],
+  types: [],
+};
+
+let groups = [];
+let types = [];
+const sortCriteria = [];
+let isLoggedIn = false;
+
+let loadStuff = async () => {
+  let resp = await fetch("/admin/grupe");
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  groups = await resp.json();
+
+  resp = await fetch("/admin/tip");
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  types = await resp.json();
+
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) {
+    res = await fetch("/token/getuser", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok) {
+      isLoggedIn = true;
+    }
+  }
+};
+
+loadStuff();
+
+/* Dual Slider Functionality */
+/* The code checks that the range between the two sliders is valid. If not, it adjusts the min / max. It also updates the highlighted range on the screen */
 
 document.querySelectorAll(".dual-slider").forEach((group) => {
   const minInput = group.querySelector(".thumb--left");
@@ -93,10 +148,11 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
   updateRange.call(minInput);
 });
 
+/* Redirect to the exercise page when clicking an exercise card */
+
 document.querySelectorAll(".exercise-card").forEach((c) => {
   c.addEventListener("click", () => {
     let title = c.querySelector("h3");
-    console.log(title.textContent);
     window.location.href = `exercitiu.html?exercise-name=${title.textContent}`;
   });
 });
@@ -107,16 +163,27 @@ document.querySelectorAll(".dual-slider").forEach((s) => {
   });
 });
 
+function counterToString(counter) {
+  if (counter < 1000) return counter.toString();
+  if (counter < 1000000) return (counter / 1000).toFixed(1) + "K";
+  return (counter / 1000000).toFixed(1) + "M";
+}
+
+/* Fills the exercise card with data every time a change is happening, like filtering, sorting or pagination */
+
 function fillCard(cardEl, data) {
   const imgDiv = cardEl.querySelector(".img");
   imgDiv.style.backgroundImage = `url(${data.cover_image})`;
   imgDiv.style.backgroundSize = "cover";
   imgDiv.style.backgroundPosition = "center";
   cardEl.querySelector("h3").textContent = data.name;
+  const star = cardEl.querySelector(".fa-star");
   const stats = cardEl.querySelectorAll(".stats div");
-  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${Number(
-    data.rating
-  ).toFixed(1)}</span>`;
+  getStarCounter(star).then((count) => {
+    stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${
+      counterToString(count) || 0
+    }</span>`;
+  });
   stats[1].innerHTML = `<i class="fa-solid fa-dumbbell"></i><span>${data.difficulty.toFixed(
     1
   )}</span>`;
@@ -124,22 +191,23 @@ function fillCard(cardEl, data) {
     1
   )}</span>`;
 }
-let exercises = [];
-let exercisesToDisplay = [];
 
-let currentPage = 1;
-const pageSize = 4;
+/* Utility function to get for an exercise how many times it has been likes by users */
 
-let currentSortField = null;
-let currentSortOrder = null;
-let favourites = [];
-
-const selectedFilters = {
-  muscleGroups: [],
-  types: [],
-};
-
-const sortCriteria = [];
+async function getStarCounter(star) {
+  const cardEl = star.closest(".exercise-card");
+  if (!cardEl) {
+    console.error("Cannot find exercise card");
+    return;
+  }
+  const nameEl = cardEl.querySelector("h3");
+  const name = nameEl?.textContent.trim().toLowerCase();
+  const id_exercitiu = exercises.find((e) => e.name.toLowerCase() === name)?.id;
+  const cnt = favourites.filter(
+    (f) => f.id_exercitiu === id_exercitiu.toString()
+  ).length;
+  return cnt;
+}
 
 function updateSortCriteria(fieldName, isChecked) {
   const idx = sortCriteria.findIndex((c) => c.field === fieldName);
@@ -152,97 +220,58 @@ function updateSortCriteria(fieldName, isChecked) {
   }
 }
 
-document.getElementById("sort-score-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "score");
-  if (idx !== -1) sortCriteria[idx].order = "asc";
-  else sortCriteria.push({ field: "score", order: "asc" });
-  document.getElementById("sort-score-up").classList.add("selected");
-  document.getElementById("sort-score-down").classList.remove("selected");
-  document.getElementById("sort-score-checkbox").checked = true;
-});
+/* Event Listeners for sorting buttons and checkboxed */
 
-document.getElementById("sort-score-down").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "score");
-  if (idx !== -1) sortCriteria[idx].order = "desc";
-  else sortCriteria.push({ field: "score", order: "desc" });
-  document.getElementById("sort-score-down").classList.add("selected");
-  document.getElementById("sort-score-up").classList.remove("selected");
-  document.getElementById("sort-score-checkbox").checked = true;
-});
-
-document.getElementById("sort-difficulty-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
-  } else {
-    sortCriteria.push({ field: "difficulty", order: "asc" });
+const sortFields = ["score", "difficulty", "alpha"];
+for (const field of sortFields) {
+  const element1 = document.getElementById(`sort-${field}-up`);
+  const element2 = document.getElementById(`sort-${field}-down`);
+  const elements = [element1, element2];
+  for (const element of elements) {
+    if (!element) continue;
+    element.addEventListener(
+      "click",
+      ((fieldCopy, elementCopy) => {
+        return () => {
+          const idx = sortCriteria.findIndex((c) => c.field === fieldCopy);
+          if (idx !== -1) {
+            sortCriteria[idx].order = elementCopy.id.includes("up")
+              ? "asc"
+              : "desc";
+          } else {
+            sortCriteria.push({
+              field: fieldCopy,
+              order: elementCopy.id.includes("up") ? "asc" : "desc",
+            });
+          }
+          elements.forEach((el) => el.classList.remove("selected"));
+          elementCopy.classList.add("selected");
+          document.getElementById(`sort-${fieldCopy}-checkbox`).checked = true;
+        };
+      })(field, element)
+    );
   }
-  document.getElementById("sort-difficulty-up").classList.add("selected");
-  document.getElementById("sort-difficulty-down").classList.remove("selected");
-  document.getElementById("sort-difficulty-checkbox").checked = true;
-});
 
-document
-  .getElementById("sort-difficulty-down")
-  .addEventListener("click", () => {
-    const idx = sortCriteria.findIndex((c) => c.field === "difficulty");
-    if (idx !== -1) {
-      sortCriteria[idx].order = "desc";
-    } else {
-      sortCriteria.push({ field: "difficulty", order: "desc" });
-    }
-    document.getElementById("sort-difficulty-down").classList.add("selected");
-    document.getElementById("sort-difficulty-up").classList.remove("selected");
-    document.getElementById("sort-difficulty-checkbox").checked = true;
-  });
+  const checkbox = document.getElementById(`sort-${field}-checkbox`);
+  checkbox.addEventListener(
+    "change",
+    ((fieldCopy) => {
+      return (e) => {
+        updateSortCriteria(fieldCopy, e.target.checked);
+        if (!e.target.checked) {
+          document
+            .getElementById(`sort-${fieldCopy}-up`)
+            .classList.remove("selected");
+          document
+            .getElementById(`sort-${fieldCopy}-down`)
+            .classList.remove("selected");
+        }
+      };
+    })(field)
+  );
+}
 
-document.getElementById("sort-alpha-up").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "asc";
-  } else {
-    sortCriteria.push({ field: "alpha", order: "asc" });
-  }
-  document.getElementById("sort-alpha-up").classList.add("selected");
-  document.getElementById("sort-alpha-down").classList.remove("selected");
-  document.getElementById("sort-alpha-checkbox").checked = true;
-});
-
-document.getElementById("sort-alpha-down").addEventListener("click", () => {
-  const idx = sortCriteria.findIndex((c) => c.field === "alpha");
-  if (idx !== -1) {
-    sortCriteria[idx].order = "desc";
-  } else {
-    sortCriteria.push({ field: "alpha", order: "desc" });
-  }
-  document.getElementById("sort-alpha-down").classList.add("selected");
-  document.getElementById("sort-alpha-up").classList.remove("selected");
-  document.getElementById("sort-alpha-checkbox").checked = true;
-});
-
-document
-  .getElementById("sort-difficulty-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("difficulty", e.target.checked);
-    if (!e.target.checked) {
-      document
-        .getElementById("sort-difficulty-up")
-        .classList.remove("selected");
-      document
-        .getElementById("sort-difficulty-down")
-        .classList.remove("selected");
-    }
-  });
-
-document
-  .getElementById("sort-score-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("score", e.target.checked);
-    if (!e.target.checked) {
-      document.getElementById("sort-score-up").classList.remove("selected");
-      document.getElementById("sort-score-down").classList.remove("selected");
-    }
-  });
+/* Sorts the exercisesToDisplay array everytime apply sort is pressed */
 
 function sortCurrentArray() {
   if (exercisesToDisplay.length === 0) return;
@@ -251,13 +280,11 @@ function sortCurrentArray() {
   if (sortCriteria.length === 0) {
     if (exercisesToDisplay.length > 0) {
       renderFiltered();
-    } else {
+    } else if (exercises.length === 0) {
       render();
     }
     return;
   }
-  console.log("Sortez", sortCriteria);
-
   sorted.sort((a, b) => {
     for (const crit of sortCriteria) {
       let diff = 0;
@@ -290,15 +317,7 @@ function sortCurrentArray() {
   }
 }
 
-document
-  .getElementById("sort-alpha-checkbox")
-  .addEventListener("change", (e) => {
-    updateSortCriteria("alpha", e.target.checked);
-    if (!e.target.checked) {
-      document.getElementById("sort-alpha-up").classList.remove("selected");
-      document.getElementById("sort-alpha-down").classList.remove("selected");
-    }
-  });
+/* Utility functions to open and close filtering modals */
 
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
@@ -314,15 +333,12 @@ function closeModal(modalId) {
   document.body.style.overflow = "";
 }
 
-async function populateMuscleGroupsModal() {
+/* Function that populates the muscle groups modal. It insert data dynmically such as images, checkboxes and overlays */
+
+async function populateMuscleGroupsModal(groups) {
   const container = document.getElementById("modal-list-muscle-groups");
   container.innerHTML = "";
-
   try {
-    const resp = await fetch("/admin/grupe");
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const groups = await resp.json();
-
     const grid = document.createElement("div");
     grid.classList.add("modal-image-grid");
     container.appendChild(grid);
@@ -349,9 +365,6 @@ async function populateMuscleGroupsModal() {
       const overlay = document.createElement("div");
       overlay.classList.add("checkmark-overlay");
       overlay.innerHTML = "✔";
-      if (cb.checked) {
-        overlay.classList.add("selected");
-      }
       wrapper.appendChild(overlay);
 
       cb.addEventListener("change", (e) => {
@@ -369,11 +382,7 @@ async function populateMuscleGroupsModal() {
         }
       });
 
-      img.addEventListener("click", (e) => {
-        cb.checked = !cb.checked;
-        cb.dispatchEvent(new Event("change")); // manually fire "change"
-      });
-      overlay.addEventListener("click", (e) => {
+      img.addEventListener("click", () => {
         cb.checked = !cb.checked;
         cb.dispatchEvent(new Event("change"));
       });
@@ -381,7 +390,6 @@ async function populateMuscleGroupsModal() {
       grid.appendChild(wrapper);
     });
   } catch (err) {
-    console.error("Failed to load muscle‐groups:", err);
     container.innerHTML = `<p style="color:red;">Error loading muscle groups</p>`;
   }
 }
@@ -391,10 +399,6 @@ async function populateTypesModal() {
   container.innerHTML = "";
 
   try {
-    const resp = await fetch("/admin/tip");
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const types = await resp.json();
-
     const grid = document.createElement("div");
     grid.classList.add("modal-image-grid");
     container.appendChild(grid);
@@ -453,7 +457,6 @@ async function populateTypesModal() {
       grid.appendChild(wrapper);
     });
   } catch (err) {
-    console.error("Failed to load types:", err);
     container.innerHTML = `<p style="color:red;">Error loading types</p>`;
   }
 }
@@ -484,6 +487,8 @@ function populateSummaryModal() {
   }
 }
 
+/* ApplyAllFilters is called whenever a new filter is selected */
+
 function applyAllFilters() {
   let baseArray = exercises;
   if (selectedFilters.muscleGroups.length > 0) {
@@ -513,7 +518,7 @@ function applyAllFilters() {
   const maxDiff = difficultySlider.querySelector(".thumb--right").value;
 
   // baseArray = baseArray.filter((ex) => {
-  //     ex.score >= minScore && ex.score <= maxScore
+  //   ex.score >= minScore && ex.score <= maxScore;
   // });
 
   baseArray = baseArray.filter((ex) => {
@@ -523,10 +528,11 @@ function applyAllFilters() {
     );
   });
 
-  console.log("After filter", baseArray);
-
   exercisesToDisplay = [...baseArray];
   currentPage = 1;
+
+  applySearch();
+  sortCurrentArray();
   renderFiltered();
 }
 
@@ -541,6 +547,8 @@ function makeBtn(text, disabled, onClick, isActive = false) {
   b.addEventListener("click", onClick);
   return b;
 }
+
+/* Is called only one time when the page is loaded. Intial fetching */
 
 async function render() {
   const token =
@@ -570,9 +578,14 @@ async function render() {
     }
   });
   renderPagination(exercises.length);
+  updateStars();
 }
 
-function updateStars() {
+/* Updates the stars. If the user is not logged in, it does nothing. */
+
+async function updateStars() {
+  if (!isLoggedIn) return;
+
   const stars = Array.from(document.querySelectorAll(".fa-star"));
   for (star of stars) star.classList.remove("star-selected");
   for (fav of favourites) {
@@ -582,12 +595,13 @@ function updateStars() {
       return e.textContent.toLowerCase() === exName.name.toLowerCase();
     });
     if (exNode) {
-      console.log("Sibling", exNode.previousSibling.previousSibling);
       const icon = exNode.previousSibling.previousSibling.querySelector("i");
       icon.classList.toggle("star-selected");
     }
   }
 }
+
+/* Same as render, but is rendering from exercisesToDisplay array */
 
 function renderFiltered() {
   const start = (currentPage - 1) * pageSize;
@@ -604,8 +618,6 @@ function renderFiltered() {
   updateStars();
 }
 
-let arrowIndex = 0;
-
 function renderPagination(totalItems) {
   const totalPages = Math.ceil(totalItems / pageSize);
   pagination.innerHTML = "";
@@ -614,28 +626,26 @@ function renderPagination(totalItems) {
     if (currentPage > 1) {
       currentPage--;
       if (exercisesToDisplay.length > 0) renderFiltered();
-      else render();
+      else if (exercises.length === 0) render();
     }
   });
-  pagination.appendChild(prevBtn);
 
+  pagination.appendChild(prevBtn);
   let startPage = Math.max(1, currentPage - 2);
-  let endPage = Math.min(totalPages, startPage + 4);
-  if (endPage - startPage < 4) {
-    startPage = Math.max(1, endPage - 4);
+  let endPage = Math.min(totalPages, startPage + 5);
+  if (endPage - startPage <= 4) {
+    startPage = Math.max(1, endPage - 5);
   }
+  if (endPage - startPage >= 5) endPage--;
+
+  const func = (p) => {
+    currentPage = p;
+    if (exercisesToDisplay.length > 0) renderFiltered();
+    else if (exercises.length === 0) render();
+  };
 
   if (startPage > 1) {
-    const firstBtn = makeBtn(
-      "1",
-      false,
-      () => {
-        currentPage = 1;
-        if (exercisesToDisplay.length > 0) renderFiltered();
-        else render();
-      },
-      currentPage === 1
-    );
+    const firstBtn = makeBtn("1", false, () => func(1), currentPage === 1);
     pagination.appendChild(firstBtn);
 
     if (startPage > 2) {
@@ -647,18 +657,7 @@ function renderPagination(totalItems) {
   }
 
   for (let p = startPage; p <= endPage; p++) {
-    pagination.appendChild(
-      makeBtn(
-        p,
-        false,
-        () => {
-          currentPage = p;
-          if (exercisesToDisplay.length > 0) renderFiltered();
-          else render();
-        },
-        p === currentPage
-      )
-    );
+    pagination.appendChild(makeBtn(p, false, () => func(p), p === currentPage));
   }
 
   if (endPage < totalPages) {
@@ -671,11 +670,7 @@ function renderPagination(totalItems) {
     const lastBtn = makeBtn(
       totalPages,
       false,
-      () => {
-        currentPage = totalPages;
-        if (exercisesToDisplay.length > 0) renderFiltered();
-        else render();
-      },
+      () => func(totalPages),
       currentPage === totalPages
     );
     pagination.appendChild(lastBtn);
@@ -685,11 +680,13 @@ function renderPagination(totalItems) {
     if (currentPage < totalPages) {
       currentPage++;
       if (exercisesToDisplay.length > 0) renderFiltered();
-      else render();
+      else if (exercises.length === 0) render();
     }
   });
   pagination.appendChild(nextBtn);
 }
+
+/* Filters the content based on the search bar */
 
 function applySearch() {
   const searchInput = document.getElementById("search-input");
@@ -711,20 +708,19 @@ function applySearch() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const navbar = document.querySelector(".navbar");
+  const btn = document.querySelector(".hamburger");
+  btn.addEventListener("click", () => {
+    navbar.classList.toggle("open");
+  });
   try {
     const resp = await fetch("/admin/exercitii");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     exercises = await resp.json();
     exercisesToDisplay = exercises;
 
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
     const res = await fetch("/favourites", {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const data = await res.json();
     favourites = Array.isArray(data.favourites) ? data.favourites : [];
@@ -732,7 +728,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Nu am putut încărca exercițiile:", err);
   }
 
-  const cardEls = document.querySelectorAll(".exercise-card");
+  render();
+
   const btnLeft = document.querySelector(".slider-angles-left");
   const btnRight = document.querySelector(".slider-angles-right");
 
@@ -742,7 +739,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentPage < totalPages) {
         currentPage++;
         renderFiltered();
-        renderPagination(exercisesToDisplay.length);
       }
     });
   }
@@ -752,24 +748,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentPage > 1) {
         currentPage--;
         renderFiltered();
-        renderPagination(exercisesToDisplay.length);
       }
     });
   }
-
-  renderFiltered();
-  renderPagination(exercisesToDisplay.length);
 
   const btnOpenMuscle = document.getElementById("btn-open-muscle-modal");
   const btnCloseMuscle = document.getElementById("btn-close-muscle-modal");
   const btnApplyMuscle = document.getElementById("btn-apply-muscle-modal");
   btnOpenMuscle.addEventListener("click", async () => {
-    await populateMuscleGroupsModal();
+    populateMuscleGroupsModal(groups);
     openModal("modal-muscle-groups");
   });
-  btnCloseMuscle.addEventListener("click", () =>
-    closeModal("modal-muscle-groups")
-  );
+  btnCloseMuscle.addEventListener("click", () => {
+    populateTypesModal(types);
+    closeModal("modal-muscle-groups");
+  });
   btnApplyMuscle.addEventListener("click", () => {
     closeModal("modal-muscle-groups");
     applyAllFilters();
@@ -779,7 +772,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnCloseType = document.getElementById("btn-close-type-modal");
   const btnApplyType = document.getElementById("btn-apply-type-modal");
   btnOpenType.addEventListener("click", async () => {
-    await populateTypesModal();
+    await populateTypesModal(types);
     openModal("modal-types");
   });
   btnCloseType.addEventListener("click", () => closeModal("modal-types"));
@@ -800,20 +793,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     sortCurrentArray();
   });
   const searchInput = document.getElementById("search-input");
-  console.log(searchInput);
   if (searchInput) {
     searchInput.addEventListener("input", () => {
       applyAllFilters();
-      applySearch();
-      sortCurrentArray();
     });
     searchInput.addEventListener("keyup", (e) => {
       applyAllFilters();
-      applySearch();
-      sortCurrentArray();
     });
   }
-  render();
 
   const toggleBtn = document.getElementById("toggle-search-btn");
   const searchContainer = document.getElementById("search-container");
@@ -846,6 +833,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fetch(url, options);
   }
 
+  /* Every time the star is clicked, the function toggleFavourite is called. */
+
   async function toggleFavourite(star) {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -877,7 +866,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         method: "POST",
         body: JSON.stringify({ id_exercitiu: exercitiuId }),
       });
-      const data = await resp.json();
       if (!resp.ok) {
         window.location.href = "login.html";
         return;
@@ -888,19 +876,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     return 1;
   }
 
+  async function updateStarCounter(star) {
+    const cardEl = star.closest(".exercise-card");
+    if (!cardEl) {
+      console.error("Cannot find exercise card");
+      return;
+    }
+    const count = getStarCounter(star);
+    const stats = cardEl.querySelectorAll(".stats div")[0];
+    const starCount = count;
+    const starSpan = stats.querySelector("span");
+    starSpan.textContent = starCount ? counterToString(starCount) : "0";
+  }
+
+  /* Toggles and updates ui after if toggle was succesful */
+
   document.querySelectorAll(".fa-star").forEach((star) => {
     star.addEventListener("click", async (e) => {
       e.stopPropagation();
       const ok = await toggleFavourite(star);
-      if (ok) star.classList.toggle("star-selected");
+      if (ok) {
+        star.classList.toggle("star-selected");
+        updateStarCounter(star)
+          .then(() => {
+            console.log("Star counter updated");
+          })
+          .catch((err) => {
+            console.error("Failed to update star counter:", err);
+          });
+      }
     });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const navbar = document.querySelector(".navbar");
-  const btn = document.querySelector(".hamburger");
-  btn.addEventListener("click", () => {
-    navbar.classList.toggle("open");
   });
 });
