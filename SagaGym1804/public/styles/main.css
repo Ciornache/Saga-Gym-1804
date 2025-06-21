@@ -1058,6 +1058,18 @@ nav.navbar {
 
 #logout-btn,
 #user-win-btn {
-  position: relative;
-  left: 20%;
+  position: absolute;
 }
+
+#user-win-btn {
+  left: 90%;
+  top: 17%;
+  transform: translateY(-50%);
+}
+
+#logout-btn {
+  left: 93%;
+  top: 17%;
+  transform: translateY(-50%);
+}
+

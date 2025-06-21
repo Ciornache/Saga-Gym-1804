@@ -702,6 +702,22 @@ if (req.method === "GET" && pathname === "/api/workout-activities-debug") {
   return send(res, 200, list);
 }
 
+if (
+    req.method === "GET" &&
+    pathname === "/api/reviews" &&
+    !query.exerciseId
+  ) {
+    const reviews = await Review.find({});
+    if (!reviews) {
+      return send(res, 400, {
+        Error: 'Couldn"t fetch the exercises',
+      });
+    } else {
+      return send(res, 200, {
+        reviews: reviews,
+      });
+    }
+  }
   // POST /api/reviews → salvează un review
   if (req.method === "POST" && pathname === "/api/reviews") {
     const userData = requireAuth();
@@ -1146,24 +1162,6 @@ if (req.method === "GET" && pathname === "/api/activity/time-all") {
     });
     return;
   }
-
-  if (
-    req.method === "GET" &&
-    pathname === "/api/reviews" &&
-    !query.exerciseId
-  ) {
-    const reviews = await Review.find({});
-    if (!reviews) {
-      return send(res, 400, {
-        Error: 'Couldn"t fetch the exercises',
-      });
-    } else {
-      return send(res, 200, {
-        reviews: reviews,
-      });
-    }
-  }
-
   if (pathname.startsWith("/api/reviews")) {
     if (req.method === "GET") {
       const qs = new URL(req.url, `http://${req.headers.host}`).searchParams;

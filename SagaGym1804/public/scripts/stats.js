@@ -227,6 +227,38 @@ async function loadProgressChart() {
     },
   });
 }
+async function loadWeeklySummary() {
+  const res = await fetch("/api/activity/weekly-summary", { headers });
+  const data = await res.json();
+
+  const rows = [
+    ["Workouts", data.workouts],
+    ["Time (min)", data.duration],
+    ["Weight (kg)", data.weight],
+    ["Sets", data.sets],
+  ];
+
+  const table = document.querySelector(".week-comparison tbody");
+  table.innerHTML = "";
+
+  rows.forEach(([label, obj]) => {
+  const { thisWeek, lastWeek } = obj;
+  const diff = thisWeek - lastWeek;
+  const sign = diff >= 0 ? "+" : "";
+  const percent = lastWeek === 0 ? "∞%" : ((diff / lastWeek) * 100).toFixed(0) + "%";
+
+  const row = `
+    <tr>
+      <td>${label}</td>
+      <td>${thisWeek}</td>
+      <td>${lastWeek}</td>
+      <td>${sign}${percent}</td>
+    </tr>
+  `;
+  table.innerHTML += row;
+});
+
+}
 // 7) La load, rulează toate funcțiile
 window.addEventListener("DOMContentLoaded", () => {
   loadFavorites().catch((err) => console.error(err));

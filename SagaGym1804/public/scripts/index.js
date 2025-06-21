@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log(res.status);
+  console.log(logoutButton);
+  console.log(userAccWindow);
   if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
