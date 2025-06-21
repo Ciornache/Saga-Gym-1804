@@ -1,5 +1,5 @@
 // 1) Preia token-ul din localStorage și pregătește header-ul
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 if (!token) {
   alert("Please log in to see your statistics.");
   window.location.href = "/login.html";
@@ -120,79 +120,54 @@ async function loadReviews() {
 }
 
 async function loadActivity() {
-  const res = await fetch("/api/activity-summary", { headers });
-  if (!res.ok) throw new Error("Could not fetch activity summary");
-  const a = await res.json();
+  const endpoints = {
+    totalWorkouts:   "/api/activity/total-workouts",
+    totalSets:       "/api/activity/total-sets",
+    uniqueExercises: "/api/activity/unique-exercises", 
+    totalExercises:  "/api/activity/total-exercises",
+    totalWeight:     "/api/activity/total-weight",
+    avgWeightSet:    "/api/activity/avg-weight-set",
+    time:            "/api/activity/time",
+  };
 
-  document.querySelector(".total-workouts .value").textContent =
-    a.totalWorkouts;
-  document.querySelector(".total-sets .value").textContent = a.totalSets;
-  document.querySelector(".total-exercises .value").textContent =
-    a.totalExercises;
-  document.querySelector(".total-weight .value").textContent =
-    a.totalWeight + " kg";
-  document.querySelector(".total-km .value").textContent = a.totalKm + " km";
-  document.querySelector(".total-time .value").textContent = a.totalTime;
-  document.querySelector(".avg-duration .value").textContent = a.avgDuration;
-  const stretchEl = document.querySelector(".total-stretching .value");
-  if (stretchEl && a.totalStretching != null) {
-    stretchEl.textContent = a.totalStretching;
-  }
+  // 1) fetch everything in parallel
+  const paths = Object.values(endpoints);
+  const raw = await Promise.all(paths.map(p => fetch(p, { headers })));
 
-  // Weekly Comparison
-  const tbody = document.querySelector(".week-comparison tbody");
-  const { thisWeek, lastWeek, kmThisWeek, kmLastWeek } = a.weekly;
-  tbody.innerHTML = `
-    <tr>
-      <td>Workouts</td>
-      <td>${thisWeek}</td>
-      <td>${lastWeek}</td>
-      <td class="${thisWeek >= lastWeek ? "positive" : "negative"}">
-        ${
-          lastWeek
-            ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100) + "%"
-            : "—"
-        }
-      </td>
-    </tr>
-    <tr>
-      <td>km Ran</td>
-      <td>${kmThisWeek} km</td>
-      <td>${kmLastWeek} km</td>
-      <td class="${kmThisWeek >= kmLastWeek ? "positive" : "negative"}">
-        ${
-          kmLastWeek
-            ? Math.round(((kmThisWeek - kmLastWeek) / kmLastWeek) * 100) + "%"
-            : "—"
-        }
-      </td>
-    </tr>
-  `;
-
-  // Progress Chart
-  const pCtx = document.getElementById("progressChart").getContext("2d");
-  new Chart(pCtx, {
-    type: "line",
-    data: {
-      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      datasets: [
-        {
-          label: "Workouts this week",
-          data: a.weekly.dailyWorkouts || [0, 0, 0, 0, 0, 0, 0],
-          tension: 0.3,
-          borderColor: "#6a0dad",
-          pointBackgroundColor: "#6a0dad",
-          fill: false,
-        },
-      ],
-    },
-    options: {
-      scales: { x: { grid: { display: false } }, y: { beginAtZero: true } },
-      plugins: { legend: { display: false } },
-      maintainAspectRatio: false,
-      responsive: true,
-    },
+  // 2) log raw responses
+  raw.forEach((r,i) => {
+    console.log(`🔹 [${paths[i]}] status:`, r.status, r.statusText);
   });
+
+  // 3) parse JSON bodies
+  const bodies = await Promise.all(raw.map(r => r.json()));
+
+  // 4) log parsed payloads
+  Object.keys(endpoints).forEach((key, i) => {
+    console.log(`🔸 ${key}:`, bodies[i]);
+  });
+
+  // 5) destructure into variables
+  const [
+  { totalWorkouts },
+  { totalSets },
+  { totalUniqueExercises }, // 🟢 <- mută-l aici
+  { totalExercises },       // 🔴 <- după
+  { totalWeight },
+  { avgWeightSet },
+  { totalTime, avgDuration }
+] = bodies;
+
+
+  // 6) now update the DOM
+  document.querySelector(".total-workouts .value").textContent   = totalWorkouts;
+  document.querySelector(".total-sets .value").textContent       = totalSets;
+  document.querySelector(".total-exercises .value").textContent  = totalExercises;
+  document.querySelector(".unique-exercises .value").textContent = totalUniqueExercises;
+  document.querySelector(".total-weight .value").textContent     = totalWeight + " kg";
+  document.querySelector(".avg-weight-set .value").textContent   = avgWeightSet + " kg";
+  document.querySelector(".total-time .value").textContent       = totalTime;
+  document.querySelector(".avg-duration .value").textContent     = avgDuration;
 }
 
 // 5) Tab switching
@@ -220,10 +195,99 @@ if (viewLink) {
     setTimeout(() => allLiked.classList.remove("highlight"), 2000);
   });
 }
+async function loadProgressChart() {
+  const res = await fetch("/api/activity/weekly-progress", { headers });
+  const data = await res.json();
+
+  const ctx = document.getElementById("progressChart").getContext("2d");
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [{
+        label: "Weight Lifted (kg)",
+        data: data.map(d => d.total),
+        borderColor: "#3b82f6",       // albastru
+        backgroundColor: "rgba(59, 130, 246, 0.2)", // umplutură
+        fill: true,
+        tension: 0.4,                 // face linia curbată
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} kg`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "kg"
+          }
+        }
+      }
+    },
+  });
+}
+async function debugWorkoutActivities() {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const res = await fetch("/api/workout-activities-debug", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  console.log("📋 WorkoutActivity records:", data);
+}
+async function loadWeeklySummary() {
+  const res = await fetch("/api/activity/weekly-summary", { headers });
+  const data = await res.json();
+
+  const rows = [
+    ["Workouts", data.workouts],
+    ["Time (min)", data.duration],
+    ["Weight (kg)", data.weight],
+    ["Sets", data.sets],
+  ];
+
+  const table = document.querySelector(".week-comparison tbody");
+  table.innerHTML = "";
+
+ rows.forEach(([label, obj]) => {
+  const { thisWeek, lastWeek } = obj;
+  const diff = thisWeek - lastWeek;
+  const sign = diff >= 0 ? "+" : "";
+  const percent = lastWeek === 0 ? "∞%" : ((diff / lastWeek) * 100).toFixed(0) + "%";
+
+  const row = `
+    <tr>
+      <td>${label}</td>
+      <td>${thisWeek}</td>
+      <td>${lastWeek}</td>
+      <td>${sign}${percent}</td>
+    </tr>
+  `;
+  table.innerHTML += row;
+});
+
+}
+
+
+debugWorkoutActivities();
 
 // 7) La load, rulează toate funcțiile
 window.addEventListener("DOMContentLoaded", () => {
   loadFavorites().catch((err) => console.error(err));
   loadReviews().catch((err) => console.error(err));
   loadActivity().catch((err) => console.error(err));
+  loadWeeklySummary().catch(console.error);
+  loadProgressChart().catch(console.error);
 });

@@ -558,6 +558,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const completed = allSets.filter(
         (item) => item.querySelector("input[type='checkbox']")?.checked
       );
+// 🔍 DEBUG – vezi fiecare set bifat + durata
+completed.forEach((item, idx) => {
+  const durText = item.querySelector(".set-duration")?.textContent || "0";
+  const exerciseName = item.closest(".exercise-card")?.querySelector("h3")?.textContent || "??";
+  console.log(`✔️ Set ${idx + 1} from ${exerciseName}: ${durText}`);
+});
 
       const wk_cnt = completed.length;
       const duration = completed.reduce((sum, item) => {
@@ -566,6 +572,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         return sum + dd;
       }, 0);
+      
+console.log("🧮 Workout duration (minutes):", duration);
+console.log("📌 currentWorkoutId:", currentWorkoutId);
 
       if (currentWorkoutId != null) {
         const token =
