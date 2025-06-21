@@ -1,5 +1,4 @@
-// 1) Preia token-ul din localStorage și pregătește header-ul
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 if (!token) {
   alert("Please log in to see your statistics.");
   window.location.href = "/login.html";
@@ -9,17 +8,14 @@ const headers = {
   Authorization: `Bearer ${token}`,
 };
 
-// 2) Încarcă și afișează secțiunea Favorites
 async function loadFavorites() {
   const res = await fetch("/api/favorites-summary", { headers });
   if (!res.ok) throw new Error("Could not fetch favorites summary");
   const data = await res.json();
 
-  // A) Favorite Exercises count
   document.querySelector(".favorite-exercises .fav-count").textContent =
     data.favCount;
 
-  // B) Favorite Types — construire dinamică
   const typesContainer = document.querySelector(
     ".favorite-types .types-container"
   );
@@ -36,11 +32,9 @@ async function loadFavorites() {
     typesContainer.appendChild(div);
   });
 
-  // C) All Liked Exercises — dinamic
   const ol = document.querySelector(".all-liked ol");
   ol.innerHTML = data.likedExercises.map((name) => `<li>${name}</li>`).join("");
 
-  // D) Favorite Muscle Groups — doughnut chart + legend
   const mCtx = document.getElementById("muscleChart").getContext("2d");
   const labels = data.muscleGroups.map((m) => m.label);
   const values = data.muscleGroups.map((m) => m.value);
@@ -62,7 +56,6 @@ async function loadFavorites() {
       responsive: true,
     },
   });
-  // legend text
   const legend = document.querySelector(".muscle-groups .legend");
   legend.innerHTML = data.muscleGroups
     .map(
@@ -79,17 +72,13 @@ async function loadFavorites() {
     )
     .join("");
 
-  // E) Average Difficulty
   document.querySelector(".avg-difficulty .avg-score").firstChild.textContent =
     data.avgDifficulty.toFixed(1) + " ";
-  // —— dynamically colour the dumbbells —— //
   const score = data.avgDifficulty;
   const icons = document.querySelectorAll(".avg-difficulty .dumbbells i");
 
-  // reset
   icons.forEach((i) => i.classList.remove("filled", "half"));
 
-  // fill in
   const full = Math.floor(score);
   const frac = score - full;
 
@@ -139,7 +128,6 @@ async function loadActivity() {
     stretchEl.textContent = a.totalStretching;
   }
 
-  // Weekly Comparison
   const tbody = document.querySelector(".week-comparison tbody");
   const { thisWeek, lastWeek, kmThisWeek, kmLastWeek } = a.weekly;
   tbody.innerHTML = `
@@ -169,7 +157,6 @@ async function loadActivity() {
     </tr>
   `;
 
-  // Progress Chart
   const pCtx = document.getElementById("progressChart").getContext("2d");
   new Chart(pCtx, {
     type: "line",
@@ -195,7 +182,6 @@ async function loadActivity() {
   });
 }
 
-// 5) Tab switching
 document.querySelectorAll(".sidebar a").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
@@ -210,7 +196,6 @@ document.querySelectorAll(".sidebar a").forEach((link) => {
   });
 });
 
-// 6) Highlight on "View them"
 const viewLink = document.querySelector(".favorite-exercises .view-link");
 if (viewLink) {
   viewLink.addEventListener("click", (e) => {
@@ -221,7 +206,6 @@ if (viewLink) {
   });
 }
 
-// 7) La load, rulează toate funcțiile
 window.addEventListener("DOMContentLoaded", () => {
   loadFavorites().catch((err) => console.error(err));
   loadReviews().catch((err) => console.error(err));

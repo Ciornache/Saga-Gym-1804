@@ -69,11 +69,9 @@ const server = http.createServer(async (req, res) => {
           ...item,
           id_user: user.id,
         }));
-        console.log(docs);
         await SetInfo.insertMany(docs);
         return send(res, 200, { success: true });
       } catch (err) {
-        console.error("SetInfo save error:", err);
         return send(res, 500, { error: "Could not save set info" });
       }
     });
@@ -121,9 +119,8 @@ const server = http.createServer(async (req, res) => {
     const payload = requireAuth();
     if (!payload) return;
     const user = await models.users.findById(payload.id);
-    if (!user) {
-      return send(res, 404, { error: "User not found" });
-    }
+    if (!user) return send(res, 404, { error: "User not found" });
+
     return send(res, 200, {
       user_id: payload.id,
       interval_varsta: user.interval_varsta,
@@ -144,7 +141,6 @@ const server = http.createServer(async (req, res) => {
 
     return form.parse(req, async (err, fields, files) => {
       if (err) {
-        console.error(err);
         return send(res, 500, { error: "Upload error" });
       }
       const arr = files.avatar;
@@ -163,8 +159,6 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
- 
-
   if (req.method === "GET" && pathname === "/api/workouts/") {
     const user = await requireAuth();
     if (!user) return;
@@ -173,18 +167,13 @@ const server = http.createServer(async (req, res) => {
     if (query.id) {
       filter.id_user = query.id;
     }
-    console.log(filter);
     let workouts;
     try {
       workouts = await models.antrenamente.find(filter);
     } catch (err) {
-      console.error("Eroare");
-      console.error(err);
       res.writeHead(500, { "Content-Type": "application/json" });
       return res.end(JSON.stringify({ error: "Database error" }));
     }
-    console.log("Antrenamente", workouts);
-
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify(workouts));
   }
@@ -192,7 +181,6 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && req.url === "/token/getuser") {
     const payload = requireAuth();
     if (!payload) return;
-    console.log("AICI", payload);
     const user = await models.users.findById(payload.id);
     if (!user) {
       return send(res, 404, { error: "User not found" });
@@ -203,6 +191,51 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  if (
+    req.method === "GET" &&
+    pathname === "/favourites" &&
+    req.headers.exercise
+  ) {
+    let favs = await models.favourites.find({});
+    console.log("Favourites", favs);
+    if (favs) {
+      favs = favs.filter((fav) => fav.id_exercitiu === req.headers.exercise);
+      return send(res, 200, {
+        count: favs.length,
+      });
+    } else {
+      return send(res, 404, { error: "No favourites found" });
+    }
+    return;
+  }
+
+  if (
+    req.method === "GET" &&
+    pathname === "/favourites" &&
+    !req.headers.authorization
+  ) {
+    const favs = await models.favourites.find();
+    if (favs) {
+      const favExercises = [...new Set(favs)];
+      const favsWithDetails = favExercises.map((fav) => {
+        const favCount = favs.filter(
+          (f) => f.id_exercitiu === fav.id_exercitiu
+        );
+        return {
+          cnt: favCount,
+          id_exercitiu: fav.id_exercitiu,
+        };
+      });
+
+      return send(res, 200, {
+        favourites: favsWithDetails,
+      });
+    } else {
+      return send(res, 404, { error: "No favourites found" });
+    }
+    return;
+  }
+
   if (req.method === "GET" && pathname === "/favourites") {
     const payload = requireAuth();
     if (!payload) return;
@@ -210,7 +243,6 @@ const server = http.createServer(async (req, res) => {
     if (!user) {
       return send(res, 404, { error: "User not found" });
     }
-    console.log("User id", user._id.toString());
     const favourites = await models.favourites.find({
       id_user: user._id.toString(),
     });
@@ -225,21 +257,16 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     const filter = {};
-    console.log(query);
     if (query.id) {
       filter.id_user = query.id;
     }
-    console.log(filter);
     let workouts;
     try {
       workouts = await models.antrenamente.find(filter);
     } catch (err) {
-      console.error("Eroare");
-      console.error(err);
       res.writeHead(500, { "Content-Type": "application/json" });
       return res.end(JSON.stringify({ error: "Database error" }));
     }
-    console.log("Antrenamente", workouts);
 
     res.writeHead(200, { "Content-Type": "application/json" });
     return res.end(JSON.stringify(workouts));
@@ -259,7 +286,6 @@ const server = http.createServer(async (req, res) => {
       });
       return send(res, 200, { exists: !!exists });
     } catch (err) {
-      console.error("Workout name check failed", err);
       return send(res, 500, { error: "Internal error" });
     }
   }
@@ -333,7 +359,6 @@ const server = http.createServer(async (req, res) => {
           [field]: field === "password" ? "********" : newVal,
         });
       } catch (err) {
-        console.error(err);
         return send(res, 500, { error: "Server error" });
       }
     });
@@ -363,7 +388,6 @@ const server = http.createServer(async (req, res) => {
 
         return send(res, 200, { success: true, activity });
       } catch (err) {
-        console.error("Activity upsert error:", err);
         return send(res, 500, { error: "Database error" });
       }
     });
@@ -371,14 +395,16 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET" && pathname === "/api/leaderboard") {
-    const { gender, workoutType, age, muscle, weight } = query;
-
+    const { gender, workoutType, age, muscle, weight } = query || {};
+    console.log(gender, workoutType, age, muscle, weight);
     const userFilter = {};
     if (gender) {
       userFilter.gender = String(gender[0]).toUpperCase() + gender.slice(1);
-    } else if (age) {
+    } 
+     if (age) {
       userFilter.interval_varsta = age;
-    } else if (weight) {
+    } 
+    if (weight) {
       if (weight.endsWith("+")) {
         let min = weight.split("-")[0];
         userFilter.weight = { $gte: Number(min) };
@@ -389,6 +415,8 @@ const server = http.createServer(async (req, res) => {
         userFilter.weight = { $lt: Number(weight.slice(1)) };
       }
     }
+
+    console.log("userFilter", userFilter);
 
     const users = await models.users.find(userFilter);
     const userIds = users.map((u) => u._id.toString());
@@ -449,7 +477,6 @@ const server = http.createServer(async (req, res) => {
         );
         return send(res, 200, { success: true, workoutActivity: rec });
       } catch (err) {
-        console.error("WorkoutActivity error:", err);
         return send(res, 500, { error: "Could not save workout activity" });
       }
     });
@@ -477,7 +504,6 @@ const server = http.createServer(async (req, res) => {
 
         return send(res, 200, { success: true, activity });
       } catch (err) {
-        console.error("Activity upsert error:", err);
         return send(res, 500, { error: "Database error" });
       }
     });
@@ -638,7 +664,6 @@ ${message}
           return send(res, 201, newReview);
         }
       } catch (err) {
-        console.error(err);
         return send(res, 500, { error: "Server error." });
       }
     });
@@ -660,7 +685,6 @@ ${message}
       await Review.findByIdAndDelete(reviewId);
       return send(res, 200, { message: "Review șters cu succes" });
     } catch (err) {
-      console.error(err);
       return send(res, 500, { error: "Server error" });
     }
   }
@@ -670,7 +694,6 @@ ${message}
     if (!user) return;
 
     const reviewId = pathname.split("/")[3];
-    console.log('Super', reviewId);
     try {
       const count = await ReviewLike.countDocuments({ reviewId });
       const alreadyLiked = await ReviewLike.exists({
@@ -744,7 +767,6 @@ ${message}
     req.on("end", async () => {
       try {
         const data = JSON.parse(body);
-        console.log(data);
         if (req.method === "POST") {
           await model.create(data);
           return send(res, 201, { message: "Creat" });
@@ -785,11 +807,12 @@ ${message}
     });
     return;
   }
-  console.log(query);
 
-  if (req.method === "GET" && pathname === "/api/reviews" && !query.exerciseId) {
-    const payload = requireAuth();
-    if (!payload) return;
+  if (
+    req.method === "GET" &&
+    pathname === "/api/reviews" &&
+    !query.exerciseId
+  ) {
     const reviews = await Review.find({});
     if (!reviews) {
       return send(res, 400, {
@@ -844,13 +867,12 @@ ${message}
     }
   }
 
-  // Review-likes
   if (pathname.startsWith("/api/review-likes/")) {
     const payload = requireAuth();
     if (!payload) return;
     const reviewId = pathname.split("/")[3];
     if (req.method === "GET") {
-      console.log('Review', reviewId);
+      console.log("Review", reviewId);
       const count = await ReviewLike.countDocuments({ reviewId });
       const liked = await ReviewLike.exists({
         reviewId,
@@ -873,7 +895,6 @@ ${message}
     }
   }
 
-  // Favorites summary
   if (req.method === "GET" && pathname === "/api/favorites-summary") {
     const payload = requireAuth();
     if (!payload) return;
@@ -907,7 +928,6 @@ ${message}
     });
   }
 
-  // Activity summary
   if (req.method === "GET" && pathname === "/api/activity-summary") {
     const payload = requireAuth();
     if (!payload) return;
@@ -939,7 +959,6 @@ ${message}
       },
     });
   }
-  // ————— STATIC FILES —————
   const filePath = path.join(
     __dirname,
     "../public",
@@ -986,5 +1005,4 @@ async function updateDb() {
 }
 server.listen(3000, () => {
   updateDb();
-  console.log("✅ Serverul rulează pe http://localhost:3000");
 });

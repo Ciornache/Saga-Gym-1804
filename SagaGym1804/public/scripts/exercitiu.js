@@ -1,4 +1,65 @@
-// public/scripts/exercitiu.js
+const workoutButton = document.getElementById("workout-btn");
+
+workoutButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (!token) {
+    console.log("Access denied!");
+    return;
+  }
+
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status === 200) {
+    const data = await res.json();
+    window.location.href = `workout.html?id=${data.user_id}`;
+  } else {
+    console.error("Unauthorized access");
+    window.location.href = "login.html";
+  }
+});
+
+const logoutButton = document.getElementById("logout-btn");
+const userAccWindow = document.getElementById("user-win-btn");
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(res);
+  if (res.status === 200) {
+    console.log("HERE");
+    logoutButton.classList.remove("hidden");
+    userAccWindow.classList.remove("hidden");
+  } else {
+    logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
+  }
+});
+
+logoutButton.addEventListener("click", (e) => {
+  localStorage.clear();
+  sessionStorage.clear();
+  e.target.classList.add("hidden");
+  location.reload(true);
+});
+
+userAccWindow.addEventListener("click", () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  if (token) window.location.href = "Account.html";
+  else window.location.href = "login.html";
+});
 
 async function fetchExercise(exerciseName) {
   const resp = await fetch("/exercise/getExerciseByName", {

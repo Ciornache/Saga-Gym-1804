@@ -12,7 +12,6 @@
   padding: 1rem 0;
 }
 
-/* Sidebar of options */
 .criteria-options {
   width: 240px;
 }
@@ -42,12 +41,6 @@
   color: #fff;
 }
 
-/* Leaderboard table */
-.leaderboard {
-  flex: 1;
-  border-collapse: collapse;
-  width: 100%;
-}
 .leaderboard th,
 .leaderboard td {
   padding: 0.75rem;
@@ -61,7 +54,6 @@
   background: #fafafa;
 }
 
-/* Buttons below */
 .lead-buttons-container {
   text-align: right;
   padding: 1rem 0;
@@ -84,18 +76,14 @@
   opacity: 0.9;
 }
 
-/* styles/leaderboard.css */
-
-/* add space under the navbar before the leaderboard section */
 .main-container {
-  padding: 2rem 1rem; /* vertical & horizontal padding */
-  background: #f9f9f9; /* subtle page background */
+  padding: 2rem 1rem;
+  background: #f9f9f9;
 }
 
-/* Container for the top-level criteria labels */
 .lead-criterias {
   display: flex;
-  justify-content: center; /* center the labels */
+  justify-content: center;
   gap: 2rem;
   padding: 1rem 0;
   border-bottom: 2px solid #ddd;
@@ -104,14 +92,16 @@
   color: #333;
 }
 
-/* Main split: left sidebar + table */
 .lead-container {
   display: flex;
   gap: 2rem;
-  margin-top: 1.5rem; /* space between criteria and content */
+  margin-top: 1.5rem;
 }
 
-/* Sidebar of options */
+.option {
+  font-family: "Goldman", sans-serif;
+}
+
 .criteria-options {
   width: 240px;
   background: #fff;
@@ -146,17 +136,6 @@
   color: #fff;
 }
 
-/* Leaderboard table */
-.leaderboard {
-  flex: 1;
-  border-collapse: collapse;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
 .leaderboard th,
 .leaderboard td {
   padding: 0.75rem;
@@ -174,10 +153,9 @@
   background: #fafafa;
 }
 
-/* Buttons below */
 .lead-buttons-container {
   display: flex;
-  justify-content: center; /* center the buttons */
+  justify-content: center;
   gap: 1rem;
   margin-top: 2rem;
   padding-bottom: 2rem;
@@ -247,7 +225,6 @@
   text-transform: capitalize;
 }
 
-/* Enhanced styling for option buttons */
 .criteria-options .option {
   display: flex;
   align-items: center;
@@ -358,4 +335,14 @@
 }
 .acc-icons button:hover {
   background-color: transparent;
+}
+
+.table-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+#filter-info {
+  align-self: flex-end;
 }

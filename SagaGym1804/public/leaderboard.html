@@ -45,7 +45,7 @@
                     <a href="workout.html">Workouts</a>
                 </button>
                 <button class="navbar-button" type="button">
-                    <a href="leaderboard.html">Leadearboard</a>
+                    <a href="leaderboard.html">Leaderboard</a>
                 </button>
                 <button class="navbar-button" type="button">
                     <a href="contact.html">Contact</a>
@@ -54,9 +54,9 @@
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
                 <button class="navbar-button hidden" type="button" id="user-win-btn">
-                    <i class="fa-solid fa-user"></i>
-                </button>
-            </div></nav>
+                    <i class="fa-solid fa-user"></i> </button>
+            </div>
+        </nav>
 
     <main class="main-container">
         <div class="lead-criterias">
@@ -68,27 +68,27 @@
         </div>
         <div class="lead-container">
             <aside class="criteria-options">
-                <!-- Dynamically create this options based on the criteria 
-                         For example age: (18-25), (26-35), etc 
-                    -->
                 <p>Option #1</p>
                 <p>Option #2</p>
                 <p>Option #3</p>
                 <p>Option #4</p>
             </aside>
-            <table class="leaderboard">
-                <tr>
-                    <th>Username</th>
-                    <th>Score</th>
-                    <th>Join Date</th>
-                </tr>
-                <!--Dynamicall insert the rows -->
-                <tr>
-                    <td>Username #1</td>
-                    <td>Score #1</td>
-                    <td>Join Date #1 </td>
-                </tr>
-            </table>
+            <div class="table-container">
+                <span id="filter-info">Filter information</span>
+                <table class="leaderboard">
+                    <tr>
+                        <th>Username</th>
+                        <th>Score</th>
+                        <th>Join Date</th>
+                    </tr>
+                    <tr>
+                        <td>Username #1</td>
+                        <td>Score #1</td>
+                        <td>Join Date #1 </td>
+                    </tr>
+                </table>
+            </div>
+         
         </div>
         <div class="lead-buttons-container">
             <button id="download-pdf">Download PDF</button>

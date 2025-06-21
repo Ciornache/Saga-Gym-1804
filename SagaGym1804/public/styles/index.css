@@ -18,12 +18,11 @@
 .main-presentation {
   display: flex;
   flex-direction: column;
-  align-items: center; /* center contents horizontally */
+  align-items: center;
   gap: 1rem;
   background: var(--bg-light);
-  padding: 1rem 0; /* vertical padding only */
-  width: 100%; /* span full viewport */
-  /* remove height/max-height so it can grow with its content */
+  padding: 1rem 0;
+  width: 100%;
 }
 
 .search-bar-area {
@@ -142,7 +141,6 @@
 }
 .cards-area {
   display: grid;
-  /* 4 columns at full width, each at least 250px, then auto-fit to fewer */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   background-color: var(--cards-area-bg);
@@ -661,7 +659,6 @@ hr {
   }
 }
 
-/* ——— Sort panel & săgeți ——— */
 .sort-panel {
   margin-top: 1rem;
   background: #a56461;

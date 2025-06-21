@@ -2,7 +2,6 @@ const workoutButton = document.querySelector(
   ".navbar .navbar-button:nth-child(3)"
 );
 
-console.log(workoutButton);
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();
   const token =
@@ -30,20 +29,25 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(res);
+  if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
-    userAccWindow.classList.add("hidden");
     logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
   }
-}, 100);
+});
 
 logoutButton.addEventListener("click", (e) => {
-  console.log("Clicked");
   localStorage.clear();
   sessionStorage.clear();
   e.target.classList.add("hidden");
@@ -106,11 +110,15 @@ form.addEventListener("submit", async (event) => {
     return;
   }
   const checked = document.getElementById("remember-me").checked;
-  if (checked) localStorage.setItem("token", data.token);
-  else sessionStorage.setItem("token", data.token);
+  if (checked) {
+    sessionStorage.clear();
+    localStorage.setItem("token", data.token);
+  } else {
+    localStorage.clear();
+    sessionStorage.setItem("token", data.token);
+  }
   showValidMessage(email_input);
   showValidMessage(password_input);
-
   setTimeout(() => {
     window.location.href = "index.html";
   }, 500);

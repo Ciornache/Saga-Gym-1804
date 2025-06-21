@@ -1195,3 +1195,9 @@ header.header .header-message p {
     font-size: clamp(0.9rem, 3vw, 1rem);
   }
 }
+
+#logout-btn,
+#user-win-btn {
+  position: relative;
+  left: 20%;
+}

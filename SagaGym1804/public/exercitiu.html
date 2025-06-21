@@ -45,7 +45,7 @@
           <a href="workout.html">Workouts</a>
         </button>
         <button class="navbar-button" type="button">
-          <a href="leaderboard.html">Leadearboard</a>
+          <a href="leaderboard.html">Leaderboard</a>
         </button>
         <button class="navbar-button" type="button">
           <a href="contact.html">Contact</a>
@@ -112,7 +112,6 @@
           </div>
         </div>
 
-        <!-- Review Modal -->
         <div id="review-modal" class="modal hidden">
           <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -129,7 +128,6 @@
           </div>
         </div>
 
-        <!-- All Reviews -->
         <section id="reviews-section">
           <h3>All Reviews</h3>
           <div id="reviews-list"></div>
@@ -159,7 +157,7 @@ btn.onclick = () => {
   if (currentUserReview) {
     commentInput.value = currentUserReview.comment;
     selectedRating = currentUserReview.rating;
-    highlight(selectedRating); // colorează medaliile
+    highlight(selectedRating);
   } else {
     commentInput.value = '';
     resetStars();

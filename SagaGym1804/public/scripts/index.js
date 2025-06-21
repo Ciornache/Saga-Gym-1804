@@ -29,20 +29,26 @@ workoutButton.addEventListener("click", async (e) => {
 const logoutButton = document.getElementById("logout-btn");
 const userAccWindow = document.getElementById("user-win-btn");
 
-setInterval(() => {
+document.addEventListener("DOMContentLoaded", async () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
+  const res = await fetch("/token/getuser", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(res);
+  if (res.status === 200) {
+    console.log("HERE");
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
-    userAccWindow.classList.add("hidden");
     logoutButton.classList.add("hidden");
+    userAccWindow.classList.add("hidden");
   }
-}, 100);
+});
 
 logoutButton.addEventListener("click", (e) => {
-  console.log("Clicked");
   localStorage.clear();
   sessionStorage.clear();
   e.target.classList.add("hidden");
@@ -113,10 +119,13 @@ function fillCard(cardEl, data) {
   imgDiv.style.backgroundSize = "cover";
   imgDiv.style.backgroundPosition = "center";
   cardEl.querySelector("h3").textContent = data.name;
+  const star = cardEl.querySelector(".fa-star");
   const stats = cardEl.querySelectorAll(".stats div");
-  stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${Number(
-    data.rating
-  ).toFixed(1)}</span>`;
+  const count = getStarCounter(star).then((count) => {
+    stats[0].innerHTML = `<i class="fa-solid fa-star"></i><span>${
+      count || 0
+    }</span>`;
+  });
   stats[1].innerHTML = `<i class="fa-solid fa-dumbbell"></i><span>${data.difficulty.toFixed(
     1
   )}</span>`;
@@ -124,6 +133,33 @@ function fillCard(cardEl, data) {
     1
   )}</span>`;
 }
+
+async function getStarCounter(star) {
+  const cardEl = star.closest(".exercise-card");
+  if (!cardEl) {
+    console.error("Cannot find exercise card");
+    return;
+  }
+  const nameEl = cardEl.querySelector("h3");
+  const name = nameEl?.textContent.trim().toLowerCase();
+  const id_exercitiu = exercises.find((e) => e.name.toLowerCase() === name)?.id;
+  const res = await fetch("/favourites", {
+    method: "GET",
+    headers: {
+      Exercise: `${id_exercitiu}`,
+    },
+  });
+  const data = await res.json();
+  if (res.status !== 200) {
+    console.error("Failed to fetch favourites:", data.error);
+    return;
+  }
+  const stats = cardEl.querySelectorAll(".stats div")[0];
+  const starCount = data.count;
+  const starSpan = stats.querySelector("span");
+  return starCount;
+}
+
 let exercises = [];
 let exercisesToDisplay = [];
 
@@ -256,8 +292,6 @@ function sortCurrentArray() {
     }
     return;
   }
-  console.log("Sortez", sortCriteria);
-
   sorted.sort((a, b) => {
     for (const crit of sortCriteria) {
       let diff = 0;
@@ -506,15 +540,15 @@ function applyAllFilters() {
   const scoreSlider = sliders[0];
   const difficultySlider = sliders[1];
 
-  // const minScore = scoreSlider.querySelector(".thumb--left").value;
-  // const maxScore = scoreSlider.querySelector(".thumb--right").value;
+  const minScore = scoreSlider.querySelector(".thumb--left").value;
+  const maxScore = scoreSlider.querySelector(".thumb--right").value;
 
   const minDiff = difficultySlider.querySelector(".thumb--left").value;
   const maxDiff = difficultySlider.querySelector(".thumb--right").value;
 
-  // baseArray = baseArray.filter((ex) => {
-  //     ex.score >= minScore && ex.score <= maxScore
-  // });
+  baseArray = baseArray.filter((ex) => {
+    ex.score >= minScore && ex.score <= maxScore;
+  });
 
   baseArray = baseArray.filter((ex) => {
     return (
@@ -572,7 +606,18 @@ async function render() {
   renderPagination(exercises.length);
 }
 
-function updateStars() {
+// async function renderStarFavouritesCounter() {
+//   const favWithDetails = await fetch("/favourites");
+//   const res = await fetch("/token/getuser", {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   if(res.status)
+// }
+
+async function updateStars() {
   const stars = Array.from(document.querySelectorAll(".fa-star"));
   for (star of stars) star.classList.remove("star-selected");
   for (fav of favourites) {
@@ -582,7 +627,6 @@ function updateStars() {
       return e.textContent.toLowerCase() === exName.name.toLowerCase();
     });
     if (exNode) {
-      console.log("Sibling", exNode.previousSibling.previousSibling);
       const icon = exNode.previousSibling.previousSibling.querySelector("i");
       icon.classList.toggle("star-selected");
     }
@@ -732,7 +776,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Nu am putut încărca exercițiile:", err);
   }
 
-  const cardEls = document.querySelectorAll(".exercise-card");
   const btnLeft = document.querySelector(".slider-angles-left");
   const btnRight = document.querySelector(".slider-angles-right");
 
@@ -877,7 +920,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         method: "POST",
         body: JSON.stringify({ id_exercitiu: exercitiuId }),
       });
-      const data = await resp.json();
       if (!resp.ok) {
         window.location.href = "login.html";
         return;
@@ -888,11 +930,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     return 1;
   }
 
+  async function updateStarCounter(star) {
+    const cardEl = star.closest(".exercise-card");
+    if (!cardEl) {
+      console.error("Cannot find exercise card");
+      return;
+    }
+    const nameEl = cardEl.querySelector("h3");
+    const name = nameEl?.textContent.trim().toLowerCase();
+    const id_exercitiu = exercises.find(
+      (e) => e.name.toLowerCase() === name
+    )?.id;
+    const res = await fetch("/favourites", {
+      method: "GET",
+      headers: {
+        Exercise: `${id_exercitiu}`,
+      },
+    });
+    const data = await res.json();
+    if (res.status !== 200) {
+      console.error("Failed to fetch favourites:", data.error);
+      return;
+    }
+    const stats = cardEl.querySelectorAll(".stats div")[0];
+    const starCount = data.count;
+    const starSpan = stats.querySelector("span");
+    starSpan.textContent = starCount ? counterToString(starCount) : "0";
+  }
+
+  function counterToString(counter) {
+    if (counter < 1000) return counter.toString();
+    if (counter < 1000000) return (counter / 1000).toFixed(1) + "K";
+    return (counter / 1000000).toFixed(1) + "M";
+  }
+
   document.querySelectorAll(".fa-star").forEach((star) => {
     star.addEventListener("click", async (e) => {
       e.stopPropagation();
       const ok = await toggleFavourite(star);
-      if (ok) star.classList.toggle("star-selected");
+      if (ok) {
+        star.classList.toggle("star-selected");
+        updateStarCounter(star)
+          .then(() => {
+            console.log("Star counter updated");
+          })
+          .catch((err) => {
+            console.error("Failed to update star counter:", err);
+          });
+      }
     });
   });
 });
