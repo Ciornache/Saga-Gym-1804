@@ -483,11 +483,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const setItems = Array.from(card.querySelectorAll(".set-item"));
         const time = setItems.reduce((sum, item) => {
           const duration = item.querySelector(".set-duration");
-          const input = item.querySelector("input");
+          const input = item.querySelector(".set-checkbox");
           let d = 0;
           if (duration) {
-            const dd = duration.textContent.slice(0, -4);
-            if (input.checked) d = Number(dd);
+            const dd = duration.textContent.slice(0, -1);
+            const reps = item.querySelector(".set-reps");
+            console.log(reps);
+            const numberOfResps = reps.textContent.slice(0, -4);
+            console.log("Duration", Number(dd), duration.textContent, input);
+            console.log("Input", input, input.checked);
+            if (input.checked) d = Number(dd) * Number(numberOfResps);
           }
           return sum + d;
         }, 0);
@@ -498,10 +503,9 @@ document.addEventListener("DOMContentLoaded", () => {
           id_exercitiu: exId,
           id_user: userId,
           activity_cnt,
-          time,
+          time: (time / 60).toFixed(2),
         };
-        console.log("Payload: ", payload);
-
+        console.log("Payload", payload);
         try {
           const res = await fetch("/api/activities", {
             method: "PUT",
@@ -554,7 +558,6 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify(allSetInfos),
           });
-          console.log("✓ Set weights saved");
         }
       }
 
@@ -563,23 +566,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const completed = allSets.filter(
         (item) => item.querySelector("input[type='checkbox']")?.checked
       );
-// 🔍 DEBUG – vezi fiecare set bifat + durata
-completed.forEach((item, idx) => {
-  const durText = item.querySelector(".set-duration")?.textContent || "0";
-  const exerciseName = item.closest(".exercise-card")?.querySelector("h3")?.textContent || "??";
-  console.log(`✔️ Set ${idx + 1} from ${exerciseName}: ${durText}`);
-});
+      // 🔍 DEBUG – vezi fiecare set bifat + durata
+      completed.forEach((item, idx) => {
+        const durText = item.querySelector(".set-duration")?.textContent || "0";
+        const exerciseName =
+          item.closest(".exercise-card")?.querySelector("h3")?.textContent ||
+          "??";
+        console.log(`✔️ Set ${idx + 1} from ${exerciseName}: ${durText}`);
+      });
 
       const wk_cnt = completed.length;
       const duration = completed.reduce((sum, item) => {
         const dd = parseFloat(
-          item.querySelector(".set-duration").textContent.slice(0, -4)
+          item.querySelector(".set-duration").textContent.slice(0, -1)
         );
         return sum + dd;
       }, 0);
-      
-console.log("🧮 Workout duration (minutes):", duration);
-console.log("📌 currentWorkoutId:", currentWorkoutId);
+
+      console.log("🧮 Workout duration (minutes):", duration);
+      console.log("📌 currentWorkoutId:", currentWorkoutId);
 
       if (currentWorkoutId != null) {
         const token =

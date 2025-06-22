@@ -276,7 +276,7 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
         repetitions.push({ id: ri + 1, duration: ex.rep_duration, timings });
       }
       const pause = getRandomInt(60, 75);
-      totalExDur += (setDur + pause) * setsCount - pause;
+      totalExDur += (setDur + pause) * setsCount;
       const timingArray = [
         { name: "isolated", time: repetitions[0].timings[0] },
         { name: "excentric", time: repetitions[0].timings[1] },
