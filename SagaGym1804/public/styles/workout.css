@@ -498,3 +498,21 @@ main {
   color: black;
   cursor: pointer;
 }
+
+.tag-container {
+  position: relative;
+  padding: 10px;
+  width: auto;
+  height: auto;
+}
+
+.fa-xmark-class {
+  position: absolute;
+  left: 95%;
+  bottom: 80%;
+  visibility: hidden;
+  cursor: pointer;
+}
+.active {
+  visibility: visible !important;
+}

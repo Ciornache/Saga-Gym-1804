@@ -974,6 +974,15 @@ nav.navbar {
   --navbar-height: 3.5rem;
 }
 
+@media (max-width: 480px) {
+  .logo {
+    min-width: 32vw !important;
+    position: relative;
+    left: 12vw !important;
+    top: 5vw;
+  }
+}
+
 @media (max-width: 768px) {
   nav.navbar {
     position: relative;
@@ -1019,11 +1028,11 @@ nav.navbar {
 
   .fa-user {
     position: relative;
-    right: 23%;
+    right: 28%;
   }
   .fa-right-from-bracket {
     position: relative;
-    right: 23%;
+    right: 18%;
   }
 
   .navbar-menu .navbar-button {
@@ -1054,6 +1063,13 @@ nav.navbar {
     outline: none !important;
     box-shadow: none !important;
   }
+
+  .logo {
+    min-width: 35vw;
+    width: 25vw !important;
+    position: relative;
+    left: 3vw;
+  }
 }
 
 #logout-btn,
@@ -1073,3 +1089,38 @@ nav.navbar {
   transform: translateY(-50%);
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem 2rem;
+}
+
+.logo-container {
+  flex: 0 0 auto;
+  width: auto;
+  margin-right: 1rem;
+}
+
+.logo {
+  display: block;
+  width: 100% !important;
+  max-width: 300px;
+  height: auto;
+  transition: max-width 0.3s ease;
+}
+
+.header-message {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.header-message h1 {
+  font-size: clamp(1rem, 5vw, 2rem);
+  margin: 0;
+  line-height: 1.1;
+}
+.header-message p {
+  font-size: clamp(0.75rem, 3vw, 1rem);
+  margin: 0;
+}

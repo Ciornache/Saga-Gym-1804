@@ -39,9 +39,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res.status);
-  console.log(logoutButton);
-  console.log(userAccWindow);
   if (res.status === 200) {
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
@@ -84,6 +81,7 @@ let groups = [];
 let types = [];
 const sortCriteria = [];
 let isLoggedIn = false;
+let id_user = null;
 
 let loadStuff = async () => {
   let resp = await fetch("/admin/grupe");
@@ -93,20 +91,6 @@ let loadStuff = async () => {
   resp = await fetch("/admin/tip");
   if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
   types = await resp.json();
-
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) {
-    res = await fetch("/token/getuser", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
-      isLoggedIn = true;
-    }
-  }
 };
 
 loadStuff();
@@ -208,7 +192,7 @@ async function getStarCounter(star) {
   const id_exercitiu = exercises.find((e) => e.name.toLowerCase() === name)?.id;
   const cnt = favourites.filter(
     (f) => f.id_exercitiu === id_exercitiu.toString()
-  ).length;
+  )[0].cnt;
   return cnt;
 }
 
@@ -569,6 +553,7 @@ async function render() {
     const avg = ratings.length ? (sum / ratings.length).toFixed(2) : 0;
     return { ...ex, rating: Number(avg) };
   });
+  /////
   exercises = exercisesToDisplay = exercisesWithRatings;
   const start = (currentPage - 1) * pageSize;
   cards.forEach((cardEl, idx) => {
@@ -588,7 +573,6 @@ async function render() {
 
 async function updateStars() {
   if (!isLoggedIn) return;
-
   const stars = Array.from(document.querySelectorAll(".fa-star"));
   for (star of stars) star.classList.remove("star-selected");
   for (fav of favourites) {
@@ -597,7 +581,8 @@ async function updateStars() {
     const exNode = exerciseNames.find((e) => {
       return e.textContent.toLowerCase() === exName.name.toLowerCase();
     });
-    if (exNode) {
+    console.log(id_user, fav.id_user, fav);
+    if (exNode && id_user === fav.id_user) {
       const icon = exNode.previousSibling.previousSibling.querySelector("i");
       icon.classList.toggle("star-selected");
     }
@@ -717,16 +702,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     navbar.classList.toggle("open");
   });
   try {
-    const resp = await fetch("/admin/exercitii");
+    const resp = await fetch("/api/exercitii");
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     exercises = await resp.json();
     exercisesToDisplay = exercises;
 
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     const res = await fetch("/favourites", {
       method: "GET",
+      headers: {
+        Authorization: ` Bearer ${token}`,
+      },
     });
     const data = await res.json();
     favourites = Array.isArray(data.favourites) ? data.favourites : [];
+
+    if (token) {
+      const res3 = await fetch("/token/getuser", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res3.ok) {
+        isLoggedIn = true;
+        const data = await res3.json();
+        const res2 = await fetch(`/api/user/_id/?id_user=${data.user_id}`, {
+          method: "GET",
+        });
+        const data2 = await res2.json();
+        id_user = data2.user_id;
+      }
+    }
   } catch (err) {
     console.error("Nu am putut încărca exercițiile:", err);
   }
@@ -885,11 +893,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Cannot find exercise card");
       return;
     }
-    const count = getStarCounter(star);
-    const stats = cardEl.querySelectorAll(".stats div")[0];
-    const starCount = count;
-    const starSpan = stats.querySelector("span");
-    starSpan.textContent = starCount ? counterToString(starCount) : "0";
+    const ex_name = cardEl.querySelector("h3").textContent;
+    const ex_id = exercises
+      .find((e) => e.name.toLowerCase() === ex_name.toLowerCase())
+      .id.toString();
+    let upd = star.classList.contains("star-selected") ? 1 : -1;
+    favourites = favourites.map((f) => {
+      if (f.id_exercitiu !== ex_id) return f;
+      else
+        return {
+          ...f,
+          cnt: f.cnt + upd,
+        };
+    });
+    return getStarCounter(star).then((starCount) => {
+      const stats = cardEl.querySelectorAll(".stats div")[0];
+      const starSpan = stats.querySelector("span");
+      starSpan.textContent = starCount ? counterToString(starCount) : "0";
+    });
   }
 
   /* Toggles and updates ui after if toggle was succesful */

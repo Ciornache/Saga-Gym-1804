@@ -45,14 +45,6 @@ const transporter = nodemailer.createTransport({
 const CONTACT_EMAIL = "icmtproducts@gmail.com";
 const { MongoClient, ObjectId } = require("mongodb");
 
-mongoose.connect(
-  "mongodb+srv://varunax424:RsiRPVBTxJItTu6c@sagacluster.ybauvs6.mongodb.net/sagaDB",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
-
 const server = http.createServer(async (req, res) => {
   const { pathname, query } = url.parse(req.url, true);
 
@@ -125,6 +117,19 @@ const server = http.createServer(async (req, res) => {
       user_id: payload.id,
       interval_varsta: user.interval_varsta,
     });
+  }
+  if (req.method === "GET" && pathname.startsWith("/api/user/_id")) {
+    const user = await models.users.find({ _id: query.id_user });
+    if (user) {
+      return send(res, 200, {
+        user_id: String(user[0]._id),
+      });
+    } else {
+      return send(res, 404, {
+        Error: "Eroare",
+      });
+    }
+    return;
   }
 
   if (req.method === "POST" && pathname === "/api/upload/avatar") {
@@ -207,11 +212,8 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if (
-    req.method === "GET" &&
-    pathname === "/favourites"
-  ) {
-    const favs = await models.favourites.find();
+  if (req.method === "GET" && pathname === "/favourites") {
+    const favs = await models.favourites.find({});
     if (favs) {
       const favExercises = [...new Set(favs)];
       const favsWithDetails = favExercises.map((fav) => {
@@ -219,8 +221,9 @@ const server = http.createServer(async (req, res) => {
           (f) => f.id_exercitiu === fav.id_exercitiu
         );
         return {
-          cnt: favCount,
+          cnt: favCount.length,
           id_exercitiu: fav.id_exercitiu,
+          id_user: fav.id_user,
         };
       });
 
@@ -231,21 +234,6 @@ const server = http.createServer(async (req, res) => {
       return send(res, 404, { error: "No favourites found" });
     }
     return;
-  }
-
-  if (req.method === "GET" && pathname === "/favourites") {
-    const payload = requireAuth();
-    if (!payload) return;
-    const user = await models.users.findById(payload.id);
-    if (!user) {
-      return send(res, 404, { error: "User not found" });
-    }
-    const favourites = await models.favourites.find({
-      id_user: user._id.toString(),
-    });
-    return send(res, 200, {
-      favourites: favourites,
-    });
   }
 
   if (req.method === "GET" && pathname === "/api/workouts/") {
@@ -503,15 +491,16 @@ const server = http.createServer(async (req, res) => {
     });
     return;
   }
-if (req.method === "GET" && pathname === "/api/activity/unique-exercises") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
+  if (req.method === "GET" && pathname === "/api/activity/unique-exercises") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
 
-  const ids = await Activity.distinct("id_exercitiu", { id_user: userId });
-  const totalUniqueExercises = ids.length;
+    const ids = await Activity.distinct("id_exercitiu", { id_user: userId });
+    const totalUniqueExercises = ids.length;
 
-  return send(res, 200, { totalUniqueExercises });
-}
+    return send(res, 200, { totalUniqueExercises });
+  }
 
   if (req.method === "POST" && pathname === "/api/auth/login") {
     let body = "";
@@ -634,75 +623,71 @@ ${message}
     }
   }
   if (req.method === "GET" && pathname === "/api/reviews-summary") {
-  const payload = requireAuth();
-  if (!payload) return;
-  const reviews = await Review.find({ userEmail: payload.email });
-  const reviewCount = reviews.length;
-  const avgRating = reviewCount
-    ? reviews.reduce((s,r)=>s + r.rating, 0) / reviewCount
-    : 0;
-  const likeCounts = await Promise.all(
-    reviews.map(r => ReviewLike.countDocuments({ reviewId: r._id }))
-  );
-  const totalLikes = likeCounts.reduce((s,c)=>s+c, 0);
-  const likesPerReview = reviewCount ? totalLikes / reviewCount : 0;
-  const minLikes = likeCounts.length ? Math.min(...likeCounts) : 0;
-  const maxLikes = likeCounts.length ? Math.max(...likeCounts) : 0;
-  return send(res, 200, {
-    reviewCount,
-    avgRating,
-    totalLikes,
-    likesPerReview,
-    minLikes,
-    maxLikes
-  });
-}
-if (req.method === "POST" && pathname === "/api/setinfo") {
-  const user = requireAuth();
-  if (!user) return;
+    const payload = requireAuth();
+    if (!payload) return;
+    const reviews = await Review.find({ userEmail: payload.email });
+    const reviewCount = reviews.length;
+    const avgRating = reviewCount
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviewCount
+      : 0;
+    const likeCounts = await Promise.all(
+      reviews.map((r) => ReviewLike.countDocuments({ reviewId: r._id }))
+    );
+    const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
+    const likesPerReview = reviewCount ? totalLikes / reviewCount : 0;
+    const minLikes = likeCounts.length ? Math.min(...likeCounts) : 0;
+    const maxLikes = likeCounts.length ? Math.max(...likeCounts) : 0;
+    return send(res, 200, {
+      reviewCount,
+      avgRating,
+      totalLikes,
+      likesPerReview,
+      minLikes,
+      maxLikes,
+    });
+  }
+  if (req.method === "POST" && pathname === "/api/setinfo") {
+    const user = requireAuth();
+    if (!user) return;
 
-  let body = "";
-  req.on("data", (chunk) => (body += chunk));
-  req.on("end", async () => {
-    try {
-      const list = JSON.parse(body);
-      if (!Array.isArray(list)) {
-        console.warn("❌ Nu am primit un array:", list);
-        return send(res, 400, { error: "Expected array" });
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const list = JSON.parse(body);
+        if (!Array.isArray(list)) {
+          console.warn("❌ Nu am primit un array:", list);
+          return send(res, 400, { error: "Expected array" });
+        }
+
+        const docs = list.map((s) => ({
+          id_user: user.id,
+          id_exercitiu: s.id_exercitiu,
+          weight_type: s.weight_type,
+          weight_kicker: s.weight_kicker,
+        }));
+
+        await SetInfo.insertMany(docs);
+        return send(res, 201, {
+          message: "SetInfo saved",
+          count: docs.length,
+        });
+      } catch (err) {
+        console.error("🔥 Eroare la salvarea în SetInfo:", err);
+        return send(res, 500, { error: "Server error" });
       }
+    });
+    return;
+  }
+  if (req.method === "GET" && pathname === "/api/workout-activities-debug") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const list = await WorkoutActivity.find({ id_user: userId });
+    return send(res, 200, list);
+  }
 
-      const docs = list.map((s) => ({
-        id_user: user.id,
-        id_exercitiu: s.id_exercitiu,
-        weight_type: s.weight_type,
-        weight_kicker: s.weight_kicker,
-      }));
-
-      console.log("📥 Received SetInfo:", docs);
-
-      await SetInfo.insertMany(docs);
-
-      console.log(`✅ ${docs.length} seturi au fost salvate în SetInfo.`);
-
-      return send(res, 201, {
-        message: "SetInfo saved",
-        count: docs.length,
-      });
-    } catch (err) {
-      console.error("🔥 Eroare la salvarea în SetInfo:", err);
-      return send(res, 500, { error: "Server error" });
-    }
-  });
-  return;
-}
-if (req.method === "GET" && pathname === "/api/workout-activities-debug") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const list = await WorkoutActivity.find({ id_user: userId });
-  return send(res, 200, list);
-}
-
-if (
+  if (
     req.method === "GET" &&
     pathname === "/api/reviews" &&
     !query.exerciseId
@@ -718,42 +703,48 @@ if (
       });
     }
   }
- if (req.method === "GET" && pathname === "/rss/stats.xml") {
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const username = url.searchParams.get("user-name");
-  if (!username) return send(res, 400, { error: "Missing user-name" });
+  if (req.method === "GET" && pathname === "/rss/stats.xml") {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const username = url.searchParams.get("user-name");
+    if (!username) return send(res, 400, { error: "Missing user-name" });
 
-  const user = await models.users.findOne({ name: username });
-  if (!user) return send(res, 404, { error: "User not found" });
+    const user = await models.users.findOne({ name: username });
+    if (!user) return send(res, 404, { error: "User not found" });
 
-  const userId = user._id.toString();
+    const userId = user._id.toString();
 
-  // Reviews
-  const reviews = await Review.find({ userEmail: user.email });
-  const reviewCount = reviews.length;
-  const avgRating = reviewCount ? (reviews.reduce((s, r) => s + r.rating, 0) / reviewCount) : 0;
-  const likeCounts = await Promise.all(reviews.map(r => ReviewLike.countDocuments({ reviewId: r._id })));
-  const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
+    // Reviews
+    const reviews = await Review.find({ userEmail: user.email });
+    const reviewCount = reviews.length;
+    const avgRating = reviewCount
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviewCount
+      : 0;
+    const likeCounts = await Promise.all(
+      reviews.map((r) => ReviewLike.countDocuments({ reviewId: r._id }))
+    );
+    const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
 
-  // Leaderboard score
-  const activities = await Activity.find({ id_user: userId });
-  const totalCnt = activities.reduce((s, a) => s + (a.activity_cnt || 0), 0);
-  const totalTime = activities.reduce((s, a) => s + (a.time || 0), 0);
-  const score = 0.6 * totalCnt + 0.4 * totalTime;
+    // Leaderboard score
+    const activities = await Activity.find({ id_user: userId });
+    const totalCnt = activities.reduce((s, a) => s + (a.activity_cnt || 0), 0);
+    const totalTime = activities.reduce((s, a) => s + (a.time || 0), 0);
+    const score = 0.6 * totalCnt + 0.4 * totalTime;
 
-  // Total weight
-  const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
-    { $match: { id_user: userId } },
-    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } }
-  ]);
+    // Total weight
+    const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
+      { $match: { id_user: userId } },
+      { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } },
+    ]);
 
-  // Total exercises
-  const totalExercises = totalCnt;
+    // Total exercises
+    const totalExercises = totalCnt;
 
-  // Total workouts
-  const totalWorkouts = await WorkoutActivity.countDocuments({ id_user: userId });
+    // Total workouts
+    const totalWorkouts = await WorkoutActivity.countDocuments({
+      id_user: userId,
+    });
 
-  const xml = `
+    const xml = `
     <?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0">
       <channel>
@@ -776,7 +767,9 @@ if (
 
         <item>
           <title>Reviews</title>
-          <description>${reviewCount} review-uri, rating mediu ${avgRating.toFixed(1)} / 5</description>
+          <description>${reviewCount} review-uri, rating mediu ${avgRating.toFixed(
+      1
+    )} / 5</description>
           <pubDate>${new Date().toUTCString()}</pubDate>
         </item>
 
@@ -802,10 +795,10 @@ if (
     </rss>
   `.trim();
 
-  res.writeHead(200, { "Content-Type": "application/rss+xml" });
-  res.end(xml);
-  return;
-}
+    res.writeHead(200, { "Content-Type": "application/rss+xml" });
+    res.end(xml);
+    return;
+  }
 
   // POST /api/reviews → salvează un review
   if (req.method === "POST" && pathname === "/api/reviews") {
@@ -896,6 +889,20 @@ if (
       return send(res, 500, { error: "Server error" });
     }
   }
+
+  if (req.method === "GET" && pathname === "/api/exercitii") {
+    try {
+      const data = await models.exercitii.find({});
+      return send(res, 200, data);
+    } catch (err) {
+      console.error(err);
+      return send(res, 500, {
+        error: "Couldn't retrieve exercises from the database",
+      });
+    }
+    return;
+  }
+
   if (req.method === "POST" && pathname.startsWith("/api/review-likes/")) {
     const user = requireAuth();
     if (!user) return;
@@ -973,257 +980,336 @@ if (
     });
     return;
   }
+
+  console.log(pathname, query);
+  if (req.method === "PUT" && pathname === "/api/workouts") {
+    const payload = requireAuth();
+    if (!payload) return;
+    console.log("HERE");
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", async () => {
+      try {
+        const workoutName = JSON.parse(body);
+        console.log(workoutName);
+        const ok = await models.antrenamente.updateOne(
+          { name: workoutName },
+          { $set: { hidden: 1 } }
+        );
+        if (!ok) {
+          return send(res, 403, { Eroare: "Nu s-a putut actualiza" });
+        }
+        return send(res, 202);
+      } catch (err) {
+        return send(res, 400, { error: "Invalid request body" });
+      }
+    });
+    return;
+  }
+
   if (req.method === "GET" && pathname === "/api/favorites-summary") {
-  const payload = requireAuth();
-  if (!payload) return;
-  const favs = await Favourites.find({ id_user: payload.id });
-  const favCount = favs.length;
-  const ids = favs.map(f => Number(f.id_exercitiu));
-  const exs = await Exercitiu.find({ id: { $in: ids } });
-  const typeCounts = {};
-  exs.forEach(e => { typeCounts[e.type] = (typeCounts[e.type] || 0) + 1 });
-  const favTypes = Object.entries(typeCounts).map(([l,v])=>({ label:l, value:v }));
-  const mgCounts = {};
-  exs.forEach(e => e.muscle_groups.forEach(m => {
-    mgCounts[m] = (mgCounts[m] || 0) + 1;
-  }));
-  const muscleGroups = Object.entries(mgCounts).map(([l,v])=>({ label:l, value:v }));
-  const avgDifficulty = favCount
-    ? exs.reduce((s,e)=>s+e.difficulty,0) / favCount
-    : 0;
-  return send(res, 200, {
-    favCount,
-    favTypes,
-    likedExercises: exs.map(e=>e.name),
-    muscleGroups,
-    avgDifficulty
-  });
-}
-async function getPayloadOr401() {
+    const payload = requireAuth();
+    if (!payload) return;
+    const favs = await Favourites.find({ id_user: payload.id });
+    const favCount = favs.length;
+    const ids = favs.map((f) => Number(f.id_exercitiu));
+    const exs = await Exercitiu.find({ id: { $in: ids } });
+    const typeCounts = {};
+    exs.forEach((e) => {
+      typeCounts[e.type] = (typeCounts[e.type] || 0) + 1;
+    });
+    const favTypes = Object.entries(typeCounts).map(([l, v]) => ({
+      label: l,
+      value: v,
+    }));
+    const mgCounts = {};
+    exs.forEach((e) =>
+      e.muscle_groups.forEach((m) => {
+        mgCounts[m] = (mgCounts[m] || 0) + 1;
+      })
+    );
+    const muscleGroups = Object.entries(mgCounts).map(([l, v]) => ({
+      label: l,
+      value: v,
+    }));
+    const avgDifficulty = favCount
+      ? exs.reduce((s, e) => s + e.difficulty, 0) / favCount
+      : 0;
+    return send(res, 200, {
+      favCount,
+      favTypes,
+      likedExercises: exs.map((e) => e.name),
+      muscleGroups,
+      avgDifficulty,
+    });
+  }
+  async function getPayloadOr401() {
     const payload = requireAuth();
     if (!payload) throw "401";
     return payload;
   }
   if (req.method === "GET" && pathname === "/api/activity/weekly-summary") {
-  const user = requireAuth();
-  if (!user) return;
+    const user = requireAuth();
+    if (!user) return;
 
-  const userId = user.id;
-  const now = new Date();
-  const day = now.getDay(); // 0 (duminică) - 6 (sâmbătă)
+    const userId = user.id;
+    const now = new Date();
+    const day = now.getDay(); // 0 (duminică) - 6 (sâmbătă)
 
-  const startOfThisWeek = new Date(now);
-  startOfThisWeek.setDate(now.getDate() - day);
-  startOfThisWeek.setHours(0, 0, 0, 0);
+    const startOfThisWeek = new Date(now);
+    startOfThisWeek.setDate(now.getDate() - day);
+    startOfThisWeek.setHours(0, 0, 0, 0);
 
-  const startOfLastWeek = new Date(startOfThisWeek);
-  startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+    const startOfLastWeek = new Date(startOfThisWeek);
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
 
-  const endOfLastWeek = new Date(startOfThisWeek);
+    const endOfLastWeek = new Date(startOfThisWeek);
 
-  // Helper pt query
-  const between = (start, end) => ({ $gte: start, $lt: end });
+    // Helper pt query
+    const between = (start, end) => ({ $gte: start, $lt: end });
 
-  // WorkoutActivity
-  const [waThis, waLast] = await Promise.all([
-    WorkoutActivity.find({ id_user: userId, createdAt: between(startOfThisWeek, now) }),
-    WorkoutActivity.find({ id_user: userId, createdAt: between(startOfLastWeek, endOfLastWeek) }),
-  ]);
+    // WorkoutActivity
+    const [waThis, waLast] = await Promise.all([
+      WorkoutActivity.find({
+        id_user: userId,
+        createdAt: between(startOfThisWeek, now),
+      }),
+      WorkoutActivity.find({
+        id_user: userId,
+        createdAt: between(startOfLastWeek, endOfLastWeek),
+      }),
+    ]);
 
-  // SetInfo
-  const [siThis, siLast] = await Promise.all([
-    SetInfo.find({ id_user: userId, createdAt: between(startOfThisWeek, now) }),
-    SetInfo.find({ id_user: userId, createdAt: between(startOfLastWeek, endOfLastWeek) }),
-  ]);
+    // SetInfo
+    const [siThis, siLast] = await Promise.all([
+      SetInfo.find({
+        id_user: userId,
+        createdAt: between(startOfThisWeek, now),
+      }),
+      SetInfo.find({
+        id_user: userId,
+        createdAt: between(startOfLastWeek, endOfLastWeek),
+      }),
+    ]);
 
-  // Final response
-  const response = {
-    workouts: {
-      thisWeek: waThis.length,
-      lastWeek: waLast.length,
-    },
-    duration: {
-      thisWeek: waThis.reduce((sum, w) => sum + w.duration, 0),
-      lastWeek: waLast.reduce((sum, w) => sum + w.duration, 0),
-    },
-    weight: {
-      thisWeek: siThis.reduce((sum, s) => sum + s.weight_kicker, 0),
-      lastWeek: siLast.reduce((sum, s) => sum + s.weight_kicker, 0),
-    },
-    sets: {
-      thisWeek: siThis.length,
-      lastWeek: siLast.length,
-    },
-  };
+    // Final response
+    const response = {
+      workouts: {
+        thisWeek: waThis.length,
+        lastWeek: waLast.length,
+      },
+      duration: {
+        thisWeek: waThis.reduce((sum, w) => sum + w.duration, 0),
+        lastWeek: waLast.reduce((sum, w) => sum + w.duration, 0),
+      },
+      weight: {
+        thisWeek: siThis.reduce((sum, s) => sum + s.weight_kicker, 0),
+        lastWeek: siLast.reduce((sum, s) => sum + s.weight_kicker, 0),
+      },
+      sets: {
+        thisWeek: siThis.length,
+        lastWeek: siLast.length,
+      },
+    };
 
-  return send(res, 200, response);
-}
+    return send(res, 200, response);
+  }
 
-// 1) Total Sets
-if (req.method === "GET" && pathname === "/api/activity/total-sets") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const totalSets = await SetInfo.countDocuments({ id_user: userId });
-  return send(res, 200, { totalSets });
-}
+  // 1) Total Sets
+  if (req.method === "GET" && pathname === "/api/activity/total-sets") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const totalSets = await SetInfo.countDocuments({ id_user: userId });
+    return send(res, 200, { totalSets });
+  }
 
-// 2) Total Exercises (distinct)
-if (req.method === "GET" && pathname === "/api/activity/total-exercises") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const activities = await Activity.find({ id_user: userId });
-const totalExercises = activities.reduce((sum, a) => sum + (a.activity_cnt || 0), 0);
-return send(res, 200, { totalExercises });
-}
+  // 2) Total Exercises (distinct)
+  if (req.method === "GET" && pathname === "/api/activity/total-exercises") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const activities = await Activity.find({ id_user: userId });
+    const totalExercises = activities.reduce(
+      (sum, a) => sum + (a.activity_cnt || 0),
+      0
+    );
+    return send(res, 200, { totalExercises });
+  }
 
-// 3) Total Weight Lifted
-if (req.method === "GET" && pathname === "/api/activity/total-weight") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  // agregare sumă, with a default empty object to guard against no docs
-  const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
-    { $match: { id_user: userId } },
-    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } }
-  ]);
-  return send(res, 200, { totalWeight });
-}
+  // 3) Total Weight Lifted
+  if (req.method === "GET" && pathname === "/api/activity/total-weight") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    // agregare sumă, with a default empty object to guard against no docs
+    const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
+      { $match: { id_user: userId } },
+      { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } },
+    ]);
+    return send(res, 200, { totalWeight });
+  }
 
-// 4) Avg Weight/Set
-if (req.method === "GET" && pathname === "/api/activity/avg-weight-set") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const [{ totalWeight = 0, count = 0 } = {}] = await SetInfo.aggregate([
-    { $match: { id_user: userId } },
-    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" }, count: { $sum: 1 } } }
-  ]);
-  const avgWeightSet = count ? totalWeight / count : 0;
-  return send(res, 200, { avgWeightSet: Number(avgWeightSet.toFixed(1)) });
-}
+  // 4) Avg Weight/Set
+  if (req.method === "GET" && pathname === "/api/activity/avg-weight-set") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const [{ totalWeight = 0, count = 0 } = {}] = await SetInfo.aggregate([
+      { $match: { id_user: userId } },
+      {
+        $group: {
+          _id: null,
+          totalWeight: { $sum: "$weight_kicker" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    const avgWeightSet = count ? totalWeight / count : 0;
+    return send(res, 200, { avgWeightSet: Number(avgWeightSet.toFixed(1)) });
+  }
 
-// 5) Total Workouts
-if (req.method === "GET" && pathname === "/api/activity/total-workouts") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const totalWorkouts = await WorkoutActivity.countDocuments({ id_user: userId });
-  return send(res, 200, { totalWorkouts });
-}
-if (req.method === "GET" && pathname === "/api/activity/total-weight-all") {
-  // nu mai requireAuth, că vrem tot  
-  const [{ totalWeight = 0 }] = await SetInfo.aggregate([
-    // { $match: { /* removed */ } },
-    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } }
-  ]);
-  return send(res, 200, { totalWeight });
-}
-// 6) Total Time & Avg Duration
-if (req.method === "GET" && pathname === "/api/activity/time") {
-  const payload = requireAuth(); if (!payload) return;
-  const userId = payload.id;
-  const docs = await WorkoutActivity.find({ id_user: userId }).select("duration").lean();
-  const total = docs.reduce((sum, w) => sum + (w.duration||0), 0);
-  const totalWorkouts = docs.length;
-  const avgDuration = totalWorkouts ? Math.round(total/totalWorkouts) : 0;
-  const hours = Math.floor(total/60), mins = Math.round(total%60);
-  return send(res, 200, {
-    totalTime: `${hours} h ${mins} m`,
-    avgDuration: `${avgDuration} m`
-  });
-}
-// 1) Total Sets (all users)
-if (req.method === "GET" && pathname === "/api/activity/total-sets-all") {
-  const [{ totalSets = 0 } = {}] = await SetInfo.aggregate([
-    { $group: { _id: null, totalSets: { $sum: 1 } } }
-  ]);
-  return send(res, 200, { totalSets });
-}
-if (req.method === "GET" && pathname === "/api/activity/weekly-progress") {
-  const user = requireAuth(); if (!user) return;
+  // 5) Total Workouts
+  if (req.method === "GET" && pathname === "/api/activity/total-workouts") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const totalWorkouts = await WorkoutActivity.countDocuments({
+      id_user: userId,
+    });
+    return send(res, 200, { totalWorkouts });
+  }
+  if (req.method === "GET" && pathname === "/api/activity/total-weight-all") {
+    // nu mai requireAuth, că vrem tot
+    const [{ totalWeight = 0 }] = await SetInfo.aggregate([
+      // { $match: { /* removed */ } },
+      { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } },
+    ]);
+    return send(res, 200, { totalWeight });
+  }
+  // 6) Total Time & Avg Duration
+  if (req.method === "GET" && pathname === "/api/activity/time") {
+    const payload = requireAuth();
+    if (!payload) return;
+    const userId = payload.id;
+    const docs = await WorkoutActivity.find({ id_user: userId })
+      .select("duration")
+      .lean();
+    const total = docs.reduce((sum, w) => sum + (w.duration || 0), 0);
+    const totalWorkouts = docs.length;
+    const avgDuration = totalWorkouts ? Math.round(total / totalWorkouts) : 0;
+    const hours = Math.floor(total / 60),
+      mins = Math.round(total % 60);
+    return send(res, 200, {
+      totalTime: `${hours} h ${mins} m`,
+      avgDuration: `${avgDuration} m`,
+    });
+  }
+  // 1) Total Sets (all users)
+  if (req.method === "GET" && pathname === "/api/activity/total-sets-all") {
+    const [{ totalSets = 0 } = {}] = await SetInfo.aggregate([
+      { $group: { _id: null, totalSets: { $sum: 1 } } },
+    ]);
+    return send(res, 200, { totalSets });
+  }
+  if (req.method === "GET" && pathname === "/api/activity/weekly-progress") {
+    const user = requireAuth();
+    if (!user) return;
 
-  const userId = user.id;
-  const today = new Date();
-  const weeksBack = 6;
+    const userId = user.id;
+    const today = new Date();
+    const weeksBack = 6;
 
-  const weeks = Array.from({ length: weeksBack }).map((_, i) => {
-    const start = new Date(today);
-    start.setDate(today.getDate() - today.getDay() - i * 7);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 7);
-    return { start, end, label: `${start.getMonth() + 1}/${start.getDate()}` };
-  }).reverse();
+    const weeks = Array.from({ length: weeksBack })
+      .map((_, i) => {
+        const start = new Date(today);
+        start.setDate(today.getDate() - today.getDay() - i * 7);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 7);
+        return {
+          start,
+          end,
+          label: `${start.getMonth() + 1}/${start.getDate()}`,
+        };
+      })
+      .reverse();
 
-  const results = await Promise.all(
-    weeks.map(({ start, end }) =>
-      SetInfo.aggregate([
-        { $match: { id_user: userId, createdAt: { $gte: start, $lt: end } } },
-        { $group: { _id: null, total: { $sum: "$weight_kicker" } } },
-      ])
-    )
-  );
+    const results = await Promise.all(
+      weeks.map(({ start, end }) =>
+        SetInfo.aggregate([
+          { $match: { id_user: userId, createdAt: { $gte: start, $lt: end } } },
+          { $group: { _id: null, total: { $sum: "$weight_kicker" } } },
+        ])
+      )
+    );
 
-  const payload = weeks.map((w, i) => ({
-    label: w.label,
-    total: results[i][0]?.total || 0,
-  }));
+    const payload = weeks.map((w, i) => ({
+      label: w.label,
+      total: results[i][0]?.total || 0,
+    }));
 
-  return send(res, 200, payload);
-}
+    return send(res, 200, payload);
+  }
 
+  // 2) Total Exercises (distinct, all users)
+  if (
+    req.method === "GET" &&
+    pathname === "/api/activity/total-exercises-all"
+  ) {
+    const docs = await SetInfo.find().select("id_exercitiu").lean();
+    const totalExercises = new Set(docs.map((d) => d.id_exercitiu)).size;
+    return send(res, 200, { totalExercises });
+  }
 
-// 2) Total Exercises (distinct, all users)
-if (req.method === "GET" && pathname === "/api/activity/total-exercises-all") {
-  const docs = await SetInfo.find().select("id_exercitiu").lean();
-  const totalExercises = new Set(docs.map(d => d.id_exercitiu)).size;
-  return send(res, 200, { totalExercises });
-}
+  // 3) Total Weight Lifted (all users)
+  if (req.method === "GET" && pathname === "/api/activity/total-weight-all") {
+    const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
+      { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } },
+    ]);
+    return send(res, 200, { totalWeight });
+  }
 
-// 3) Total Weight Lifted (all users)
-if (req.method === "GET" && pathname === "/api/activity/total-weight-all") {
-  const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
-    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } }
-  ]);
-  return send(res, 200, { totalWeight });
-}
+  // 4) Avg Weight/Set (all users)
+  if (req.method === "GET" && pathname === "/api/activity/avg-weight-set-all") {
+    const [{ totalWeight = 0, count = 0 } = {}] = await SetInfo.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalWeight: { $sum: "$weight_kicker" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    const avgWeightSet = count ? totalWeight / count : 0;
+    return send(res, 200, { avgWeightSet: Number(avgWeightSet.toFixed(1)) });
+  }
 
-// 4) Avg Weight/Set (all users)
-if (req.method === "GET" && pathname === "/api/activity/avg-weight-set-all") {
-  const [{ totalWeight = 0, count = 0 } = {}] = await SetInfo.aggregate([
-    { $group: {
-        _id: null,
-        totalWeight: { $sum: "$weight_kicker" },
-        count:       { $sum: 1 }
-    }}
-  ]);
-  const avgWeightSet = count ? totalWeight / count : 0;
-  return send(res, 200, { avgWeightSet: Number(avgWeightSet.toFixed(1)) });
-}
+  // 5) Total Workouts (all users)
+  if (req.method === "GET" && pathname === "/api/activity/total-workouts-all") {
+    const [{ totalWorkouts = 0 } = {}] = await WorkoutActivity.aggregate([
+      { $group: { _id: null, totalWorkouts: { $sum: "$wk_cnt" } } },
+    ]);
+    // if you want to count documents instead of sum of wk_cnt:
+    // const totalWorkouts = await WorkoutActivity.countDocuments();
+    return send(res, 200, { totalWorkouts });
+  }
 
-// 5) Total Workouts (all users)
-if (req.method === "GET" && pathname === "/api/activity/total-workouts-all") {
-  const [{ totalWorkouts = 0 } = {}] = await WorkoutActivity.aggregate([
-    { $group: { _id: null, totalWorkouts: { $sum: "$wk_cnt" } } }
-  ]);
-  // if you want to count documents instead of sum of wk_cnt:
-  // const totalWorkouts = await WorkoutActivity.countDocuments();
-  return send(res, 200, { totalWorkouts });
-}
-
-// 6) Total Time & Avg Duration (all users)
-if (req.method === "GET" && pathname === "/api/activity/time-all") {
-  const docs = await WorkoutActivity.find().select("duration").lean();
-  const total     = docs.reduce((sum, w) => sum + (w.duration||0), 0);
-  const count     = docs.length;
-  const avgDuration = count ? Math.round(total/count) : 0;
-  const hours     = Math.floor(total/60);
-  const mins      = Math.round(total%60);
-  return send(res, 200, {
-    totalTime:   `${hours} h ${mins} m`,
-    avgDuration: `${avgDuration} m`
-  });
-}
-
-
-
+  // 6) Total Time & Avg Duration (all users)
+  if (req.method === "GET" && pathname === "/api/activity/time-all") {
+    const docs = await WorkoutActivity.find().select("duration").lean();
+    const total = docs.reduce((sum, w) => sum + (w.duration || 0), 0);
+    const count = docs.length;
+    const avgDuration = count ? Math.round(total / count) : 0;
+    const hours = Math.floor(total / 60);
+    const mins = Math.round(total % 60);
+    return send(res, 200, {
+      totalTime: `${hours} h ${mins} m`,
+      avgDuration: `${avgDuration} m`,
+    });
+  }
 
   // ————— STATIC FILES —————
   if (req.method === "GET" && pathname === "/api/reviews-summary") {
@@ -1428,6 +1514,22 @@ async function updateDb() {
   const muscles_array = JSON.parse(data);
   await Grupa.insertMany(muscles_array);
 }
-server.listen(3000, () => {
-  updateDb();
-});
+
+async function start() {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://varunax424:RsiRPVBTxJItTu6c@sagacluster.ybauvs6.mongodb.net/sagaDB",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    await updateDb();
+    server.listen(3000);
+  } catch (err) {
+    console.error("🔥 Startup error:", err);
+    process.exit(1);
+  }
+}
+
+start();

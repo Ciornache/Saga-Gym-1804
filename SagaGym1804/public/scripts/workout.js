@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(avg);
       wk.avg = avg;
     });
+
     const ov = document.createElement("div");
     ov.id = "picker-overlay";
     document.body.appendChild(ov);
@@ -258,7 +259,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".workout-tag-container");
     container.innerHTML = "";
     workouts.forEach((wk, idx) => {
+      if (wk.hidden) return;
+
+      const tagContainer = document.createElement("div");
+      tagContainer.className = "tag-container";
+
+      const icon = document.createElement("i");
+      icon.classList.add("fa-solid");
+      icon.classList.add("fa-xmark");
+      icon.classList.add("fa-xmark-class");
+
+      tagContainer.addEventListener("mouseenter", () => {
+        icon.classList.add("active");
+      });
+
+      tagContainer.addEventListener("mouseleave", () => {
+        icon.classList.remove("active");
+      });
+
+      icon.addEventListener("click", () => {
+        (async function (wkName) {
+          const token =
+            localStorage.getItem("token") || sessionStorage.getItem("token");
+
+          await fetch("/api/workouts", {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Value: 1,
+            },
+            body: JSON.stringify(wkName),
+          });
+        })(wk.name);
+      });
+
       const tag = document.createElement("div");
+      tagContainer.appendChild(icon);
+      tagContainer.appendChild(tag);
       tag.className = "workout-tag";
       tag.textContent = `${wk.name}`;
       tag.dataset.index = idx;
@@ -293,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (workouts.length) {
         currentWorkoutId = workouts[0].id_antrenament;
       }
-      container.appendChild(tag);
+      container.appendChild(tagContainer);
     });
   }
 
@@ -318,7 +356,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const section = document.querySelector(".workout-exercises-section");
     section.innerHTML = `<h2>Exercises</h2>`;
-    console.log(exercises);
     exercises.forEach((ex) => {
       const muscleIcons = ex.muscle_groups
         .map(
@@ -391,7 +428,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       exNameNode.addEventListener("click", (e) => {
         const exName = e.target.parentNode.getAttribute("name");
-        console.log(exName);
         window.location.href = `http://localhost:3000/exercitiu.html?exercise-name=${exName}`;
       });
 
@@ -425,7 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="button" id="end-workout">End Workout</button>
     `;
     section.appendChild(btns);
-    console.log(section);
     const startBtn = document.getElementById("start-workout");
     const endBtn = document.getElementById("end-workout");
     startBtn.addEventListener("click", () => {
@@ -468,7 +503,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const titleEl = card.querySelector("h3");
         const exName = titleEl?.textContent.trim();
         const match = exercitii.find((e) => e.name === exName);
-        console.log(match);
         if (!match) {
           console.warn("No matching exercise for", exName);
           continue;
@@ -488,10 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (duration) {
             const dd = duration.textContent.slice(0, -1);
             const reps = item.querySelector(".set-reps");
-            console.log(reps);
             const numberOfResps = reps.textContent.slice(0, -4);
-            console.log("Duration", Number(dd), duration.textContent, input);
-            console.log("Input", input, input.checked);
             if (input.checked) d = Number(dd) * Number(numberOfResps);
           }
           return sum + d;
@@ -505,7 +536,6 @@ document.addEventListener("DOMContentLoaded", () => {
           activity_cnt,
           time: (time / 60).toFixed(2),
         };
-        console.log("Payload", payload);
         try {
           const res = await fetch("/api/activities", {
             method: "PUT",
@@ -615,7 +645,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .forEach((k) => (k.disabled = false));
       section.querySelectorAll(".set-checkbox").forEach((cb) => cb.remove());
       section.querySelectorAll(".set-info").forEach((info) => info.remove());
-      section.querySelectorAll("span").forEach((sp) => sp.remove());
+      section
+        .querySelectorAll(".mark-complete-text")
+        .forEach((sp) => sp.remove());
     });
   }
 });

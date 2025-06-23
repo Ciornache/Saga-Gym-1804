@@ -763,11 +763,11 @@ hr {
   cursor: pointer;
 }
 
-  .modal-image-checkbox {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
+.modal-image-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
 
 .modal-select-image {
   position: absolute;
@@ -847,42 +847,6 @@ hr {
   color: gold !important;
 }
 
-.header {
-  padding: 1rem 2rem;
-  background-color: var(--bg-light);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.logo-container {
-  flex-shrink: 0;
-}
-
-.logo {
-  max-width: 200px;
-  height: auto;
-  transition: max-width 0.3s ease;
-}
-
-.header-message {
-  text-align: right;
-  flex-grow: 1;
-  max-width: 70%;
-  transition: font-size 0.3s ease;
-}
-
-.header-message h1,
-.header-message p {
-  margin: 0;
-  color: var(--text-dark);
-}
-
-.header-message p {
-  font-size: clamp(0.5rem, 8vh, 1rem) !important;
-}
-
 .acc-icons {
   padding: 0px;
   display: flex;
@@ -901,11 +865,18 @@ hr {
 .acc-icons button:hover {
   background-color: transparent;
 }
+
 @media (max-width: 480px) {
   .cards-area {
     grid-template-columns: 1fr;
     gap: 1rem;
     padding: 0.75rem 1rem;
+  }
+  .logo {
+    min-width: 32vw !important;
+    position: relative;
+    left: 12vw !important;
+    top: 5vw;
   }
 }
 
@@ -923,6 +894,12 @@ hr {
   }
   .cards-area {
     grid-row: 2;
+  }
+  .logo {
+    min-width: 35vw;
+    width: 25vw !important;
+    position: relative;
+    left: 3vw;
   }
 }
 @media (max-width: 820px) {
@@ -986,4 +963,39 @@ div[class="img"] > .fa-star {
 
 .fa-magnifying-glass {
   cursor: pointer;
+}
+.header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 1rem 2rem;
+}
+
+.logo-container {
+  flex: 0 0 auto;
+  width: auto;
+  margin-right: 1rem;
+}
+
+.logo {
+  display: block;
+  width: 100% !important;
+  max-width: 300px;
+  height: auto;
+  transition: max-width 0.3s ease;
+}
+
+.header-message {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.header-message h1 {
+  font-size: clamp(1rem, 5vw, 2rem);
+  margin: 0;
+  line-height: 1.1;
+}
+.header-message p {
+  font-size: clamp(0.75rem, 3vw, 1rem);
+  margin: 0;
 }

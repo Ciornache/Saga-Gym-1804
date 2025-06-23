@@ -5,5 +5,6 @@ const antrenamentSchema = new mongoose.Schema({
   exercitii: [Workout_ex],
   id_user: String,
   name: String,
+  hidden: Number,
 });
 module.exports = mongoose.model("Antrenament", antrenamentSchema);
