@@ -718,6 +718,95 @@ if (
       });
     }
   }
+ if (req.method === "GET" && pathname === "/rss/stats.xml") {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const username = url.searchParams.get("user-name");
+  if (!username) return send(res, 400, { error: "Missing user-name" });
+
+  const user = await models.users.findOne({ name: username });
+  if (!user) return send(res, 404, { error: "User not found" });
+
+  const userId = user._id.toString();
+
+  // Reviews
+  const reviews = await Review.find({ userEmail: user.email });
+  const reviewCount = reviews.length;
+  const avgRating = reviewCount ? (reviews.reduce((s, r) => s + r.rating, 0) / reviewCount) : 0;
+  const likeCounts = await Promise.all(reviews.map(r => ReviewLike.countDocuments({ reviewId: r._id })));
+  const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
+
+  // Leaderboard score
+  const activities = await Activity.find({ id_user: userId });
+  const totalCnt = activities.reduce((s, a) => s + (a.activity_cnt || 0), 0);
+  const totalTime = activities.reduce((s, a) => s + (a.time || 0), 0);
+  const score = 0.6 * totalCnt + 0.4 * totalTime;
+
+  // Total weight
+  const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
+    { $match: { id_user: userId } },
+    { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } }
+  ]);
+
+  // Total exercises
+  const totalExercises = totalCnt;
+
+  // Total workouts
+  const totalWorkouts = await WorkoutActivity.countDocuments({ id_user: userId });
+
+  const xml = `
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <rss version="2.0">
+      <channel>
+        <title>${username}'s SagaGym Stats</title>
+        <description>Statistici personale din SagaGym</description>
+        <link>http://localhost:3000/stats.html</link>
+        <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+
+        <item>
+          <title>Total Likes</title>
+          <description>${totalLikes} like-uri acumulate</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+        <item>
+          <title>Leaderboard Score</title>
+          <description>Scor: ${score.toFixed(2)}</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+        <item>
+          <title>Reviews</title>
+          <description>${reviewCount} review-uri, rating mediu ${avgRating.toFixed(1)} / 5</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+        <item>
+          <title>Total Weight Lifted</title>
+          <description>${totalWeight} kg în total</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+        <item>
+          <title>Totalexercises</title>
+          <description>${totalExercises} exerciții</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+        <item>
+          <title>Total antrenamente</title>
+          <description>${totalWorkouts} antrenamente finalizate</description>
+          <pubDate>${new Date().toUTCString()}</pubDate>
+        </item>
+
+      </channel>
+    </rss>
+  `.trim();
+
+  res.writeHead(200, { "Content-Type": "application/rss+xml" });
+  res.end(xml);
+  return;
+}
+
   // POST /api/reviews → salvează un review
   if (req.method === "POST" && pathname === "/api/reviews") {
     const userData = requireAuth();

@@ -9,17 +9,27 @@ const headers = {
   Authorization: `Bearer ${token}`,
 };
 
+const palette = [
+  "#3b82f6", "#ef4444", "#10b981", "#f59e0b",
+  "#8b5cf6", "#ec4899", "#14b8a6", "#eab308",
+  "#6366f1", "#f43f5e", "#22c55e", "#a855f7",
+  "#0ea5e9", "#f87171", "#4ade80", "#facc15",
+  "#7c3aed", "#fb7185", "#2dd4bf", "#fde047"
+];
+
+function getRandomColor(index) {
+  return palette[index % palette.length];
+}
+
+
 async function loadFavorites() {
   const res = await fetch("/api/favorites-summary", { headers });
   if (!res.ok) throw new Error("Could not fetch favorites summary");
   const data = await res.json();
 
-  document.querySelector(".favorite-exercises .fav-count").textContent =
-    data.favCount;
+  document.querySelector(".favorite-exercises .fav-count").textContent = data.favCount;
 
-  const typesContainer = document.querySelector(
-    ".favorite-types .types-container"
-  );
+  const typesContainer = document.querySelector(".favorite-types .types-container");
   typesContainer.innerHTML = "";
   data.favTypes.forEach((t) => {
     const pct = data.favCount ? Math.round((t.value / data.favCount) * 100) : 0;
@@ -39,6 +49,8 @@ async function loadFavorites() {
   const mCtx = document.getElementById("muscleChart").getContext("2d");
   const labels = data.muscleGroups.map((m) => m.label);
   const values = data.muscleGroups.map((m) => m.value);
+  const colors = values.map((_, i) => getRandomColor(i));
+
   new Chart(mCtx, {
     type: "doughnut",
     data: {
@@ -46,7 +58,7 @@ async function loadFavorites() {
       datasets: [
         {
           data: values,
-          backgroundColor: ["#e63946", "#2a9d8f", "#f06292", "#6a4c93"],
+          backgroundColor: colors,
         },
       ],
     },
@@ -57,32 +69,23 @@ async function loadFavorites() {
       responsive: true,
     },
   });
-  const legend = document.querySelector(".muscle-groups .legend");
-  legend.innerHTML = data.muscleGroups
-    .map(
-      (m, i) => `
-    <span>
-      <i class="fas fa-circle" style="color:${
-        ["#e63946", "#2a9d8f", "#f06292", "#6a4c93"][i]
-      }"></i>
-      ${m.label} ${Math.round(
-        (m.value / values.reduce((a, b) => a + b, 0)) * 100
-      )}%
-    </span>
-  `
-    )
-    .join("");
 
-  document.querySelector(".avg-difficulty .avg-score").firstChild.textContent =
-    data.avgDifficulty.toFixed(1) + " ";
+  const legend = document.querySelector(".muscle-groups .legend");
+  const total = values.reduce((a, b) => a + b, 0);
+  legend.innerHTML = data.muscleGroups
+    .map((m, i) => `
+      <span>
+        <i class="fas fa-circle" style="color:${colors[i]}"></i>
+        ${m.label} ${Math.round((m.value / total) * 100)}%
+      </span>
+    `).join("");
+
+  document.querySelector(".avg-difficulty .avg-score").firstChild.textContent = data.avgDifficulty.toFixed(1) + " ";
   const score = data.avgDifficulty;
   const icons = document.querySelectorAll(".avg-difficulty .dumbbells i");
-
   icons.forEach((i) => i.classList.remove("filled", "half"));
-
   const full = Math.floor(score);
   const frac = score - full;
-
   icons.forEach((icon, idx) => {
     if (idx < full) {
       icon.classList.add("filled");
@@ -94,17 +97,14 @@ async function loadFavorites() {
 
 async function loadReviews() {
   headers.saga = "Saga";
-  console.log(headers);
   const res = await fetch("/api/reviews-summary", { headers });
   if (!res.ok) throw new Error("Could not fetch reviews summary");
   const d = await res.json();
 
   document.querySelector(".review-count .value").textContent = d.reviewCount;
-  document.querySelector(".review-average .value").textContent =
-    d.avgRating.toFixed(1) + " / 5";
+  document.querySelector(".review-average .value").textContent = d.avgRating.toFixed(1) + " / 5";
   document.querySelector(".total-likes .value").textContent = d.totalLikes;
-  document.querySelector(".likes-per-review .value").textContent =
-    d.likesPerReview.toFixed(1);
+  document.querySelector(".likes-per-review .value").textContent = d.likesPerReview.toFixed(1);
   document.getElementById("minLikesVal").textContent = d.minLikes;
   document.getElementById("maxLikesVal").textContent = d.maxLikes;
 }
@@ -120,36 +120,20 @@ async function loadActivity() {
     time:            "/api/activity/time",
   };
 
-  // 1) fetch everything in parallel
   const paths = Object.values(endpoints);
   const raw = await Promise.all(paths.map(p => fetch(p, { headers })));
-
-  // 2) log raw responses
-  raw.forEach((r,i) => {
-    console.log(`🔹 [${paths[i]}] status:`, r.status, r.statusText);
-  });
-
-  // 3) parse JSON bodies
   const bodies = await Promise.all(raw.map(r => r.json()));
 
-  // 4) log parsed payloads
-  Object.keys(endpoints).forEach((key, i) => {
-    console.log(`🔸 ${key}:`, bodies[i]);
-  });
-
-  // 5) destructure into variables
   const [
-  { totalWorkouts },
-  { totalSets },
-  { totalUniqueExercises }, // 🟢 <- mută-l aici
-  { totalExercises },       // 🔴 <- după
-  { totalWeight },
-  { avgWeightSet },
-  { totalTime, avgDuration }
-] = bodies;
+    { totalWorkouts },
+    { totalSets },
+    { totalUniqueExercises },
+    { totalExercises },
+    { totalWeight },
+    { avgWeightSet },
+    { totalTime, avgDuration }
+  ] = bodies;
 
-
-  // 6) now update the DOM
   document.querySelector(".total-workouts .value").textContent   = totalWorkouts;
   document.querySelector(".total-sets .value").textContent       = totalSets;
   document.querySelector(".total-exercises .value").textContent  = totalExercises;
@@ -160,29 +144,6 @@ async function loadActivity() {
   document.querySelector(".avg-duration .value").textContent     = avgDuration;
 }
 
-document.querySelectorAll(".sidebar a").forEach((link) => {
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
-    document
-      .querySelectorAll(".sidebar li")
-      .forEach((li) => li.classList.remove("active"));
-    link.parentElement.classList.add("active");
-    document
-      .querySelectorAll(".tab-content")
-      .forEach((sec) => (sec.style.display = "none"));
-    document.getElementById(link.dataset.tab).style.display = "block";
-  });
-});
-
-const viewLink = document.querySelector(".favorite-exercises .view-link");
-if (viewLink) {
-  viewLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    const allLiked = document.querySelector(".all-liked");
-    allLiked.classList.add("highlight");
-    setTimeout(() => allLiked.classList.remove("highlight"), 2000);
-  });
-}
 async function loadProgressChart() {
   const res = await fetch("/api/activity/weekly-progress", { headers });
   const data = await res.json();
@@ -195,10 +156,10 @@ async function loadProgressChart() {
       datasets: [{
         label: "Weight Lifted (kg)",
         data: data.map(d => d.total),
-        borderColor: "#3b82f6",       // albastru
-        backgroundColor: "rgba(59, 130, 246, 0.2)", // umplutură
+        borderColor: "#3b82f6",
+        backgroundColor: "rgba(59, 130, 246, 0.2)",
         fill: true,
-        tension: 0.4,                 // face linia curbată
+        tension: 0.4,
         pointRadius: 5,
         pointHoverRadius: 7,
       }],
@@ -206,9 +167,7 @@ async function loadProgressChart() {
     options: {
       responsive: true,
       plugins: {
-        legend: {
-          display: false
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: {
             label: ctx => `${ctx.parsed.y} kg`
@@ -227,6 +186,7 @@ async function loadProgressChart() {
     },
   });
 }
+
 async function loadWeeklySummary() {
   const res = await fetch("/api/activity/weekly-summary", { headers });
   const data = await res.json();
@@ -242,28 +202,49 @@ async function loadWeeklySummary() {
   table.innerHTML = "";
 
   rows.forEach(([label, obj]) => {
-  const { thisWeek, lastWeek } = obj;
-  const diff = thisWeek - lastWeek;
-  const sign = diff >= 0 ? "+" : "";
-  const percent = lastWeek === 0 ? "∞%" : ((diff / lastWeek) * 100).toFixed(0) + "%";
+    const { thisWeek, lastWeek } = obj;
+    const diff = thisWeek - lastWeek;
+    const sign = diff >= 0 ? "+" : "";
+    const percent = lastWeek === 0 ? "∞%" : ((diff / lastWeek) * 100).toFixed(0) + "%";
 
-  const row = `
-    <tr>
-      <td>${label}</td>
-      <td>${thisWeek}</td>
-      <td>${lastWeek}</td>
-      <td>${sign}${percent}</td>
-    </tr>
-  `;
-  table.innerHTML += row;
+    table.innerHTML += `
+      <tr>
+        <td>${label}</td>
+        <td>${thisWeek}</td>
+        <td>${lastWeek}</td>
+        <td>${sign}${percent}</td>
+      </tr>
+    `;
+  });
+}
+
+// Sidebar tab switching
+document.querySelectorAll(".sidebar a").forEach((link) => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.querySelectorAll(".sidebar li").forEach((li) => li.classList.remove("active"));
+    link.parentElement.classList.add("active");
+    document.querySelectorAll(".tab-content").forEach((sec) => (sec.style.display = "none"));
+    document.getElementById(link.dataset.tab).style.display = "block";
+  });
 });
 
+// "View them" link highlight
+const viewLink = document.querySelector(".favorite-exercises .view-link");
+if (viewLink) {
+  viewLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    const allLiked = document.querySelector(".all-liked");
+    allLiked.classList.add("highlight");
+    setTimeout(() => allLiked.classList.remove("highlight"), 2000);
+  });
 }
-// 7) La load, rulează toate funcțiile
+
+// Init
 window.addEventListener("DOMContentLoaded", () => {
-  loadFavorites().catch((err) => console.error(err));
-  loadReviews().catch((err) => console.error(err));
-  loadActivity().catch((err) => console.error(err));
+  loadFavorites().catch(console.error);
+  loadReviews().catch(console.error);
+  loadActivity().catch(console.error);
   loadWeeklySummary().catch(console.error);
   loadProgressChart().catch(console.error);
 });
