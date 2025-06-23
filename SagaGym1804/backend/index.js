@@ -703,6 +703,84 @@ ${message}
       });
     }
   }
+
+  if (req.method === "GET" && pathname.startsWith("/rss/leaderboard.xml")) {
+    const { gender, workoutType, age, muscle, weight } = query || {};
+    const userFilter = {};
+    if (gender) {
+      userFilter.gender = String(gender[0]).toUpperCase() + gender.slice(1);
+    }
+    if (age) {
+      userFilter.interval_varsta = age;
+    }
+    if (weight) {
+      if (weight.endsWith("+")) {
+        let min = weight.split("-")[0];
+        userFilter.weight = { $gte: Number(min) };
+      } else if (weight.includes("-")) {
+        const [min, max] = weight.split("-").map(Number);
+        userFilter.weight = { $gte: min, $lt: max };
+      } else if (weight.startsWith("<")) {
+        userFilter.weight = { $lt: Number(weight.slice(1)) };
+      }
+    }
+
+    const users = await models.users.find(userFilter);
+    const userIds = users.map((u) => u._id.toString());
+    const activities = await Activity.find({ id_user: { $in: userIds } });
+
+    const exFilter = {};
+    if (workoutType) {
+      exFilter.type = workoutType;
+    }
+
+    let exList = await models.exercitii.find(exFilter);
+    if (muscle)
+      exList = exList.filter((e) =>
+        e.muscle_groups.includes(muscle.toLowerCase())
+      );
+    exList = exList.map((e) => e.id);
+    const exIds = exList.map((e) => String(e));
+    const board = users
+      .map((u) => {
+        const acts = activities.filter(
+          (a) =>
+            a.id_user === u._id.toString() && exIds.includes(a.id_exercitiu)
+        );
+        const totalCnt = acts.reduce((s, a) => s + a.activity_cnt, 0);
+        const totalTime = acts.reduce((s, a) => s + a.time, 0);
+        const score = 0.6 * totalCnt + 0.4 * totalTime;
+        return {
+          username: u.name,
+          score,
+          joinDate: u.createdAt,
+        };
+      })
+      .filter((e) => e.score > 0)
+      .sort((a, b) => b.score - a.score);
+
+    const xml = `
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <rss version="2.0">
+          <channel>
+        ${board
+          .map((u) => {
+            return `
+                <item>
+                    <title>${u.username}</title>
+                    <description>Loc in clasament pentru ${u.username}. Scorul ${u.score}</description>
+                    <pubDate>${u.joinDate}</pubDate>
+                </item>
+            `;
+          })
+          .join("\n")}
+          </channel>
+        </rss>
+      `;
+    res.writeHead(200, { "Content-Type": "application/rss+xml" });
+    res.end(xml);
+    return;
+  }
   if (req.method === "GET" && pathname === "/rss/stats.xml") {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const username = url.searchParams.get("user-name");
@@ -981,11 +1059,9 @@ ${message}
     return;
   }
 
-  console.log(pathname, query);
   if (req.method === "PUT" && pathname === "/api/workouts") {
     const payload = requireAuth();
     if (!payload) return;
-    console.log("HERE");
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
@@ -993,7 +1069,6 @@ ${message}
     req.on("end", async () => {
       try {
         const workoutName = JSON.parse(body);
-        console.log(workoutName);
         const ok = await models.antrenamente.updateOne(
           { name: workoutName },
           { $set: { hidden: 1 } }
@@ -1518,16 +1593,16 @@ async function updateDb() {
 async function start() {
   try {
     await mongoose.connect(
-      "mongodb+srv://varunax424:RsiRPVBTxJItTu6c@sagacluster.ybauvs6.mongodb.net/sagaDB",
+      "mongodb+srv://varunax424:RsiRPVBTxJItTu6c@sagacluster.ybauvs6.mongodb.net/sagaDB?retryWrites=true&w=majority&appName=SagaCluster",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }
     );
-    await updateDb();
+    // await updateDb();
     server.listen(3000);
+    console.log("Server listening on port 3000");
   } catch (err) {
-    console.error("🔥 Startup error:", err);
     process.exit(1);
   }
 }

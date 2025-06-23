@@ -98,6 +98,8 @@ main {
   text-align: left;
   align-items: center;
   max-height: 100%;
+  text-decoration: none;
+  color: black;
 }
 
 .navbar-button:hover {

@@ -56,7 +56,7 @@ logoutButton.addEventListener("click", (e) => {
 userAccWindow.addEventListener("click", () => {
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
-  if (token) window.location.href = "Account.html";
+  if (token) window.location.href = "account.html";
   else window.location.href = "login.html";
 });
 
