@@ -190,10 +190,13 @@ async function getStarCounter(star) {
   const nameEl = cardEl.querySelector("h3");
   const name = nameEl?.textContent.trim().toLowerCase();
   const id_exercitiu = exercises.find((e) => e.name.toLowerCase() === name)?.id;
-  const cnt = favourites.filter(
+
+  const arr = favourites.filter(
     (f) => f.id_exercitiu === id_exercitiu.toString()
-  )[0].cnt;
-  return cnt;
+  );
+  if (arr.length > 0) {
+    return arr[0].cnt;
+  } else return 0;
 }
 
 function updateSortCriteria(fieldName, isChecked) {
@@ -581,7 +584,6 @@ async function updateStars() {
     const exNode = exerciseNames.find((e) => {
       return e.textContent.toLowerCase() === exName.name.toLowerCase();
     });
-    console.log(id_user, fav.id_user, fav);
     if (exNode && id_user === fav.id_user) {
       const icon = exNode.previousSibling.previousSibling.querySelector("i");
       icon.classList.toggle("star-selected");
