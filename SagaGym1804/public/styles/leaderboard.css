@@ -346,3 +346,81 @@
 #filter-info {
   align-self: flex-end;
 }
+
+@media (max-width: 900px) {
+  .lead-container {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  .criteria-options {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .leaderboard {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-container {
+    padding: 1rem 0.25rem;
+  }
+  .lead-criterias {
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+  }
+  .criteria-options {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .criteria-group h3 {
+    font-size: 0.95rem;
+  }
+  .criteria-options .option {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.6rem;
+  }
+  .lead-buttons-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .lead-buttons-container button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.7rem 0.5rem;
+  }
+  .table-container {
+    overflow-x: auto;
+    width: 100vw;
+    padding: 0;
+  }
+  .leaderboard {
+    min-width: 500px;
+    font-size: 0.95rem;
+  }
+  #filter-info {
+    font-size: 0.95rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .table-container {
+    overflow-x: auto;
+    width: 100vw;
+    max-width: 100vw;
+    padding: 0;
+  }
+  .leaderboard {
+    display: block;
+    min-width: 500px;
+    width: max-content;
+    font-size: 0.95rem;
+  }
+}
