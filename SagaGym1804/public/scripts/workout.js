@@ -606,21 +606,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const wk_cnt = completed.length;
-      const duration = completed.reduce((sum, item) => {
-        const dd = parseFloat(
-          item.querySelector(".set-duration").textContent.slice(0, -1)
-        );
-        return sum + dd;
-      }, 0);
+     const REST_TIME = 90; // secunde între seturi
 
-      console.log("🧮 Workout duration (minutes):", duration);
+const durationSec = completed.reduce((sum, item) => {
+  const dur = parseFloat(item.querySelector(".set-duration")?.textContent.slice(0, -1)) || 0;
+  return sum + dur;
+}, 0);
+
+const pauseSec = REST_TIME * Math.max(0, completed.length - 1);
+
+const totalSec = durationSec + pauseSec;
+const totalMinutes = Math.round(totalSec / 60);
+duration= totalMinutes;
+console.log("🧮 Workout duration (sec):", totalSec);
+console.log("🕒 Workout duration (min):", totalMinutes);
+
       console.log("📌 currentWorkoutId:", currentWorkoutId);
 
       if (currentWorkoutId != null) {
         const token =
           localStorage.getItem("token") || sessionStorage.getItem("token");
         fetch("/api/workout-activities", {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
