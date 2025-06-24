@@ -189,15 +189,15 @@
   },
   {
     "id": 11,
-    "name": "Wall Slid_exercitiues",
+    "name": "Wall Slide",
     "type": "kinetotherapy",
     "muscle_groups": [
       "shoulders",
       "back"
     ],
-    "cover_image": "assets/images/exercitii/wall_slid_exercitiues.jpg",
+    "cover_image": "assets/images/exercitii/wall_slides.jpg",
     "images": [
-      "/img/exercitii/wall_slid_exercitiues.jpg"
+      "/img/exercitii/wall_slides.jpg"
     ],
     "difficulty": 3.7,
     "rating": 5.0,
@@ -226,7 +226,7 @@
   },
   {
     "id": 13,
-    "name": "Heel Slid_exercitiues",
+    "name": "Heel Slides",
     "type": "kinetotherapy",
     "muscle_groups": [
       "thighs",
@@ -234,7 +234,7 @@
     ],
     "cover_image": "assets/images/exercitii/heel_slides.jpg",
     "images": [
-      "/img/exercitii/heel_slid_exercitiues.jpg"
+      "/img/exercitii/heel_slides.jpg"
     ],
     "difficulty": 2.8,
     "rating": 5.0,
@@ -263,15 +263,15 @@
   },
   {
     "id": 15,
-    "name": "Brid_exercitiuge Exercise",
+    "name": "Bridge Exercise",
     "type": "kinetotherapy",
     "muscle_groups": [
       "abs",
       "glutes"
     ],
-    "cover_image": "assets/images/exercitii/brid_exercitiuge.jpg",
+    "cover_image": "assets/images/exercitii/bridge.jpg",
     "images": [
-      "/img/exercitii/brid_exercitiuge.jpg"
+      "/img/exercitii/bridge.jpg"
     ],
     "difficulty": 4.1,
     "rating": 5.0,
@@ -320,14 +320,14 @@
   },
   {
     "id": 18,
-    "name": "Sid_exercitiue Lying Leg Lifts",
+    "name": "Side Lying Leg Lifts",
     "type": "kinetotherapy",
     "muscle_groups": [
       "thighs"
     ],
-    "cover_image": "assets/images/exercitii/sid_lying_leg_lifts.jpg",
+    "cover_image": "assets/images/exercitii/side_lying_leg_lifts.jpg",
     "images": [
-      "/img/exercitii/sid_exercitiue_lying_leg_lifts.jpg"
+      "/img/exercitii/side_lying_leg_lifts.jpg"
     ],
     "difficulty": 3.2,
     "rating": 5.0,
@@ -451,7 +451,7 @@
     "id": 24
   },
   {
-    "name": "Burpees #1",
+    "name": "Burpees",
     "type": "cardio",
     "muscle_groups": [
       "full body"
@@ -469,7 +469,7 @@
     "id": 25
   },
   {
-    "name": "High Knees #2",
+    "name": "High Knees",
     "type": "cardio",
     "muscle_groups": [
       "legs",
@@ -488,7 +488,7 @@
     "id": 26
   },
   {
-    "name": "Barbell Row #3",
+    "name": "Barbell Row",
     "type": "strength",
     "muscle_groups": [
       "back",
@@ -507,7 +507,7 @@
     "id": 27
   },
   {
-    "name": "Leg Press #4",
+    "name": "Leg Press",
     "type": "strength",
     "muscle_groups": [
       "quads",
@@ -527,7 +527,7 @@
     "id": 28
   },
   {
-    "name": "Triceps Dips #5",
+    "name": "Triceps Dips",
     "type": "calisthenics",
     "muscle_groups": [
       "triceps",
@@ -546,7 +546,7 @@
     "id": 29
   },
   {
-    "name": "Wall Sit #6",
+    "name": "Wall Sit",
     "type": "calisthenics",
     "muscle_groups": [
       "quads",
@@ -583,7 +583,7 @@
     "id": 31
   },
   {
-    "name": "Heel Raises #8",
+    "name": "Heel Raises",
     "type": "kinetotherapy",
     "muscle_groups": [
       "calves"
@@ -599,231 +599,5 @@
     "video": "https://www.youtube.com/watch?v=ym5pWKlUxjA",
     "rep_duration": 3,
     "id": 32
-  },
-  {
-    "name": "Burpees #9",
-    "type": "cardio",
-    "muscle_groups": [
-      "full body"
-    ],
-    "cover_image": "assets/images/exercitii/burpees.jpg",
-    "images": [
-      "/img/exercitii/burpees.jpg"
-    ],
-    "difficulty": 3.88,
-    "rating": 4.87,
-    "risk": "medium",
-    "description": "Burpees are a high-intensity cardio exercise that work your entire body. They improve conditioning, agility, and strength. Perform them with controlled movements to avoid injury.",
-    "video": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "rep_duration": 4,
-    "id": 33
-  },
-  {
-    "name": "High Knees #10",
-    "type": "cardio",
-    "muscle_groups": [
-      "legs",
-      "core"
-    ],
-    "cover_image": "assets/images/exercitii/high_knees.jpg",
-    "images": [
-      "/img/exercitii/high_knees.jpg"
-    ],
-    "difficulty": 2.59,
-    "rating": 4.46,
-    "risk": "low",
-    "description": "High Knees are a cardio move performed by running in place while lifting the knees high. They improve speed, endurance, and coordination.",
-    "video": "https://www.youtube.com/watch?v=8opcQdC-V-U",
-    "rep_duration": 3,
-    "id": 34
-  },
-  {
-    "name": "Barbell Row #11",
-    "type": "strength",
-    "muscle_groups": [
-      "back",
-      "biceps"
-    ],
-    "cover_image": "assets/images/exercitii/barbell_row.jpg",
-    "images": [
-      "/img/exercitii/barbell_row.jpg"
-    ],
-    "difficulty": 4.1,
-    "rating": 4.8,
-    "risk": "medium",
-    "description": "The Barbell Row builds upper and middle back thickness by pulling a loaded bar toward the torso. Maintain a strong hinge and braced core.",
-    "video": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    "rep_duration": 5,
-    "id": 35
-  },
-  {
-    "name": "Leg Press #12",
-    "type": "strength",
-    "muscle_groups": [
-      "quads",
-      "glutes",
-      "hamstrings"
-    ],
-    "cover_image": "assets/images/exercitii/leg_press.jpg",
-    "images": [
-      "/img/exercitii/leg_press.jpg"
-    ],
-    "difficulty": 3.61,
-    "rating": 4.69,
-    "risk": "medium",
-    "description": "Leg Press strengthens the lower body by pushing weight with your legs on a sled. Control depth and avoid locking knees.",
-    "video": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    "rep_duration": 5,
-    "id": 36
-  },
-  {
-    "name": "Triceps Dips #13",
-    "type": "calisthenics",
-    "muscle_groups": [
-      "triceps",
-      "shoulders"
-    ],
-    "cover_image": "assets/images/exercitii/triceps_dips.jpg",
-    "images": [
-      "/img/exercitii/triceps_dips.jpg"
-    ],
-    "difficulty": 3.3200000000000003,
-    "rating": 4.58,
-    "risk": "medium",
-    "description": "Dips are a bodyweight movement focusing on the triceps and shoulders. Keep elbows close and avoid shoulder strain.",
-    "video": "https://www.youtube.com/watch?v=0326dy_-CzM",
-    "rep_duration": 4,
-    "id": 37
-  },
-  {
-    "name": "Wall Sit #14",
-    "type": "calisthenics",
-    "muscle_groups": [
-      "quads",
-      "glutes"
-    ],
-    "cover_image": "assets/images/exercitii/wall_sit.jpg",
-    "images": [
-      "/img/exercitii/wall_sit.jpg"
-    ],
-    "difficulty": 2.63,
-    "rating": 4.37,
-    "risk": "low",
-    "description": "The Wall Sit builds endurance in the lower body. Hold a seated position against a wall with knees at 90 degrees.",
-    "video": "https://www.youtube.com/watch?v=y-wV4Venusw",
-    "rep_duration": 1,
-    "id": 38
-  },
-  {
-    "name": "Neck Retractions #15",
-    "type": "kinetotherapy",
-    "muscle_groups": [
-      "neck"
-    ],
-    "cover_image": "assets/images/exercitii/neck_retractions.jpg",
-    "images": [
-      "/img/exercitii/neck_retractions.jpg"
-    ],
-    "difficulty": 1.1400000000000001,
-    "rating": 4.96,
-    "risk": "low",
-    "description": "Neck Retractions improve posture and relieve neck strain. Performed by drawing the head straight back without tilting.",
-    "video": "https://www.youtube.com/watch?v=a7E5b5og6i4",
-    "rep_duration": 3,
-    "id": 39
-  },
-  {
-    "name": "Heel Raises #16",
-    "type": "kinetotherapy",
-    "muscle_groups": [
-      "calves"
-    ],
-    "cover_image": "assets/images/exercitii/heel_raises.jpg",
-    "images": [
-      "/img/exercitii/heel_raises.jpg"
-    ],
-    "difficulty": 1.3499999999999999,
-    "rating": 4.9,
-    "risk": "low",
-    "description": "Heel Raises help restore ankle strength and balance by slowly lifting the heels off the floor while standing.",
-    "video": "https://www.youtube.com/watch?v=ym5pWKlUxjA",
-    "rep_duration": 3,
-    "id": 40
-  },
-  {
-    "name": "Burpees #17",
-    "type": "cardio",
-    "muscle_groups": [
-      "full body"
-    ],
-    "cover_image": "assets/images/exercitii/burpees.jpg",
-    "images": [
-      "/img/exercitii/burpees.jpg"
-    ],
-    "difficulty": 3.96,
-    "rating": 4.890000000000001,
-    "risk": "medium",
-    "description": "Burpees are a high-intensity cardio exercise that work your entire body. They improve conditioning, agility, and strength. Perform them with controlled movements to avoid injury.",
-    "video": "https://www.youtube.com/watch?v=TU8QYVW0gDU",
-    "rep_duration": 4,
-    "id": 41
-  },
-  {
-    "name": "High Knees #18",
-    "type": "cardio",
-    "muscle_groups": [
-      "legs",
-      "core"
-    ],
-    "cover_image": "assets/images/exercitii/high_knees.jpg",
-    "images": [
-      "/img/exercitii/high_knees.jpg"
-    ],
-    "difficulty": 2.67,
-    "rating": 4.48,
-    "risk": "low",
-    "description": "High Knees are a cardio move performed by running in place while lifting the knees high. They improve speed, endurance, and coordination.",
-    "video": "https://www.youtube.com/watch?v=8opcQdC-V-U",
-    "rep_duration": 3,
-    "id": 42
-  },
-  {
-    "name": "Barbell Row #19",
-    "type": "strength",
-    "muscle_groups": [
-      "back",
-      "biceps"
-    ],
-    "cover_image": "assets/images/exercitii/barbell_row.jpg",
-    "images": [
-      "/img/exercitii/barbell_row.jpg"
-    ],
-    "difficulty": 4.18,
-    "rating": 4.77,
-    "risk": "medium",
-    "description": "The Barbell Row builds upper and middle back thickness by pulling a loaded bar toward the torso. Maintain a strong hinge and braced core.",
-    "video": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
-    "rep_duration": 5,
-    "id": 43
-  },
-  {
-    "name": "Leg Press #20",
-    "type": "strength",
-    "muscle_groups": [
-      "quads",
-      "glutes",
-      "hamstrings"
-    ],
-    "cover_image": "assets/images/exercitii/leg_press.jpg",
-    "images": [
-      "/img/exercitii/leg_press.jpg"
-    ],
-    "difficulty": 3.69,
-    "rating": 4.66,
-    "risk": "medium",
-    "description": "Leg Press strengthens the lower body by pushing weight with your legs on a sled. Control depth and avoid locking knees.",
-    "video": "https://www.youtube.com/watch?v=IZxyjW7MPJQ",
-    "rep_duration": 5 ,
-    "id": 44
-  }
-]
+  }]
+  
