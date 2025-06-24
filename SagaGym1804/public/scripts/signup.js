@@ -365,7 +365,6 @@ function validateStep4Form(event) {
     user.height = heightValue;
     user.weight = parseFloat(weightValue);
     user.gender = genderChecked.value;
-    console.log(user);
     fetch("/api/register", {
       method: "POST",
       headers: {
