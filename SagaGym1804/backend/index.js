@@ -448,10 +448,6 @@ const server = http.createServer(async (req, res) => {
         const { id_workout, wk_cnt, duration } = JSON.parse(body);
         const id_user = user.id;
 
-        const filter = { id_user, id_workout };
-        const update = { wk_cnt, duration };
-        const options = { new: true, upsert: true, setDefaultsOnInsert: true };
-
         const rec = await WorkoutActivity.create({
           id_user,
           id_workout,

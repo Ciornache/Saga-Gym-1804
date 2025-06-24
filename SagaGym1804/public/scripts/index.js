@@ -71,6 +71,7 @@ const pageSize = 4;
 let currentSortField = null;
 let currentSortOrder = null;
 let favourites = [];
+let exercisesWithRatings = [];
 
 const selectedFilters = {
   muscleGroups: [],
@@ -140,7 +141,10 @@ document.querySelectorAll(".dual-slider").forEach((group) => {
 document.querySelectorAll(".exercise-card").forEach((c) => {
   c.addEventListener("click", () => {
     let title = c.querySelector("h3");
-    window.location.href = `exercitiu.html?exercise-name=${title.textContent}`;
+    const exercise = exercisesWithRatings.filter(
+      (e) => e.name.toLowerCase() === title.textContent.toLowerCase()
+    )[0];
+    window.location.href = `exercitiu.html?exercise-name=${title.textContent}&rating=${exercise.rating}`;
   });
 });
 
@@ -550,13 +554,12 @@ async function render() {
   });
   let reviews = await res.json();
   reviews = reviews.reviews;
-  const exercisesWithRatings = exercises.map((ex) => {
+  exercisesWithRatings = exercises.map((ex) => {
     const ratings = reviews.filter((r) => r.exerciseId === ex.id);
     const sum = ratings.reduce((a, b) => a + b.rating, 0);
     const avg = ratings.length ? (sum / ratings.length).toFixed(2) : 0;
     return { ...ex, rating: Number(avg) };
   });
-  /////
   exercises = exercisesToDisplay = exercisesWithRatings;
   const start = (currentPage - 1) * pageSize;
   cards.forEach((cardEl, idx) => {

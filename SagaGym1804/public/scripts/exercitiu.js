@@ -82,9 +82,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const params = new URLSearchParams(window.location.search);
     const name = params.get("exercise-name");
+    const score = params.get("rating");
     if (!name) throw new Error("Parametrul 'exercise-name' lipsește.");
 
     const ex = await fetchExercise(name);
+    ex.score = score;
     populatePage(ex);
 
     const allInstr = await fetchJSON("data/instructions.json");
@@ -96,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (tipsObj) populateTips(tipsObj.description);
 
     document.getElementById("exercise-title").dataset.id = ex.id;
-    console.log("EXX");
     await incarcaReviewuriExercitiu();
   } catch (err) {
     console.error(err);
