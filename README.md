@@ -102,4 +102,4 @@ Make sure you have Node.js and npm installed. From the `SagaGym1804` folder:
 
 Static pages are served from the `public` directory with no additional build step.
 
-Link Video Prezentare: https://www.youtube.com/watch?v=N-w7DEmXdOs&ab_channel=grozy
+Link Video Prezentare: https://www.youtube.com/watch?v=vtt6_7VwglI&t=11s
