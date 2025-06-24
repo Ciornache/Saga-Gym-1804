@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   console.log(res);
   if (res.status === 200) {
-    console.log("HERE");
     logoutButton.classList.remove("hidden");
     userAccWindow.classList.remove("hidden");
   } else {
@@ -280,7 +279,7 @@ function validateStep3Form() {
   );
   for (radio_button of radio_buttons) {
     isChecked |= radio_button.checked;
-    if (isChecked) {
+    if (radio_button.checked) {
       checked_radio_button = radio_button;
     }
   }
@@ -366,6 +365,7 @@ function validateStep4Form(event) {
     user.height = heightValue;
     user.weight = parseFloat(weightValue);
     user.gender = genderChecked.value;
+    console.log(user);
     fetch("/api/register", {
       method: "POST",
       headers: {

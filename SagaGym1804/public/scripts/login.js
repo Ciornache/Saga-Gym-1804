@@ -1,6 +1,4 @@
-const workoutButton = document.querySelector(
-  ".navbar .navbar-button:nth-child(3)"
-);
+const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
   e.preventDefault();

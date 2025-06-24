@@ -1,3 +1,5 @@
+/* Repetitive code used for handling workout page, acccount button and logout button */
+
 const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
@@ -60,18 +62,15 @@ userAccWindow.addEventListener("click", () => {
   else window.location.href = "login.html";
 });
 
+/* Redirecting to stats page */
+
 const viewStatsBtn = document.getElementById("view-stats");
 viewStatsBtn.addEventListener("click", (e) => {
   window.location.href = "stats.html";
 });
 
-function hashPassword(password) {
-  return crypto.createHash("sha256").update(password).digest("hex");
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   let activeRow = null;
-
   const token =
     localStorage.getItem("token") || sessionStorage.getItem("token");
   if (!token) return (window.location.href = "login.html");
@@ -126,7 +125,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       btn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
-        if (activeRow && activeRow !== row) cancelEdit(activeRow);
+        if (activeRow && activeRow !== row)
+           cancelEdit(activeRow);
         if (row.querySelector("input")) return;
         activeRow = row;
 
@@ -157,7 +157,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           const token =
             localStorage.getItem("token") || sessionStorage.getItem("token");
-          console.log("Token", token);
           const resp = await fetch("/token/getuser", {
             method: "GET",
             headers: {
@@ -187,20 +186,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    /* Handling profile picture operations */
+
     const avatarCircle = document.querySelector(".avatar-circle");
     const avatarInput = document.getElementById("avatar-input");
+
+    /* If the user has a profile picture already, display that */
 
     if (user.pfp_picture) {
       avatarCircle.style.backgroundImage = `url(${user.pfp_picture})`;
       avatarCircle.textContent = "";
     }
 
+    /* Triggers whenever a user wants to upload a new file */
+
     avatarInput.addEventListener("change", async () => {
       const file = avatarInput.files[0];
       if (!file) return;
 
+      /* JavaScript object used for serializing file objects */
+
       const formData = new FormData();
       formData.append("avatar", file);
+
+      /* If the profile picture was succesfully uploaded display it */
 
       const resp = await fetch("/api/upload/avatar", {
         method: "POST",
@@ -220,6 +229,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(err);
   }
 });
+
+/* Responsive sidebar handling */
+
 document.addEventListener("DOMContentLoaded", () => {
   const navbar = document.querySelector(".navbar");
   const btn = document.querySelector(".hamburger");

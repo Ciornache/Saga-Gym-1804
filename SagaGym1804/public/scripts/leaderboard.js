@@ -1,3 +1,5 @@
+/* Repetitive Code */
+
 const workoutButton = document.getElementById("workout-btn");
 
 workoutButton.addEventListener("click", async (e) => {
@@ -59,6 +61,8 @@ userAccWindow.addEventListener("click", () => {
   if (token) window.location.href = "account.html";
   else window.location.href = "login.html";
 });
+
+/* Loading into memory the muscle groups and the icons */
 
 (async function () {
   const genderData = [
@@ -180,6 +184,8 @@ userAccWindow.addEventListener("click", () => {
       if (value) params.set(key, value);
     });
 
+    /* Fetching the leaderboard by the criterias */
+
     const res = await fetch(`/api/leaderboard?${params.toString()}`);
     const rows = await res.json();
 
@@ -197,6 +203,9 @@ userAccWindow.addEventListener("click", () => {
           );
       })
       .join(", ");
+
+    /* Loading Dynamically the Video */
+
     filterInfo.textContent = `Filtered by: ${filterCriterias || "None"}`;
 
     table.innerHTML =
@@ -217,6 +226,8 @@ userAccWindow.addEventListener("click", () => {
   document.getElementById("download-pdf").style.fontFamily =
     "Goldman, sans-serif";
 
+  /* Json Download Feature */
+
   document.getElementById("download-json").addEventListener("click", () => {
     const data = Array.from(
       document.querySelectorAll(".leaderboard tr:not(:first-child)")
@@ -228,6 +239,8 @@ userAccWindow.addEventListener("click", () => {
         joinDate: d.textContent,
       };
     });
+    const spanElement = document.getElementById("filter-info");
+    data.push(spanElement.textContent);
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
     });
@@ -238,6 +251,8 @@ userAccWindow.addEventListener("click", () => {
     a.click();
     URL.revokeObjectURL(url);
   });
+
+  /* PDF Download Feature */
 
   document
     .getElementById("download-pdf")

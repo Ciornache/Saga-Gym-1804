@@ -145,6 +145,7 @@
   gap: 2rem;
   background-color: var(--cards-area-bg);
   padding: 1rem 2rem;
+  align-items: start;
 }
 .exercise-card {
   background: var(--bg-card);
@@ -155,6 +156,7 @@
   flex-direction: column;
   position: relative;
   cursor: pointer;
+  max-width: 450px;
 }
 
 .exercise-card .img {

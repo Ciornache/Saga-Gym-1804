@@ -190,3 +190,31 @@ hr {
   width: 150px;
   height: 100px;
 }
+
+@media (max-width: 900px) {
+  .details-grid {
+    flex-direction: column;
+  }
+  .column-left {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+  .column {
+    padding: 1rem;
+  }
+}
+
+/* Responsive: Adjust padding and font size for mobile */
+@media (max-width: 600px) {
+  .account-container {
+    max-width: 100vw;
+    padding: 0.5rem;
+  }
+  .profile-top .username {
+    font-size: 1.2rem;
+  }
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}

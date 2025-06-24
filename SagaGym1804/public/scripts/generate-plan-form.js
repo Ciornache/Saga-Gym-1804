@@ -282,7 +282,6 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
         { name: "excentric", time: repetitions[0].timings[1] },
         { name: "concentric", time: repetitions[0].timings[2] },
       ];
-      console.log("Set duration", setDur);
       return {
         id: si + 1,
         repetitions,
@@ -291,7 +290,6 @@ function makeWorkout(exs, targetDiff, count, purpose, name, muscleGroups) {
         timings: timingArray,
       };
     });
-    console.log(sets);
     return {
       id: idx + 1,
       exercise_id: ex.id,
