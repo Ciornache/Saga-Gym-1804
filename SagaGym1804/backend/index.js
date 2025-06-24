@@ -453,11 +453,11 @@ const server = http.createServer(async (req, res) => {
         const options = { new: true, upsert: true, setDefaultsOnInsert: true };
 
         const rec = await WorkoutActivity.create({
-  id_user,
-  id_workout,
-  wk_cnt,
-  duration,
-});
+          id_user,
+          id_workout,
+          wk_cnt,
+          duration,
+        });
 
         return send(res, 200, { success: true, workoutActivity: rec });
       } catch (err) {
@@ -803,14 +803,18 @@ ${message}
       reviews.map((r) => ReviewLike.countDocuments({ reviewId: r._id }))
     );
     const totalLikes = likeCounts.reduce((s, c) => s + c, 0);
-    // Total weight
+
+    // Leaderboard score
+    const activities = await Activity.find({ id_user: userId });
+    const totalCnt = activities.reduce((s, a) => s + (a.activity_cnt || 0), 0);
+    const totalTime = activities.reduce((s, a) => s + (a.time || 0), 0);
+    const score = 0.6 * totalCnt + 0.4 * totalTime;
+
+    // Total weight lifted
     const [{ totalWeight = 0 } = {}] = await SetInfo.aggregate([
       { $match: { id_user: userId } },
       { $group: { _id: null, totalWeight: { $sum: "$weight_kicker" } } },
     ]);
-
-    // Total exercises
-    const totalExercises = totalCnt;
 
     // Total workouts
     const totalWorkouts = await WorkoutActivity.countDocuments({
@@ -818,54 +822,53 @@ ${message}
     });
 
     const xml = `
-    <?xml version="1.0" encoding="UTF-8" ?>
-    <rss version="2.0">
-      <channel>
-        <title>${username}'s SagaGym Stats</title>
-        <description>Statistici personale din SagaGym</description>
-        <link>http://localhost:3000/stats.html</link>
-        <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-
-        <item>
-          <title>Total Likes</title>
-          <description>${totalLikes} like-uri acumulate</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-        <item>
-          <title>Leaderboard Score</title>
-          <description>Scor: ${score.toFixed(2)}</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-        <item>
-          <title>Reviews</title>
-          <description>${reviewCount} review-uri, rating mediu ${avgRating.toFixed(
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <rss version="2.0">
+    <channel>
+      <title>${username}'s SagaGym Stats</title>
+      <description>Statistici personale din SagaGym</description>
+      <link>http://localhost:3000/stats.html</link>
+      <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+  
+      <item>
+        <title>Total Likes</title>
+        <description>${totalLikes} like-uri acumulate</description>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+  
+      <item>
+        <title>Leaderboard Score</title>
+        <description>Scor: ${score.toFixed(2)}</description>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+  
+      <item>
+        <title>Reviews</title>
+        <description>${reviewCount} review-uri, rating mediu ${avgRating.toFixed(
       1
     )} / 5</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-        <item>
-          <title>Total Weight Lifted</title>
-          <description>${totalWeight} kg în total</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-        <item>
-          <title>Totalexercises</title>
-          <description>${totalExercises} exerciții</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-        <item>
-          <title>Total antrenamente</title>
-          <description>${totalWorkouts} antrenamente finalizate</description>
-          <pubDate>${new Date().toUTCString()}</pubDate>
-        </item>
-
-      </channel>
-    </rss>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+  
+      <item>
+        <title>Total Weight Lifted</title>
+        <description>${totalWeight} kg în total</description>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+  
+      <item>
+        <title>Total Exercises</title>
+        <description>${totalCnt} exerciții efectuate</description>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+  
+      <item>
+        <title>Total Workouts</title>
+        <description>${totalWorkouts} antrenamente finalizate</description>
+        <pubDate>${new Date().toUTCString()}</pubDate>
+      </item>
+    </channel>
+  </rss>
   `.trim();
 
     res.writeHead(200, { "Content-Type": "application/rss+xml" });
@@ -1120,7 +1123,7 @@ ${message}
     if (!payload) throw "401";
     return payload;
   }
-   if (req.method === "GET" && pathname === "/api/activity/weekly-progress") {
+  if (req.method === "GET" && pathname === "/api/activity/weekly-progress") {
     const user = requireAuth();
     if (!user) return;
 
@@ -1489,7 +1492,7 @@ async function start() {
         useUnifiedTopology: true,
       }
     );
-     await updateDb();
+    await updateDb();
     server.listen(3000);
     console.log("Server listening on port 3000");
   } catch (err) {
